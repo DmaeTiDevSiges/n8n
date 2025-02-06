@@ -1,0 +1,70 @@
+{
+  "createdAt": "2024-12-18T14:53:36.049Z",
+  "updatedAt": "2024-12-28T21:59:35.537Z",
+  "id": "chIvKrxIOsDWWrSx",
+  "name": "sigesRecoveryPassword",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "fromEmail": "Siges",
+        "toEmail": "={{ $json.body.email }}",
+        "subject": "Siges - Redefinição de Senha de Acesso",
+        "html": "=<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Recuperação de Senha</title>\n  <style>\n    body {\n      font-family: Arial, sans-serif;\n      background-color: #f4f4f9;\n      color: #333;\n      margin: 0;\n      padding: 0;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      height: 100vh;\n    }\n    .container {\n      background: #fff;\n      padding: 20px;\n      border-radius: 8px;\n      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n      text-align: center;\n      max-width: 400px;\n    }\n    h2 {\n      color: #2c3e50;\n    }\n    p {\n      margin: 15px 0;\n      font-size: 16px;\n    }\n    a {\n      display: inline-block;\n      background: #3498db;\n      color: #fff;\n      text-decoration: none;\n      padding: 10px 15px;\n      border-radius: 5px;\n      font-size: 16px;\n    }\n    a:hover {\n      background: #2980b9;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <h2>Esqueceu seu acesso ao Siges ?</h2>\n    <p>Clique no link abaixo para criar uma nova senha de acesso:</p>\n    <p><a href=\"https://siges-app.flutterflow.app/pgPasswordUpdate?uuid={{ $json.body.uuid }}\">Nova Senha</a></p>\n    <h5>Caso essa solicitação não tenha sido requisitada por você, favor desconsiderar este e-mail.</h5>\n  </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -60,
+        -100
+      ],
+      "id": "888a3cf3-ca6d-43a1-a174-505d61a1e38b",
+      "name": "Send Email",
+      "credentials": {
+        "smtp": {
+          "id": "6LGnsx2Xzcx1Ggek",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "recovery_password",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -340,
+        -140
+      ],
+      "id": "19ae7268-eb78-471a-8661-2aec72e53d75",
+      "name": "Webhook",
+      "webhookId": "93e1fb9d-ce12-434f-a079-889a37166480"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "46cc530d-1463-436f-8f70-407fd9ad4c02",
+  "triggerCount": 1,
+  "tags": []
+}
