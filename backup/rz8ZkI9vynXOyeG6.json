@@ -1,0 +1,90 @@
+{
+  "createdAt": "2024-10-30T13:42:57.918Z",
+  "updatedAt": "2024-12-21T19:58:44.958Z",
+  "id": "rz8ZkI9vynXOyeG6",
+  "name": "sigesWhatsapp",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://automacao-evo.n4rbtj.easypanel.host/message/sendText/Siges",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "30008E12C798-44DC-8B15-1067C2B6D79B"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Webhook').item.json.body.record.user_to_whatsapp }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.body.record.body }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "6ab48a4c-22e7-437b-93b2-08b79069d15d",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sendMsg",
+        "options": {}
+      },
+      "id": "ad92401f-66bb-4de2-9bea-a11338c46985",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        160,
+        220
+      ],
+      "webhookId": "89bb094d-322d-4aa1-9c53-94f38ab3798c"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "192fdc4d-13d4-4d53-9a97-9e403d1a6a67",
+  "triggerCount": 1,
+  "tags": []
+}
