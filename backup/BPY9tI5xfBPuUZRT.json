@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-02-06T16:06:12.153Z",
-  "updatedAt": "2025-02-07T13:25:30.595Z",
+  "updatedAt": "2025-02-07T19:40:33.698Z",
   "id": "BPY9tI5xfBPuUZRT",
   "name": "GithubBackup",
   "active": true,
@@ -14,8 +14,7 @@
         60
       ],
       "id": "e4d92f29-8eec-4b3f-904b-a003c88bdbc0",
-      "name": "When clicking ‘Test workflow’",
-      "disabled": true
+      "name": "When clicking ‘Test workflow’"
     },
     {
       "parameters": {
@@ -462,7 +461,13 @@
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
-        []
+        [
+          {
+            "node": "Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Get All": {
@@ -644,7 +649,7 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "09ca5546-7eaa-4924-80e5-dc0381b676b5",
+  "versionId": "a21744c4-e974-4fd4-a0eb-ac780a11c07b",
   "triggerCount": 1,
   "tags": []
 }
