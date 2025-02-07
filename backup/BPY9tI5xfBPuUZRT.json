@@ -1,0 +1,650 @@
+{
+  "createdAt": "2025-02-06T16:06:12.153Z",
+  "updatedAt": "2025-02-07T13:25:30.595Z",
+  "id": "BPY9tI5xfBPuUZRT",
+  "name": "GithubBackup",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        100,
+        60
+      ],
+      "id": "e4d92f29-8eec-4b3f-904b-a003c88bdbc0",
+      "name": "When clicking ‘Test workflow’",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        520,
+        140
+      ],
+      "id": "4337a83b-fbc4-4f71-88d0-30792d351a4b",
+      "name": "Get All",
+      "credentials": {
+        "n8nApi": {
+          "id": "ynwyMmbVwaaqegWn",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('Info').item.json.owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Info').item.json.repository }}",
+          "mode": "name"
+        },
+        "filePath": "=backup/{{ $('Get All').item.json.id }}.json",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        760,
+        20
+      ],
+      "id": "2db247e8-29ce-416a-ba82-113acd455a0a",
+      "name": "Get file",
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "mCUkOIfXGfVE1Kak",
+          "name": "GitHub account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7f49bfdb-5206-4516-ada0-decfe00612be",
+              "name": "owner",
+              "value": "=DmaeTiDevSiges",
+              "type": "string"
+            },
+            {
+              "id": "f5996393-64ce-42db-bc87-3ef0525417eb",
+              "name": "repository",
+              "value": "=n8n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        300,
+        140
+      ],
+      "id": "00536074-e94f-49a0-a255-07ad598535fa",
+      "name": "Info"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "776eec21-c1ce-443d-8f7f-b99ee685c213",
+              "name": "data",
+              "value": "={{ $json }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        780,
+        300
+      ],
+      "id": "eac9cdb1-e5ef-4e2f-b117-a13f5cdad8de",
+      "name": "Workflow Data",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "options": {
+          "format": true,
+          "fileName": "={{ $json.id }}.json"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1660,
+        300
+      ],
+      "id": "c5e89f53-b9bc-438a-89e3-3d05efde0b77",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        980,
+        -40
+      ],
+      "id": "72f9c84a-196b-44a9-92ae-67f780c58e65",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "=data.id",
+              "field2": "=data.id"
+            }
+          ]
+        },
+        "resolve": "preferInput2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.compareDatasets",
+      "typeVersion": 2.3,
+      "position": [
+        1200,
+        20
+      ],
+      "id": "ccdbb5c3-f47a-4592-b343-7ba6259c881b",
+      "name": "Compare Datasets"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json.data }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1480,
+        300
+      ],
+      "id": "49b4edc0-7d6a-4182-a61a-2b566dae3ad0",
+      "name": "Workflow"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('Info').first().json.owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Info').first().json.repository }}",
+          "mode": "name"
+        },
+        "filePath": "=backup/{{ $('Workflow').item.json.id }}.json",
+        "binaryData": true,
+        "commitMessage": "={{ $now.format('yyyy-MM-dd hh:mm') }} - {{ $('Workflow').item.json.name }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        1860,
+        300
+      ],
+      "id": "5eab2fe0-391b-4365-a6a4-ee5ab2d26fde",
+      "name": "Create File",
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "mCUkOIfXGfVE1Kak",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "options": {
+          "format": true,
+          "fileName": "={{ $json.id }}.json"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1660,
+        100
+      ],
+      "id": "2f645836-859d-4480-8cf3-40f8852f7675",
+      "name": "Convert to File1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json.data }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1480,
+        100
+      ],
+      "id": "3b82cc50-3018-400a-bbcb-abf0fdfa5ee7",
+      "name": "Workflow1"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('Info').first().json.owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Info').first().json.repository }}",
+          "mode": "name"
+        },
+        "filePath": "=backup/{{ $('Workflow1').item.json.id }}.json",
+        "binaryData": true,
+        "commitMessage": "={{ $now.format('yyyy-MM-dd hh:mm') }} - {{ $('Workflow1').item.json.name }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        1860,
+        100
+      ],
+      "id": "8cfc5481-a32e-4a0e-80b8-5c7f5080949d",
+      "name": "Edit File",
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "mCUkOIfXGfVE1Kak",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "workflowId": {
+          "__rl": true,
+          "value": "={{ $json.data.id }}",
+          "mode": "id"
+        },
+        "workflowObject": "={{ JSON.stringify($json.data) }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        760,
+        680
+      ],
+      "id": "781ae158-ae7e-4b9a-b9c7-f5a8be1a3d35",
+      "name": "n8n",
+      "credentials": {
+        "n8nApi": {
+          "id": "ynwyMmbVwaaqegWn",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        600,
+        680
+      ],
+      "id": "fa526514-42fc-4c4a-8f67-54b499b4e631",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $json.owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $json.repository }}",
+          "mode": "name"
+        },
+        "filePath": "=backup/{{ $json.file }}",
+        "additionalParameters": {
+          "reference": "={{ $json.version }}"
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        420,
+        680
+      ],
+      "id": "1e8c0f8a-3aac-4629-b8b2-d5e5e23b93f8",
+      "name": "Get file1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "mCUkOIfXGfVE1Kak",
+          "name": "GitHub account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "# RESTORE \n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 280,
+        "width": 960
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        580
+      ],
+      "typeVersion": 1,
+      "id": "71500f61-b852-4460-8b7c-592abf98e405",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "# CREATE and UPDATE \n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 600,
+        "width": 2120,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        -120
+      ],
+      "typeVersion": 1,
+      "id": "2c7dad66-f91c-494f-9ce4-0e4cef1fe2bc",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        100,
+        280
+      ],
+      "id": "c8236e79-7727-4a7b-9e61-8f4444a0efb3",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "71ca7165-a49c-4f0d-b560-8d9413fe4afa",
+              "name": "file",
+              "value": "fbEufRMLmpnxWzpq.json",
+              "type": "string"
+            },
+            {
+              "id": "23c1f776-13f4-4318-97c3-e3da32520257",
+              "name": "owner",
+              "value": "DmaeTidevSiges",
+              "type": "string"
+            },
+            {
+              "id": "b24be326-36b9-479b-bb21-49b193f4150c",
+              "name": "repository",
+              "value": "n8n",
+              "type": "string"
+            },
+            {
+              "id": "1acf6b7b-bbd1-49a6-bdc7-c213bb5b5470",
+              "name": "version",
+              "value": "aefce1092658d14f65ace25620e9e4f796ffa5e",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        260,
+        680
+      ],
+      "id": "e02da046-d264-4f04-8e63-8790245fcf82",
+      "name": "Get File to Recovery"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "Get All": {
+      "main": [
+        [
+          {
+            "node": "Workflow Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Info": {
+      "main": [
+        [
+          {
+            "node": "Get All",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Data": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Create File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compare Datasets": {
+      "main": [
+        [],
+        [],
+        [
+          {
+            "node": "Workflow1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "Edit File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get file1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get File to Recovery": {
+      "main": [
+        [
+          {
+            "node": "Get file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "09ca5546-7eaa-4924-80e5-dc0381b676b5",
+  "triggerCount": 1,
+  "tags": []
+}
