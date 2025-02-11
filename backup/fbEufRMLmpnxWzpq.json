@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-02-05T16:41:46.755Z",
-  "updatedAt": "2025-02-07T13:23:27.315Z",
+  "updatedAt": "2025-02-10T12:47:25.521Z",
   "id": "fbEufRMLmpnxWzpq",
   "name": "SigesAI_Services",
   "active": false,
@@ -477,7 +477,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "4caab1d0-f2eb-48a8-976e-3a03a8c5545f",
+  "versionId": "684349a5-13ca-44f2-a185-923c6cec0f32",
   "triggerCount": 2,
   "tags": []
 }
