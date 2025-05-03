@@ -1,0 +1,137 @@
+{
+  "createdAt": "2025-03-10T14:28:14.887Z",
+  "updatedAt": "2025-03-10T14:51:24.171Z",
+  "id": "NMLN5ozKZxRb1Jg8",
+  "name": "Siges_Available_Check",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "daysInterval": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -20,
+        120
+      ],
+      "id": "d15fa80e-d890-4f73-ae77-c5725f353922",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "cfg_app",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "1"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "n8n_available_last_at",
+              "fieldValue": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss').toString() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "af8b5c28-3fdc-4bd0-ac55-16ea14050855",
+      "name": "Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "0A9wNSvNE8MQ5i1n",
+          "name": "SB Siges"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "cfg_app",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "1"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "n8n_available_last_at",
+              "fieldValue": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss').toString() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        220,
+        200
+      ],
+      "id": "7b8e0bf9-93fa-4306-abc2-92bf24541e72",
+      "name": "Supabase1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "NV6P6or6IURPzY4T",
+          "name": "SB Siges Automation"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Supabase1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        122
+      ]
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "edfbf420-f7dc-4d94-afcc-a933af3595ff",
+  "triggerCount": 1,
+  "tags": []
+}
