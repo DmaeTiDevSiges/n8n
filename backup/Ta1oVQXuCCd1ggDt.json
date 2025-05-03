@@ -1,0 +1,134 @@
+{
+  "createdAt": "2025-02-24T12:12:07.553Z",
+  "updatedAt": "2025-02-25T12:47:11.632Z",
+  "id": "Ta1oVQXuCCd1ggDt",
+  "name": "SigesWasabiAsset",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "asset_upload",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -680,
+        -360
+      ],
+      "id": "70ba899c-3087-4d7f-bdef-a78cabd5a0cf",
+      "name": "Webhook",
+      "webhookId": "c13e5737-7045-4b3b-b001-02eebe806bfd",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5632f12d-1ccb-47a6-8d66-ecdfc2c418b7",
+              "name": "file_path",
+              "value": "={{ $json.body.file_path }}",
+              "type": "string"
+            },
+            {
+              "id": "23ada55d-753f-4920-8c68-2bcdfa33dd01",
+              "name": "file_name",
+              "value": "={{ $json.body.file_name }}",
+              "type": "string"
+            },
+            {
+              "id": "0afed5c3-08be-4177-a330-73afefca31d6",
+              "name": "=bucket",
+              "value": "={{ $json.body.bucket }}",
+              "type": "string"
+            },
+            {
+              "id": "67e9be80-a33a-42a9-afe6-2666025644fd",
+              "name": "content_type",
+              "value": "={{ $binary.data.mimeType }}",
+              "type": "string"
+            },
+            {
+              "id": "363f007a-4a94-4668-9c86-445829ad489c",
+              "name": "file_uploaded",
+              "value": "={{ $binary }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -460,
+        -380
+      ],
+      "id": "71016a40-fa7f-4d69-b254-181fcc5957e3",
+      "name": "Edit Fields",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucketName": "={{ $json.bucket }}",
+        "fileName": "={{ $json.file_name }}",
+        "binaryPropertyName": "={{ $binary }}",
+        "additionalFields": {
+          "acl": "publicRead"
+        }
+      },
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -360
+      ],
+      "id": "51474cd2-e114-4390-99e3-e5c2d7caa0ca",
+      "name": "S3",
+      "credentials": {
+        "s3": {
+          "id": "q9DJCLXtAnWwwM2P",
+          "name": "S3 Wasabi"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "S3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "82b3a9e1-6287-449b-bac7-a746c635f4d2",
+  "triggerCount": 0,
+  "tags": []
+}
