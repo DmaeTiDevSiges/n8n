@@ -1,0 +1,18 @@
+{
+  "createdAt": "2025-03-12T13:06:25.699Z",
+  "updatedAt": "2025-03-12T13:06:25.699Z",
+  "id": "nciERcUS9sClRQiv",
+  "name": "SigesProcempa",
+  "active": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "c6138028-c46e-4d68-9969-02f330a997b4",
+  "triggerCount": 0,
+  "tags": []
+}
