@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-02-04T11:22:57.471Z",
-  "updatedAt": "2025-02-06T21:57:42.997Z",
+  "updatedAt": "2025-03-06T12:12:13.420Z",
   "id": "vi9i8b2ZgQic6P2h",
   "name": "BaseConhecimento 202502040822",
   "active": true,
@@ -130,7 +130,7 @@
       "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
       "typeVersion": 1,
       "position": [
-        1340,
+        1240,
         60
       ],
       "id": "81d8aa99-0395-4296-bad7-f50d3c32e029",
@@ -143,8 +143,8 @@
       "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
       "typeVersion": 1,
       "position": [
-        1420,
-        260
+        1300,
+        220
       ],
       "id": "7961fff8-5c2b-4260-aa3c-2a9ed4258cb5",
       "name": "Recursive Character Text Splitter"
@@ -424,8 +424,8 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.1,
       "position": [
-        1220,
-        40
+        1120,
+        340
       ],
       "id": "e23a72aa-97ad-4c11-8c5d-3a2ce82af520",
       "name": "Embeddings OpenAI",
@@ -474,8 +474,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        240,
-        600
+        40,
+        660
       ],
       "id": "e2bdfa7a-aa5a-4411-8153-a78180a3e3d3",
       "name": "Google Gemini Chat Model",
@@ -514,8 +514,8 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
       "typeVersion": 1,
       "position": [
-        460,
-        800
+        400,
+        820
       ],
       "id": "ae3f739f-6102-40ca-9acb-1cc31f3b3bf7",
       "name": "Supabase Vector Store2",
@@ -533,7 +533,7 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
       "typeVersion": 1,
       "position": [
-        560,
+        420,
         980
       ],
       "id": "a1d4e8b1-b065-4bac-8f2f-d31c1c490240",
@@ -552,8 +552,8 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
       "typeVersion": 1,
       "position": [
-        1520,
-        40
+        940,
+        340
       ],
       "id": "187a813c-76b8-411d-b133-6ba2ef500f1b",
       "name": "Embeddings Google Gemini1",
@@ -722,6 +722,44 @@
       ],
       "id": "e2f3eabe-10c6-435b-a228-43b7d8d55caa",
       "name": "toolManual"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        660
+      ],
+      "id": "62a447cd-aff6-44ce-ae0b-ccb57ac70c74",
+      "name": "DeepSeek Chat Model",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "uzucf6U3iAqacs1P",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        220,
+        660
+      ],
+      "id": "eb2e9146-3526-40e3-ad99-11bf4caf032a",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "fwI6OkArbrOdZEHG",
+          "name": "Groq account"
+        }
+      }
     }
   ],
   "connections": {
@@ -903,13 +941,7 @@
     },
     "Google Gemini Chat Model": {
       "ai_languageModel": [
-        [
-          {
-            "node": "Question and Answer Chain",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Vector Store Retriever": {
@@ -1010,6 +1042,22 @@
           }
         ]
       ]
+    },
+    "DeepSeek Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1017,18 +1065,20 @@
   },
   "staticData": {
     "node:Google Drive Trigger": {
-      "lastTimeChecked": "2025-02-15T00:25:48Z"
+      "lastTimeChecked": "2025-04-27T13:55:42Z"
     },
     "node:Google Drive Trigger1": {
-      "lastTimeChecked": "2025-02-15T00:25:49Z"
+      "lastTimeChecked": "2025-04-27T13:55:42Z"
     },
     "node:Google Drive Trigger2": {
-      "lastTimeChecked": "2025-02-15T00:25:49Z"
+      "lastTimeChecked": "2025-04-27T13:55:42Z"
     }
   },
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "pinData": {},
-  "versionId": "9c5ca0c7-edcd-4c49-bc7d-dfe7dc33da04",
-  "triggerCount": 5,
+  "versionId": "6ddd16b4-82c4-4f11-93c5-92e488eb5ef5",
+  "triggerCount": 4,
   "tags": []
 }
