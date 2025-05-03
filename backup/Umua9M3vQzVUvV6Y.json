@@ -1,0 +1,239 @@
+{
+  "createdAt": "2025-02-25T17:10:31.501Z",
+  "updatedAt": "2025-02-25T22:14:41.791Z",
+  "id": "Umua9M3vQzVUvV6Y",
+  "name": "SigesStorageGDrive",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "asset_img_upload",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -940,
+        -520
+      ],
+      "id": "034a6193-500d-4d3d-a505-4737978d360e",
+      "name": "Webhook",
+      "webhookId": "864869ff-90a5-4a75-9a4e-dd62c2ca5849",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5632f12d-1ccb-47a6-8d66-ecdfc2c418b7",
+              "name": "file_path",
+              "value": "={{ $json.body.file_path }}",
+              "type": "string"
+            },
+            {
+              "id": "23ada55d-753f-4920-8c68-2bcdfa33dd01",
+              "name": "file_name",
+              "value": "={{ $json.body.file_name }}",
+              "type": "string"
+            },
+            {
+              "id": "0afed5c3-08be-4177-a330-73afefca31d6",
+              "name": "=bucket",
+              "value": "={{ $json.body.bucket }}",
+              "type": "string"
+            },
+            {
+              "id": "67e9be80-a33a-42a9-afe6-2666025644fd",
+              "name": "content_type",
+              "value": "={{ $binary.data.mimeType }}",
+              "type": "string"
+            },
+            {
+              "id": "bc1c34a0-327c-4470-a486-5a33443c0bdd",
+              "name": "file_url",
+              "value": "={{ $json.body.file_path }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -700,
+        -560
+      ],
+      "id": "f39508f6-5556-4715-83bd-37abec71f293",
+      "name": "Edit Fields",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "={{ $json.file_url }}",
+        "name": "={{ $json.file_name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1jVk2Fp07lsYPIUs8_WRZZha2ZP0IbDuk",
+          "mode": "list",
+          "cachedResultName": "siges_storage",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1jVk2Fp07lsYPIUs8_WRZZha2ZP0IbDuk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -500,
+        -380
+      ],
+      "id": "79a80d3a-66fd-4fcf-a868-04e9e2bcb50e",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "r7zfjHFzQf0PjmRJ",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -260,
+        -300
+      ],
+      "id": "779d9465-4850-4320-a4d5-5977ac86439a",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        100,
+        -420
+      ],
+      "id": "a201ddef-9da5-4b14-82c8-02179dbd2e56",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "path": "={{ $json.body.file_path }}/{{ $json.body.file_name }}",
+        "binaryData": true,
+        "binaryPropertyName": "={{ $binary.data }}"
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        -560
+      ],
+      "id": "727eb97e-9da7-4a08-b1ab-e1ff5ffce4c7",
+      "name": "Dropbox",
+      "alwaysOutputData": true,
+      "credentials": {
+        "dropboxApi": {
+          "id": "rYnTPPZPTY2DjkWt",
+          "name": "Dropbox account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "binaryPropertyName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -560
+      ],
+      "id": "2c7eb626-2ce0-4d84-bf17-f033c5108ba8",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "binaryPropertyName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -560
+      ],
+      "id": "95898ae6-e65d-4d32-94fc-2ec9644efe44",
+      "name": "Extract from File1"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    },
+    "Dropbox": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "79c039b5-72e2-4caf-8dfd-aec92cdb049b",
+  "triggerCount": 0,
+  "tags": []
+}
