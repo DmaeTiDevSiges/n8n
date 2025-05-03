@@ -1,0 +1,18 @@
+{
+  "createdAt": "2025-05-02T19:12:08.630Z",
+  "updatedAt": "2025-05-02T19:12:08.630Z",
+  "id": "8Sqybk20ba4SNPzQ",
+  "name": "SigesAuthEmails",
+  "active": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "f1588e52-9bb1-4afc-8afb-52c3cf5dc306",
+  "triggerCount": 0,
+  "tags": []
+}
