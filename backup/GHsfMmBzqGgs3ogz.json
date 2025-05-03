@@ -1,0 +1,497 @@
+{
+  "createdAt": "2025-03-06T12:41:01.505Z",
+  "updatedAt": "2025-03-06T17:43:45.316Z",
+  "id": "GHsfMmBzqGgs3ogz",
+  "name": "SigesToolAssets",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        60,
+        280
+      ],
+      "id": "2e9f5964-be58-427f-9b33-be61205bf6f5",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sJ9wHD1Er2yb570n",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "{{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        360,
+        100
+      ],
+      "id": "d393e435-ab82-4ee9-8aaa-73873a30f7e9",
+      "name": "EXECUTE QUERY EXTRACT SCHEMA",
+      "credentials": {
+        "postgres": {
+          "id": "iikUL5KNVJ2NZJzO",
+          "name": "Postgres Supabase Siges"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  schema: JSON.stringify($('EXECUTE QUERY EXTRACT SCHEMA').all())\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        580,
+        100
+      ],
+      "id": "c290d4c7-fe65-4467-a13d-2f0f93b21dac",
+      "name": "PREPARE SCHEMA DBS",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.0-pro-001",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        800,
+        280
+      ],
+      "id": "49196f74-c851-489c-8495-154af71c5133",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sJ9wHD1Er2yb570n",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "{{ $json.result }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1320,
+        100
+      ],
+      "id": "91a4cad0-5b7e-4054-a0b6-5151c8f6bee2",
+      "name": "EXECUTE QUERY TO EXTRACT INFORMATION",
+      "credentials": {
+        "postgres": {
+          "id": "iikUL5KNVJ2NZJzO",
+          "name": "Postgres Supabase Siges"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const query =  $input.first().json.text // Certifique-se de que 'query' é o nome do campo de entrada\nconst match = query.match(/```sql\\n([\\s\\S]*?)\\n```/);\nreturn [{ json: { result: match ? match[1].trim() : query.trim() } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        100
+      ],
+      "id": "fc82b845-2d4e-466c-b1be-7d264e789f86",
+      "name": "Code",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Dado as tabelas a seguir, preciso que você altere a query para utilizada para extrair o schema do banco somente para as tabelas informadas.\n\nTABELAS\n{{ $json.tables }}\n\n### QUERY A SER ALTERADA\nSELECT table_name, column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name in () ORDER BY table_name, ordinal_position;\n\n### O QUE FAZER\n1. RETORNAR APENAS A QUERY FINAL\n2. GARANTIR QUE O RETORNO VAI SER EXECUTADO PELO DB COM SUCESSO\n3. Associar os termos dos usarios com os campos em ingles.\n4. Nao realizar relacionamentos com outras tabelas alem das informadas;\n\n### O QUE NÃO FAZER\n1. INCLUIR EXPLICAÇÃO OU OPINIÃO\n2. NÃO INCLUIR EM BLOCO DE CÓDIGO COMO POR EXEMPLO \"```sql\" ou \"\\n\";\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        20,
+        100
+      ],
+      "id": "80996ee8-ce22-47e5-b83c-1cff5ebe0fe3",
+      "name": "EXTRACT SCHEMA DBS"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When chat message received').last().json.chatInput }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Você agora é um DBA experiente em montar queries para extrair as informações do banco solicitadas pelo usuário.\n\nPreciso que você analise a solicitação do usuário e utilizando o schema predefinido elabore a query para extrair as informações desejadas.\n\n### SCHEMA DISPONÍVEL\n{{ $json.schema }}\n\n### O QUE VOCÊ DEVE FAZER\n1. RETORNAR APENAS A QUERY FINAL;\n2. GARANTIR QUE O RETORNO VAI SER EXECUTADO PELO DB COM SUCESSO;\n3. SEMPRE UTILIZE ILIKE PARA OS CAMPOS VARCHAR, CHAR, STRING, TEXT;\n4. Remova TODOS e quaisquer caracteres antes e depois da query, deixando apenas o código SQL puro como no exemplo abaixo:\n\"SELECT COUNT(*) AS total FROM table_name;\"\n"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        780,
+        100
+      ],
+      "id": "268c5b1a-b303-43bb-922b-4ddf29a9985a",
+      "name": "GENERATE QUERY TO EXTRACT DBS",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        300
+      ],
+      "id": "71c1db91-5e27-4b7c-b044-9152a5b33411",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sJ9wHD1Er2yb570n",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=### UTILIZAR AS INFORMAÇOES ABAIXO\n\n{{ JSON.stringify($('EXECUTE QUERY TO EXTRACT INFORMATION').all())}}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "FORMATAR AS INFORMAÇÕES A SEGUIR DE MANEIRA APRESENTAVEL PARA O WHATSAPP BASEADO NA SOLICITACAO DO USUARIO."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        1520,
+        100
+      ],
+      "id": "8af4c181-64b4-4ba0-890e-39afa9f8d265",
+      "name": "FORMAT ANSWER"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "chatInput"
+            },
+            {
+              "name": "sessionId"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -760,
+        100
+      ],
+      "id": "3060a68e-4f9b-4f8b-88a8-bf8bef46b0f5",
+      "name": "When Executed by Another Workflow",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "757c1e74-7caa-40f9-ae01-aa7838367742",
+              "name": "tables",
+              "value": "['v_assets']",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        100
+      ],
+      "id": "67f17190-b102-44c5-98ea-8ca42c3b735b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "Você é um assitente virtual para responder duvidas sobre ativos ou equipamentos e, para isso voce tem acesso a tabela 'v_assets'\nQuando o usuario referenciar com os termos patrimonio ou código do ativo considerar o campo 'code'."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -480,
+        100
+      ],
+      "id": "fcc803ee-3c80-40a1-992d-98646448b273",
+      "name": "AI Agent",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        320
+      ],
+      "id": "f6c51a78-e206-47ac-a6ba-3da425b0347e",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sJ9wHD1Er2yb570n",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -440,
+        300
+      ],
+      "id": "9ff24c8a-c942-4014-8c10-94c262430ce3",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "ATaNiInY85bisU3B",
+          "name": "Postgres Siges Automation"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -760,
+        -80
+      ],
+      "id": "b91bbdab-a897-4f65-90ca-b0a5695ffcad",
+      "name": "When chat message received",
+      "webhookId": "13f0cb7b-3b05-4f4a-a69b-6538ea844255"
+    }
+  ],
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "EXTRACT SCHEMA DBS",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EXECUTE QUERY EXTRACT SCHEMA": {
+      "main": [
+        [
+          {
+            "node": "PREPARE SCHEMA DBS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PREPARE SCHEMA DBS": {
+      "main": [
+        [
+          {
+            "node": "GENERATE QUERY TO EXTRACT DBS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "GENERATE QUERY TO EXTRACT DBS",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EXECUTE QUERY TO EXTRACT INFORMATION": {
+      "main": [
+        [
+          {
+            "node": "FORMAT ANSWER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "EXECUTE QUERY TO EXTRACT INFORMATION",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EXTRACT SCHEMA DBS": {
+      "main": [
+        [
+          {
+            "node": "EXECUTE QUERY EXTRACT SCHEMA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GENERATE QUERY TO EXTRACT DBS": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "FORMAT ANSWER",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "EXTRACT SCHEMA DBS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Google Drive Trigger": {
+      "lastTimeChecked": "2025-02-04T10:10:13Z"
+    },
+    "node:Google Drive Trigger1": {
+      "lastTimeChecked": "2025-02-04T10:09:53Z"
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "7bea51e3-d0a3-4772-9d4e-7fb6c06dffe1",
+  "triggerCount": 4,
+  "tags": []
+}
