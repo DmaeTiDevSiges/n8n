@@ -1,0 +1,18 @@
+{
+  "createdAt": "2025-04-11T12:47:33.036Z",
+  "updatedAt": "2025-04-11T12:47:33.036Z",
+  "id": "4CUE8amWQgIHao6U",
+  "name": "SigesSupabasBackup",
+  "active": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "3a74e86f-77b7-4c7c-a2fe-ef99ed845df1",
+  "triggerCount": 0,
+  "tags": []
+}
