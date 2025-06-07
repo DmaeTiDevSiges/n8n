@@ -4,6 +4,7 @@
   "id": "BPY9tI5xfBPuUZRT",
   "name": "GithubBackup",
   "active": true,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {},
