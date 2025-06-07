@@ -4,6 +4,7 @@
   "id": "cMb7pLkWQgJvrdCS",
   "name": "SigesAI_Manual",
   "active": false,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {
