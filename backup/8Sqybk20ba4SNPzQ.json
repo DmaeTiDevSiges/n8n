@@ -4,6 +4,7 @@
   "id": "8Sqybk20ba4SNPzQ",
   "name": "SigesAuthEmails",
   "active": false,
+  "isArchived": false,
   "nodes": [],
   "connections": {},
   "settings": {
