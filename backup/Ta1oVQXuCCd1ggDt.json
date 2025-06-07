@@ -4,6 +4,7 @@
   "id": "Ta1oVQXuCCd1ggDt",
   "name": "SigesWasabiAsset",
   "active": false,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {
