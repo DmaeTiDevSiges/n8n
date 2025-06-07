@@ -4,6 +4,7 @@
   "id": "cHpKsbwI4dry0z4D",
   "name": "BaseConhecimento",
   "active": false,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {
