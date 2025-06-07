@@ -1,9 +1,10 @@
 {
   "createdAt": "2025-02-04T11:22:57.471Z",
-  "updatedAt": "2025-03-06T12:12:13.420Z",
+  "updatedAt": "2025-06-06T13:45:32.537Z",
   "id": "vi9i8b2ZgQic6P2h",
   "name": "BaseConhecimento 202502040822",
-  "active": true,
+  "active": false,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {
@@ -1065,13 +1066,13 @@
   },
   "staticData": {
     "node:Google Drive Trigger": {
-      "lastTimeChecked": "2025-04-27T13:55:42Z"
+      "lastTimeChecked": "2025-06-06T13:44:32Z"
     },
     "node:Google Drive Trigger1": {
-      "lastTimeChecked": "2025-04-27T13:55:42Z"
+      "lastTimeChecked": "2025-06-06T13:44:33Z"
     },
     "node:Google Drive Trigger2": {
-      "lastTimeChecked": "2025-04-27T13:55:42Z"
+      "lastTimeChecked": "2025-06-06T13:44:33Z"
     }
   },
   "meta": {
