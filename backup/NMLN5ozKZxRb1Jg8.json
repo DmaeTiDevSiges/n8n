@@ -4,6 +4,7 @@
   "id": "NMLN5ozKZxRb1Jg8",
   "name": "Siges_Available_Check",
   "active": true,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {
