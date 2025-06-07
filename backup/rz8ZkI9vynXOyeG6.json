@@ -4,6 +4,7 @@
   "id": "rz8ZkI9vynXOyeG6",
   "name": "sigesWhatsapp",
   "active": true,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {
