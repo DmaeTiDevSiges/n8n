@@ -4,6 +4,7 @@
   "id": "kbpOB3SWW2yFinJm",
   "name": "Siges",
   "active": false,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {
