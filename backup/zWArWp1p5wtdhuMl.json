@@ -4,6 +4,7 @@
   "id": "zWArWp1p5wtdhuMl",
   "name": "Siges AI Supabase",
   "active": false,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {
