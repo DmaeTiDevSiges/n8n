@@ -4,6 +4,7 @@
   "id": "KyDvs7PvL9PPmkWF",
   "name": "Minio",
   "active": false,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {
