@@ -4,6 +4,7 @@
   "id": "nciERcUS9sClRQiv",
   "name": "SigesProcempa",
   "active": false,
+  "isArchived": false,
   "nodes": [],
   "connections": {},
   "settings": {
