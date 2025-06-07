@@ -4,6 +4,7 @@
   "id": "chIvKrxIOsDWWrSx",
   "name": "sigesRecoveryPassword",
   "active": false,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {
