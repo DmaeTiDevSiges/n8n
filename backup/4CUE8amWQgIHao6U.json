@@ -4,6 +4,7 @@
   "id": "4CUE8amWQgIHao6U",
   "name": "SigesSupabasBackup",
   "active": false,
+  "isArchived": false,
   "nodes": [],
   "connections": {},
   "settings": {
