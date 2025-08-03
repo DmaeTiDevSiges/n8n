@@ -1,0 +1,261 @@
+{
+  "createdAt": "2025-07-14T00:35:31.378Z",
+  "updatedAt": "2025-07-14T01:37:37.732Z",
+  "id": "OOfxC9jjuvbSnnxA",
+  "name": "ExtractPDF",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Energia Eletrica",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "file",
+              "fieldType": "file",
+              "acceptFileTypes": "pdf",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8a3db364-c274-43dc-a839-8ac867006de3",
+      "name": "On form submission",
+      "webhookId": "2ba757e2-2aaf-47c1-adea-01ebc67e8fbb"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "file",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "ae6efd3c-62a2-42db-bb04-2a9c8b6cf26b",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        440,
+        0
+      ],
+      "id": "0830a4b3-fd45-4293-a715-ebd441e6f594",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\n\t{\n\t\t\"Número da UC\": 40899446,\n\t\t\"Conta mês\": \"06/2025\",\n\t\t\"Vencimento\": \"20/06/2025\",\n\t\t\"Total a pagar\": \"R$158,00\",\n\t\t\"Leitura Anterior\": \"03/05/2025\",\n\t\t\"Leitura Atual\": \"03/06/2025\",\n\t\t\"No de Dias\": 31,\n\t\t\"Próxima Leitura\": \"04/07/2025\",\n\t\t\"Serviços\": [\n\t\t\t{\n\t\t\t\t\"Itens da Fatura\": \"CONSUMO TUSD\",\n\t\t\t\t\"Unid.\": \"KWh\",\n\t\t\t\t\"Quant.\": 431,\n\t\t\t\t\"Preço unit (R$) com tributos\": \"0,541233\",\n\t\t\t\t\"Valor (R$)\": \"235,51\",\n\t\t\t\t\"PIS/COFINS\": \"12,36\",\n\t\t\t\t\"Base Calc. ICMS (R$)\": \"233,51\",\n\t\t\t\t\"Alíquota. ICMS (R$)\": \"17%\",\n\t\t\t\t\"ICMS\": \"39,70\",\n\t\t\t\t\"Tarifa unit. (R$)\": \"0,233\"\n\t\t\t}\n\t\t]\n\t\t\t\n\n\t}\n]\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        640,
+        180
+      ],
+      "id": "df0f6462-473a-4775-9eee-d68b899647cc",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output[0]['Serviços']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        800,
+        0
+      ],
+      "id": "07480c15-3fe1-4b1a-b9f8-c4bc1c73734a",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        400,
+        180
+      ],
+      "id": "79de5546-fbcd-4c0a-9cd8-98d8ec6ff9a7",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "dbYHbMOI7Nqe9oyt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1020,
+        0
+      ],
+      "id": "fb60db55-b4a7-4a61-8ff0-22fe089eef92",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        100
+      ],
+      "id": "f7a16b6f-b6a2-4de3-8891-9153d6325036"
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Extract from File": [
+      {
+        "json": {
+          "numpages": 2,
+          "numrender": 2,
+          "info": {
+            "PDFFormatVersion": "1.5",
+            "Language": null,
+            "EncryptFilterName": null,
+            "IsLinearized": false,
+            "IsAcroFormPresent": false,
+            "IsXFAPresent": false,
+            "IsCollectionPresent": false,
+            "IsSignaturesPresent": false,
+            "Producer": "www.plpdf.com 4.9.6",
+            "CreationDate": "D:20250710083521"
+          },
+          "text": "Segunda Via\nSegunda Via\nSegunda Via\n127-127 117 133 \nTipo de Tarifa: B1_CONVENC\n40899446\n4089944\nEDUARDO CAMARA DE MATTOS\nCPF - ***7811903*-**\nAV NITEROI, 147 -\nMEDIANEIRA\nPORTO ALEGRE - RS - CEP 90880-270\nRESIDENCIAL / RESIDENCIAL BIFASICO\n06/2025 20/06/2025 R$158,00\nNOTA FISCAL No. 62906909 - SÉRIE 0 DATA DE EMISSÃO: 04/06/2025\nConsulte Chave de Acesso em:\nhttps://dfe-portal.svrs.rs.gov.br/Nf3e/Consulta\nChave de Acesso\n4325 0608 4671 1500 0100 6600 0062 9069 0910 4974 5360\nProtocolo de Autorização: 1432500028673594 04/06/2025 11:44:45\nUTC\n03/05/2025 03/06/2025 31 04/07/2025\nO montante da devolução é resultado da multiplicação do CONSUMO COMPENSADO pela mini/microgeração (327 kWh) pela tarifa proporcionalizada, quando for o caso.\nDemonstrativos de Saldos em kWh referente a Mini e Micro Geração, conforme REN Nº 482/2012. Saldo Mês no (TP) Todos os Períodos 0, Saldo Acumulado no (TP) Todos\nos Períodos 0, Saldo a Expirar Próximo Mês no (TP) Todos os Períodos 0.\nPeriodos Band.Tarif.: Amarela:04/05-31/05 Vermelha P1:01/06-03/06\nCONSUMO TUSD\nCONSUMO TE\nENERGIA INJETADA TUSD 06/2025 GDII-II\nENERGIA INJETADA TE 06/2025 GDII-II\nADICIONAL BAND. AMARELA\nADICIONAL BAND. VERMELHA P1\nENERGIA INJ. BAND. AMARELA TE\nENERGIA INJ. BAND. VERMELHA TE P1\nCIP MUNICIPAL\nkWh\nkWh\nkWh\nkWh\nkWh\nkWh\nkWh\nkWh\n431\n431\n-327\n-327\n389,290323\n41,709677\n-295,354839\n-31,645161\n0,541787\n0,325615\n0,372752\n0,325596\n0,024224\n0,057061\n0,024208\n0,057513\n233,51\n140,34\n-121,89\n-106,47\n9,43\n2,38\n-7,15\n-1,82\n9,67\n12,36\n7,43\n-7,77\n-5,63\n0,50\n0,12\n-0,38\n-0,10\n233,51\n140,34\n0,00\n-106,47\n9,43\n2,38\n-7,15\n-1,82\n17%\n17%\n17%\n17%\n17%\n17%\n17%\n39,70\n23,86\n0,00\n-18,10\n1,60\n0,40\n-1,21\n-0,31\n0,421010\n0,253030\n0,349017\n0,253030\n0,018850\n0,044630\n0,018850\n0,044630\nTOTAL \n158,00\nICMS\nCOFINS\nPIS\n270,22\n102,40\n102,40\n17%\n5,2441%\n1,1347%\n45,94\n5,37\n1,16\nConsumo DiárioDias\n2025 JUN 31\nMAI 30\nABR 28\nMAR 29\nFEV 30\nJAN 32\n2024 DEZ 30\nNOV 32\nOUT 30\nSET 30\nAGO 33\nJUL 29\nJUN 32\n431,0\n468,0\n715,0\n480,0\n478,0\n443,0\n368,0\n528,0\n347,0\n119,0\n661,0\n481,0\n572,0\n13,90\n15,60\n25,54\n16,55\n15,93\n13,84\n12,27\n16,50\n11,57\n3,97\n20,03\n16,59\n17,88\n52823024\n52823024\nCONSUMO kWh\nGERAC kWh\nTP\nTP\n3946\n2654\n4377\n2981\n1\n1\n431\n327\nRE-3413/2024 12/06/2025\n6927.A49C.31A7.BD68.072B.E4C2.E5EE.2D58\nCITIBANK\nLocal de Pagamento\nPAGAVEL NA REDE BANCARIA.\nVencimento\n20/06/2025\nBeneficiário \nCNPJ: 08.467.115/0001-00 COMPANHIA ESTADUAL DE DISTRIBUICAO DE ENERGIA ELETRICA\nAV CLOVIS PAIM GRIVOT, 11 - - HUMAITA - PORTO ALEGRE - RS - CEP: 90250-020\nAgência/Código Cedente\nData Documento\n04/06/2025\nNúmero de Referência\nFAT-01-202545894974536.58\nEspécie Documento Aceite\nN\nData Processamento\n04/06/2025\nNosso Número\n000057532421\nUso do Banco\nCLIENTE RCO\nCarteira\n1\nEspécie\nR$\nQuantidade Valor\n158,00\n(=) Valor do Documento\n158,00\n(-) Desconto/Abatimento\n(+) Mora/Multa\n(=) Valor Cobrado\n158,00\nInstruções\nPARA PAGAMENTOS APOS O VENCIMENTO. OS ENCARGOS (MULTA, JUROS E CORRECAO MONETARIA)\nSERAO COBRADOS NA PROXIMA FATURA.\nPagador\nEDUARDO CAMARA DE MATTOS CPF: 589.781.190-34\nAV NITEROI, 147 - - MEDIANEIRA\nCEP 90880-270 - PORTO ALEGRE - RS\nAutenticação Mecânica\nNÃO RECEBER - FATURA ARRECADADA\n74593.10046 25383.019004 00575.324215 1 11180000015800745-5\nDANFECEEEB (V1.00)\n\nSegunda Via\nSegunda Via\nSegunda Via\nEDUARDO CAMARA DE MATTOS\nAv Niteroi, 147\nMedianeira\n90880-270 - Porto Alegre - RS\nAbril/2025\n7,00\n3,00\n5,00\n13,00\n0,00\n0,00\n0,00\n301,02\nDANFECEEEB (V1.00)",
+          "version": "5.3.31"
+        }
+      }
+    ]
+  },
+  "versionId": "7c7be44d-b8e3-4516-be89-1cf56e6aace2",
+  "triggerCount": 1,
+  "tags": []
+}
