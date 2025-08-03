@@ -1,0 +1,228 @@
+{
+  "createdAt": "2025-07-29T13:55:14.793Z",
+  "updatedAt": "2025-08-03T23:08:30.773Z",
+  "id": "b9U1hIQcwSFVJJo0",
+  "name": "SigesWhatsApp",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsappSendMsg",
+        "options": {}
+      },
+      "id": "f29d0fed-9c66-46d8-a0f5-e5a7e7b0c751",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -656,
+        -96
+      ],
+      "webhookId": "89bb094d-322d-4aa1-9c53-94f38ab3798c"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "SIGES",
+        "remoteJid": "120363402818790181@g.us",
+        "messageText": "={{ $json.msg }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        16
+      ],
+      "id": "625184b1-58d3-4631-881d-5c8a31de0911",
+      "name": "Enviar texto",
+      "credentials": {
+        "evolutionApi": {
+          "id": "L9NGnOBfKW7Jkuq8",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "98ae3b5f-ad82-4a99-a8df-3e8fe25d11af",
+              "name": "msg",
+              "value": "={{ $json.body.msg }}",
+              "type": "string"
+            },
+            {
+              "id": "e6eda33e-35e1-452e-a52e-672fa49eb6cb",
+              "name": "imgUrl",
+              "value": "={{ $json.body.imgUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -480,
+        -96
+      ],
+      "id": "7368e5ce-965d-46ba-8f8c-821b53de251c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "operation": "send-image",
+        "instanceName": "SIGES",
+        "remoteJid": "120363402818790181@g.us",
+        "media": "={{ $('Edit Fields').item.json.imgUrl }}",
+        "caption": "={{ $('Edit Fields').item.json.msg }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        -176
+      ],
+      "id": "4f92c20b-2787-43e9-9fb2-e637c26a3d13",
+      "name": "Enviar imagem",
+      "credentials": {
+        "evolutionApi": {
+          "id": "L9NGnOBfKW7Jkuq8",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.imgUrl }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "a722d96c-d73d-4aa6-a107-f3d8b4ce9f07"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "4c1f4a72-4b93-4788-ade1-ee7de85cfbfa",
+                    "leftValue": "={{ $json.imgUrl }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "noImage"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -320,
+        -96
+      ],
+      "id": "6bcac03d-be2b-4067-af5c-8d619fd5e79a",
+      "name": "Switch"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar texto": {
+      "main": [
+        []
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Enviar imagem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "6def7508-85eb-41f1-a302-803c71bacacb",
+  "triggerCount": 1,
+  "tags": []
+}
