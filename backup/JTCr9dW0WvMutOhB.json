@@ -1,0 +1,73 @@
+{
+  "createdAt": "2025-07-14T02:18:04.966Z",
+  "updatedAt": "2025-07-14T11:05:51.723Z",
+  "id": "JTCr9dW0WvMutOhB",
+  "name": "My workflow",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cca14325-455b-46a1-b75b-750773d73fd0",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        220,
+        0
+      ],
+      "id": "4ad71177-56b2-4cd4-bc57-4b7f8cc59da3",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "Cv67OEhdjgRQx6wv",
+          "name": "Siges Postgres"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "0359c368-a412-428d-9f0d-14558a38724e",
+  "triggerCount": 0,
+  "tags": []
+}
