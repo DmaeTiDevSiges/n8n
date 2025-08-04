@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-08-02T01:04:29.814Z",
-  "updatedAt": "2025-08-03T23:29:36.072Z",
+  "updatedAt": "2025-08-03T23:38:45.668Z",
   "id": "3A3sUYztvtrjjJJV",
   "name": "backupGithub",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -15,7 +15,8 @@
         192
       ],
       "id": "c2d05c70-70f9-414c-b83e-9cb73ab644b1",
-      "name": "When clicking ‘Test workflow’"
+      "name": "When clicking ‘Test workflow’",
+      "disabled": true
     },
     {
       "parameters": {
@@ -420,8 +421,7 @@
         400
       ],
       "id": "97549fd9-96ed-47fd-bafe-4cb2ac3891e9",
-      "name": "Schedule Trigger",
-      "disabled": true
+      "name": "Schedule Trigger"
     },
     {
       "parameters": {
@@ -658,7 +658,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "471ca62b-50df-4665-bd25-5823a41f8c1b",
+  "versionId": "7934dea2-bd49-42cc-b96a-62870cacbee7",
   "triggerCount": 1,
   "tags": []
 }
