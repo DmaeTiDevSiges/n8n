@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-29T13:55:14.793Z",
-  "updatedAt": "2025-08-03T23:08:30.773Z",
+  "updatedAt": "2025-08-20T19:18:06.095Z",
   "id": "b9U1hIQcwSFVJJo0",
   "name": "SigesWhatsApp",
   "active": true,
@@ -26,7 +26,7 @@
       "parameters": {
         "resource": "messages-api",
         "instanceName": "SIGES",
-        "remoteJid": "120363402818790181@g.us",
+        "remoteJid": "120363402140206159@g.us",
         "messageText": "={{ $json.msg }}",
         "options_message": {}
       },
@@ -79,7 +79,7 @@
         "resource": "messages-api",
         "operation": "send-image",
         "instanceName": "SIGES",
-        "remoteJid": "120363402818790181@g.us",
+        "remoteJid": "120363402140206159@g.us",
         "media": "={{ $('Edit Fields').item.json.imgUrl }}",
         "caption": "={{ $('Edit Fields').item.json.msg }}",
         "options_message": {}
@@ -222,7 +222,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "6def7508-85eb-41f1-a302-803c71bacacb",
+  "versionId": "9126bb20-bb04-4305-8a09-5a4025e6398c",
   "triggerCount": 1,
   "tags": []
 }
