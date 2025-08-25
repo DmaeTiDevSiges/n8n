@@ -1,0 +1,192 @@
+{
+  "createdAt": "2025-08-24T12:31:50.829Z",
+  "updatedAt": "2025-08-24T13:41:41.758Z",
+  "id": "PD4JYm7wRsypmIDV",
+  "name": "SigesWhatsappUserNotification",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsappUserNotification",
+        "options": {}
+      },
+      "id": "170c16ec-2b10-4c08-a6b1-a1a2db81b75a",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -368,
+        -64
+      ],
+      "webhookId": "89bb094d-322d-4aa1-9c53-94f38ab3798c"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "SIGES",
+        "remoteJid": "={{ $json.number }}",
+        "messageText": "={{ $json.msg }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        288,
+        -112
+      ],
+      "id": "d665e788-eb5d-4163-afeb-e054b6d41171",
+      "name": "Enviar texto",
+      "credentials": {
+        "evolutionApi": {
+          "id": "L9NGnOBfKW7Jkuq8",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        112
+      ],
+      "id": "57b5c42d-97dc-4d36-b4a4-10942c9cc229",
+      "name": "When clicking ‘Execute workflow’",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b7ea371a-f73b-4b60-bfbc-b41fedef999f",
+              "name": "number",
+              "value": "={{ $json.body.record.user_to_whatsapp }}",
+              "type": "string"
+            },
+            {
+              "id": "e026bce8-1c29-4d47-aff0-8e59872ccf1c",
+              "name": "msg",
+              "value": "={{ $json.body.record.body }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        112
+      ],
+      "id": "04a50ca5-d361-4be6-809c-9e2b2963186c",
+      "name": "Edit Fields",
+      "alwaysOutputData": true
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Enviar texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "services-n8n-webhook.2unk5k.easypanel.host",
+            "user-agent": "pg_net/0.14.0",
+            "content-length": "585",
+            "accept": "*/*",
+            "content-type": "application/json",
+            "x-forwarded-for": "207.180.227.22",
+            "x-forwarded-host": "services-n8n-webhook.2unk5k.easypanel.host",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "071d2d1643f3",
+            "x-real-ip": "207.180.227.22",
+            "accept-encoding": "gzip"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "type": "INSERT",
+            "table": "users_notifications",
+            "record": {
+              "id": 33,
+              "body": "dasdasdasdasdasd",
+              "o_id": null,
+              "type": null,
+              "v_id": null,
+              "title": null,
+              "img_url": null,
+              "is_read": false,
+              "read_at": null,
+              "unit_id": null,
+              "token_fcm": null,
+              "company_id": null,
+              "created_at": "2025-08-24T13:39:18.915122",
+              "user_id_to": null,
+              "activity_id": null,
+              "page_target": null,
+              "user_id_from": null,
+              "version_mode": "live",
+              "img_file_name": null,
+              "img_file_path": null,
+              "user_to_whatsapp": "5551994080770@s.whatsapp.net",
+              "user_from_name_short": null
+            },
+            "schema": "public",
+            "old_record": null
+          },
+          "webhookUrl": "https://services-n8n-webhook.2unk5k.easypanel.host/webhook/whatsappUserNotification",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "704dd427-cbe0-4254-890d-75d95c871930",
+  "triggerCount": 1,
+  "tags": []
+}
