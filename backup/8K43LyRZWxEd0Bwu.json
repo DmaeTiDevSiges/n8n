@@ -1,8 +1,8 @@
 {
   "createdAt": "2025-08-25T17:45:23.933Z",
-  "updatedAt": "2025-08-25T21:00:39.653Z",
+  "updatedAt": "2025-08-25T21:33:50.964Z",
   "id": "8K43LyRZWxEd0Bwu",
-  "name": "Siges_Export_To_Excel",
+  "name": "SigesExportToExcel",
   "active": false,
   "isArchived": false,
   "nodes": [
@@ -40,7 +40,8 @@
       "parameters": {
         "operation": "xlsx",
         "options": {
-          "fileName": "=Unidade_{{ $json['Código Unidade'] }}_Ativos_{{ (new Date()).toISOString().replace(/[:.]/g,\"-\") }}.xlsx",
+          "compression": true,
+          "fileName": "=Unidade_{{ $json['Código Unidade'] }}_Ativos_{{ DateTime.now().toFormat('yyyy-MM-dd_HH-mm-ss') }}.xlsx",
           "headerRow": true,
           "sheetName": "Ativos"
         }
@@ -327,7 +328,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "c46b3d0c-e7f0-4231-8a77-40f0e0458a2d",
+  "versionId": "422c069d-11d9-4bb6-a82f-76d6c4a03bca",
   "triggerCount": 0,
   "tags": []
 }
