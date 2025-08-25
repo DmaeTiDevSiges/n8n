@@ -1,0 +1,89 @@
+{
+  "createdAt": "2025-08-24T12:31:50.769Z",
+  "updatedAt": "2025-08-24T12:31:50.769Z",
+  "id": "iGVRmtn4DhRVaIB3",
+  "name": "My workflow 6",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services-evolution.2unk5k.easypanel.host/message/sendText/Siges",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "66C95F1F1FA6-4CFF-9120-B72D40A708DB"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Webhook').item.json.body.record.user_to_whatsapp }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.body.record.body }}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "e4ff6a7e-11bd-4c17-8a57-44f8b988e093",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "userNotification",
+        "options": {}
+      },
+      "id": "170c16ec-2b10-4c08-a6b1-a1a2db81b75a",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "89bb094d-322d-4aa1-9c53-94f38ab3798c"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "f40d2ecc-84a7-41dc-b3ae-b7ca0facfc65",
+  "triggerCount": 0,
+  "tags": []
+}
