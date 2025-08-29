@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-08-25T17:45:23.933Z",
-  "updatedAt": "2025-08-25T21:33:50.964Z",
+  "updatedAt": "2025-08-28T21:53:02.857Z",
   "id": "8K43LyRZWxEd0Bwu",
   "name": "SigesExportToExcel",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -123,7 +123,8 @@
     },
     {
       "parameters": {
-        "path": "export_to_xlsx",
+        "httpMethod": "POST",
+        "path": "exportToExcel",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -141,7 +142,20 @@
       "parameters": {
         "respondWith": "binary",
         "responseDataSource": "set",
-        "options": {}
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Name",
+                "value": "Content-Disposition"
+              },
+              {
+                "name": "Value",
+                "value": "={{'attachment; filename=\"' + $binary.data.fileName + '\"'}}"
+              }
+            ]
+          }
+        }
       },
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
@@ -214,7 +228,7 @@
                 "conditions": [
                   {
                     "leftValue": "={{ $json.report_name }}",
-                    "rightValue": "unit_assets",
+                    "rightValue": "unit_assets_all",
                     "operator": {
                       "type": "string",
                       "operation": "equals"
@@ -225,7 +239,7 @@
                 "combinator": "and"
               },
               "renameOutput": true,
-              "outputKey": "unit_assets"
+              "outputKey": "unit_assets_all"
             }
           ]
         },
@@ -328,7 +342,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "422c069d-11d9-4bb6-a82f-76d6c4a03bca",
-  "triggerCount": 0,
+  "versionId": "9ec2f014-5ccc-4122-923c-ef65ba97d301",
+  "triggerCount": 1,
   "tags": []
 }
