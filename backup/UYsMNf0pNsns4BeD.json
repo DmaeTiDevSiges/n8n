@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-29T12:46:15.042Z",
-  "updatedAt": "2025-08-30T03:27:01.624Z",
+  "updatedAt": "2025-08-30T03:38:40.301Z",
   "id": "UYsMNf0pNsns4BeD",
   "name": "SigesExportToExcel",
   "active": true,
@@ -123,22 +123,6 @@
     },
     {
       "parameters": {
-        "path": "exportToExcel",
-        "responseMode": "lastNode",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
-      "position": [
-        -928,
-        -384
-      ],
-      "id": "3a11e6ef-f662-4a53-ab22-e354743d5e67",
-      "name": "Webhook",
-      "webhookId": "0f55e988-5286-4d7c-82f0-51ac13a09a63"
-    },
-    {
-      "parameters": {
         "respondWith": "json",
         "responseBody": "={\n    \"file_url\": {{ $json.file_url }},\n\"status\":{{ $json.status }}\n}",
         "options": {
@@ -197,8 +181,8 @@
             },
             {
               "id": "7561f957-4e5d-4ae9-9ace-1f164ff6b1b9",
-              "name": "file_url",
-              "value": "",
+              "name": "unit_id",
+              "value": "={{ $json.query.unit_id }}",
               "type": "string"
             }
           ]
@@ -284,6 +268,22 @@
       "id": "f0891e72-663d-432d-bed1-49c932c556da",
       "name": "Edit Fields3",
       "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "path": "exportToExcel",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -976,
+        -352
+      ],
+      "id": "8ef557ea-8733-4eab-ae5a-cf633bf361d1",
+      "name": "Webhook",
+      "webhookId": "a3f4d6ef-dbf1-4a7d-bbbc-52b9308f5fba"
     }
   ],
   "connections": {
@@ -314,17 +314,6 @@
         [
           {
             "node": "Edit Fields3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Webhook": {
-      "main": [
-        [
-          {
-            "node": "Code",
             "type": "main",
             "index": 0
           }
@@ -379,6 +368,17 @@
           }
         ]
       ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -389,7 +389,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "3648abcd-eaf6-4600-b4c2-41d19942ffa3",
+  "versionId": "c1dbec87-7023-4747-8110-a8641149d9dc",
   "triggerCount": 1,
   "tags": []
 }
