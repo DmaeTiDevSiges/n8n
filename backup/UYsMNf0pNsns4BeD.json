@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-29T12:46:15.042Z",
-  "updatedAt": "2025-08-30T02:56:38.042Z",
+  "updatedAt": "2025-08-30T03:27:01.624Z",
   "id": "UYsMNf0pNsns4BeD",
   "name": "SigesExportToExcel",
   "active": true,
@@ -257,7 +257,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const jwt = require('jsonwebtoken');\n\ntry {\n  // If data comes from input, use $json\n  const { report_name, n8n_url, n8n_jwt } = $json.query;\n\n  //return {\n  //  report_name,\n  //  n8n_url,\n  //  n8n_jwt\n  //};\n\n  if (!report_name) throw new Error('report_name é obrigatório');\n  if (!n8n_url) throw new Error('n8n_url é obrigatório');\n  if (!n8n_jwt) throw new Error('n8n_jwt é obrigatório');\n\n  const token = jwt.sign(\n    {\n      report_name: String(report_name),\n      n8n_url: String(n8n_url),\n      iat: Math.floor(Date.now() / 1000),\n      exp: Math.floor(Date.now() / 1000) + 1800 // 30 min\n    },\n    String(n8n_jwt),\n    { algorithm: 'HS256' }\n  );\n\n  return [{\n    json: {\n      file_url: `${n8n_url}/webhook/exportToExcel?token=${encodeURIComponent(token)}`,\n      status: 'success'\n    }\n  }];\n\n} catch (error) {\n  return [{\n    json: {\n      file_url: null,\n      error: true,\n      message: (error && error.message) || 'Erro ao gerar token',\n      status: 'error'\n    }\n  }];\n}\n\n"
+        "jsCode": "const jwt = require('jsonwebtoken');\n\ntry {\n  // If data comes from input, use $json\n  const { report_name, n8n_url, n8n_jwt, unit_id } = $json.query;\n\n  //return {\n  //  report_name,\n  //  n8n_url,\n  //  n8n_jwt\n  //};\n\n  if (!report_name) throw new Error('report_name é obrigatório');\n  if (!n8n_url) throw new Error('n8n_url é obrigatório');\n  if (!n8n_jwt) throw new Error('n8n_jwt é obrigatório');\n\n  const token = jwt.sign(\n    {\n      report_name: String(report_name),\n      n8n_url: String(n8n_url),\n      unit_id: String(unit_id),\n      iat: Math.floor(Date.now() / 1000),\n      exp: Math.floor(Date.now() / 1000) + 1800 // 30 min\n    },\n    String(n8n_jwt),\n    { algorithm: 'HS256' }\n  );\n\n  return [{\n    json: {\n      file_url: `${n8n_url}/webhook/exportToExcel?token=${encodeURIComponent(token)}`,\n      status: 'success'\n    }\n  }];\n\n} catch (error) {\n  return [{\n    json: {\n      file_url: null,\n      error: true,\n      message: (error && error.message) || 'Erro ao gerar token',\n      status: 'error'\n    }\n  }];\n}\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -389,7 +389,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "6abf9ab7-018b-41f8-9bce-83da0d6ef9ff",
+  "versionId": "3648abcd-eaf6-4600-b4c2-41d19942ffa3",
   "triggerCount": 1,
   "tags": []
 }
