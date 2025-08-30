@@ -1,10 +1,10 @@
 {
   "createdAt": "2025-08-25T17:45:23.933Z",
-  "updatedAt": "2025-08-28T21:53:02.857Z",
+  "updatedAt": "2025-08-29T14:46:41.974Z",
   "id": "8K43LyRZWxEd0Bwu",
   "name": "SigesExportToExcel",
-  "active": true,
-  "isArchived": false,
+  "active": false,
+  "isArchived": true,
   "nodes": [
     {
       "parameters": {
@@ -24,8 +24,8 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        32,
-        -160
+        -240,
+        -176
       ],
       "id": "fd9ad87e-7b6e-4374-aa0f-eaeb19767d22",
       "name": "Get many rows",
@@ -49,8 +49,8 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        320,
-        -160
+        48,
+        -176
       ],
       "id": "4ed50079-6eb9-4ca0-9be2-d37071fe1693",
       "name": "Convert to File"
@@ -114,8 +114,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        176,
-        -160
+        -96,
+        -176
       ],
       "id": "ab87cd9b-53d9-41a0-8396-09a2e9249e6f",
       "name": "Edit Fields",
@@ -131,8 +131,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -672,
-        -48
+        -880,
+        -304
       ],
       "id": "77016bf9-2e5b-4fa5-b83f-102a1618627c",
       "name": "Webhook",
@@ -160,8 +160,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        480,
-        -160
+        208,
+        -176
       ],
       "id": "ad547676-5bb2-479c-81d2-6bd873f4c908",
       "name": "Respond to Webhook",
@@ -184,8 +184,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -112,
-        -160
+        -384,
+        -176
       ],
       "id": "822a0ee1-2bd4-476a-9180-933546ebd11d",
       "name": "Edit Fields1"
@@ -199,6 +199,12 @@
               "name": "report_name",
               "value": "={{ $json.query.report_name }}",
               "type": "string"
+            },
+            {
+              "id": "58993443-c03a-4e7f-98d5-77e0797b63da",
+              "name": "n8n_url",
+              "value": "={{ $json.query.n8n_url }}",
+              "type": "string"
             }
           ]
         },
@@ -207,8 +213,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -512,
-        -48
+        -720,
+        -304
       ],
       "id": "d32b6cc9-eb9d-47eb-b026-262e0a1d0fd9",
       "name": "Edit Fields2"
@@ -248,8 +254,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -336,
-        -48
+        -576,
+        -304
       ],
       "id": "57c9da7f-4916-43d0-9b73-2bcfbde2c990",
       "name": "Switch"
@@ -332,6 +338,11 @@
           }
         ]
       ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        []
+      ]
     }
   },
   "settings": {
@@ -342,7 +353,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "9ec2f014-5ccc-4122-923c-ef65ba97d301",
+  "versionId": "0069bcc9-5fc0-4141-84e9-d2c232352724",
   "triggerCount": 1,
   "tags": []
 }
