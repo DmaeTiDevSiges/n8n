@@ -1,0 +1,176 @@
+{
+  "createdAt": "2025-08-30T12:32:30.538Z",
+  "updatedAt": "2025-08-30T14:30:53.776Z",
+  "id": "nJ9CnQFqPTQBYREV",
+  "name": "My workflow 7",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "exportToExcel",
+        "options": {}
+      },
+      "id": "3ee3387c-2a79-4c5f-970f-4f2a1c1554fb",
+      "name": "Export to Excel Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        160
+      ],
+      "webhookId": "118a5eca-84d2-418e-8803-9c973a75ad22"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract and validate parameters from query string\nconst queryParams = $input.first().json.query;\n\n// Validate only required parameter: report_name\nif (!queryParams.report_name) {\n  throw new Error('Missing required parameter: report_name');\n}\n\n// Set default values for optional parameters - filter only valid params\nconst unitId = queryParams.unit_id ? parseInt(queryParams.unit_id) : 0;\nconst n8nUrl = queryParams.n8n_url || 'http://localhost:5678';\n\n// Clean unit_code - only use if it's a simple alphanumeric value\nlet unitCode = null;\nif (queryParams.unit_code && typeof queryParams.unit_code === 'string') {\n  // Remove any unwanted parameters that might be concatenated\n  unitCode = queryParams.unit_code.split('&')[0].split('=')[0].replace(/[^a-zA-Z0-9_-]/g, '');\n  if (unitCode.length === 0 || unitCode.includes('n8n') || unitCode.includes('http')) {\n    unitCode = null;\n  }\n}\n\n// Validate n8n_url format if provided\nif (queryParams.n8n_url && !n8nUrl.startsWith('http://') && !n8nUrl.startsWith('https://')) {\n  throw new Error('n8n_url must be a valid URL starting with http:// or https://');\n}\n\n// Check if this is unit_assets_all report\nconst isUnitAssetsReport = queryParams.report_name === 'unit_assets_all';\n\n// Generate timestamp for filename\nconst now = new Date();\nconst year = now.getFullYear();\nconst month = String(now.getMonth() + 1).padStart(2, '0');\nconst day = String(now.getDate()).padStart(2, '0');\nconst hours = String(now.getHours()).padStart(2, '0');\nconst minutes = String(now.getMinutes()).padStart(2, '0');\nconst timestamp = `${year}${month}${day}_${hours}${minutes}`;\n\n// Generate dynamic filename based on report type\nlet filename;\nif (isUnitAssetsReport && unitCode) {\n  filename = `Siges_Unidade_${unitCode}_Ativos_todos_${timestamp}.xlsx`;\n} else if (isUnitAssetsReport) {\n  filename = `Siges_Unidade_${unitId || 'Unknown'}_Ativos_todos_${timestamp}.xlsx`;\n} else {\n  filename = `Siges_${unitId || 'All'}_${queryParams.report_name}_${timestamp}.xlsx`;\n}\n\nreturn {\n  report_name: queryParams.report_name,\n  unit_id: unitId,\n  unit_code: unitCode,\n  n8n_url: n8nUrl,\n  filename: filename,\n  timestamp: timestamp,\n  isUnitAssetsReport: isUnitAssetsReport\n};"
+      },
+      "id": "1e6ce33f-a4db-4be9-8107-1d48b5b506d9",
+      "name": "Process Parameters",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -384,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "v_assets",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "unit_id",
+              "condition": "eq",
+              "keyValue": "1176"
+            }
+          ]
+        }
+      },
+      "id": "8de1b88e-7f40-4345-9da4-bf495b317edf",
+      "name": "Supabase Query",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        160
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Convert query results to Excel format data\nconst items = $input.all();\n\nif (!items || items.length === 0) {\n  return [];\n}\n\n// Get the data from Supabase query\nconst data = items[0].json;\nconst filename = $('Process Parameters').first().json.filename;\n\n// Prepare data for Excel conversion\nlet excelData = [];\n\nif (Array.isArray(data)) {\n  excelData = data;\n} else if (data && typeof data === 'object') {\n  // If single object, wrap in array\n  excelData = [data];\n} else {\n  throw new Error('Invalid data format from Supabase query');\n}\n\n// Return formatted data with filename\nreturn {\n  data: excelData,\n  filename: filename,\n  headers: excelData.length > 0 ? Object.keys(excelData[0]) : []\n};"
+      },
+      "id": "2b4d687d-0062-43b2-9ec1-977021d81dfb",
+      "name": "Format Data for Excel",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Convert data to Excel and return binary data\nconst XLSX = require('xlsx');\nconst items = $input.first().json;\n\n// Create workbook\nconst workbook = XLSX.utils.book_new();\n\n// Create worksheet from data\nconst worksheet = XLSX.utils.json_to_sheet(items.data);\n\n// Add worksheet to workbook\nXLSX.utils.book_append_sheet(workbook, worksheet, 'Report');\n\n// Generate Excel buffer\nconst excelBuffer = XLSX.write(workbook, {\n  type: 'buffer',\n  bookType: 'xlsx'\n});\n\n// Convert to base64 for binary output\nconst base64Content = excelBuffer.toString('base64');\n\nreturn {\n  json: {\n    filename: items.filename,\n    mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',\n    size: excelBuffer.length\n  },\n  binary: {\n    data: {\n      data: base64Content,\n      mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',\n      fileName: items.filename,\n      fileExtension: 'xlsx'\n    }\n  }\n};"
+      },
+      "id": "52480338-addc-48fd-a192-770d492b83e9",
+      "name": "Convert to Excel",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "binary",
+        "options": {}
+      },
+      "id": "1697ddb6-380a-412d-87bf-f451a36b7fd9",
+      "name": "Send File Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        496,
+        160
+      ]
+    }
+  ],
+  "connections": {
+    "Export to Excel Webhook": {
+      "main": [
+        [
+          {
+            "node": "Process Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Parameters": {
+      "main": [
+        [
+          {
+            "node": "Supabase Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Query": {
+      "main": [
+        [
+          {
+            "node": "Format Data for Excel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data for Excel": {
+      "main": [
+        [
+          {
+            "node": "Convert to Excel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to Excel": {
+      "main": [
+        [
+          {
+            "node": "Send File Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "df109c4d-b356-4264-893e-1d479e7506f6",
+  "triggerCount": 2,
+  "tags": []
+}
