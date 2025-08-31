@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-08-29T12:46:15.042Z",
-  "updatedAt": "2025-08-30T03:38:40.301Z",
+  "updatedAt": "2025-08-31T02:54:19.512Z",
   "id": "UYsMNf0pNsns4BeD",
   "name": "SigesExportToExcel",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
@@ -16,7 +16,7 @@
             {
               "keyName": "unit_id",
               "condition": "eq",
-              "keyValue": "={{ $('Webhook').item.json.query.unit_id }}"
+              "keyValue": "={{ $('Webhook').item.json.body.unit_id }}"
             }
           ]
         }
@@ -24,7 +24,7 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -96,
+        -304,
         -384
       ],
       "id": "33c64584-7ca5-4cab-b735-c97a4f9947bf",
@@ -49,11 +49,12 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        224,
+        80,
         -384
       ],
       "id": "a6a62cce-2ac8-481c-9b4e-9a40a4fec501",
-      "name": "Convert to File"
+      "name": "Convert to File",
+      "alwaysOutputData": true
     },
     {
       "parameters": {
@@ -62,43 +63,43 @@
             {
               "id": "2550a352-3452-4056-b53e-6cd8e0a8ba2f",
               "name": "Código Unidade",
-              "value": "={{ $json.unit_code }}",
+              "value": "={{$json.unit_code}}",
               "type": "string"
             },
             {
               "id": "d3a294b0-5c3e-4183-9d15-cbcc535bba65",
               "name": "Unidade",
-              "value": "={{ $json.unit_description }}",
+              "value": "={{$json.unit_description}}",
               "type": "string"
             },
             {
               "id": "2116a1ba-478c-4dcf-b3c0-f1636cd17d20",
               "name": "Setores",
-              "value": "={{ $json.tag_description }}",
+              "value": "={{$json.tag_description}}",
               "type": "string"
             },
             {
               "id": "4c25a328-a5b4-4016-a21a-ab8970a45ba2",
               "name": "Posições",
-              "value": "={{ $json.tag_sub_description }}",
+              "value": "={{$json.tag_sub_description}}",
               "type": "string"
             },
             {
               "id": "aed533bc-38f3-4c2b-a102-ee0d37377a9f",
               "name": "Código",
-              "value": "={{ $json.code }}",
+              "value": "={{$json.code}}",
               "type": "string"
             },
             {
               "id": "b4aec39b-d522-4372-846f-051075df6e44",
               "name": "Descrição",
-              "value": "={{ $json.description }}",
+              "value": "={{$json.description}}",
               "type": "string"
             },
             {
               "id": "962df03f-cd8a-4555-8f06-5f010f669370",
               "name": "Situação",
-              "value": "={{ $json.status_description }}",
+              "value": "={{$json.status_description}}",
               "type": "string"
             },
             {
@@ -114,31 +115,12 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        64,
+        -96,
         -384
       ],
       "id": "92a67f71-20f5-4945-8e6d-8d86e3cd5529",
       "name": "Edit Fields",
       "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "respondWith": "json",
-        "responseBody": "={\n    \"file_url\": {{ $json.file_url }},\n\"status\":{{ $json.status }}\n}",
-        "options": {
-          "responseCode": 200
-        }
-      },
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.4,
-      "position": [
-        544,
-        -16
-      ],
-      "id": "9d997aba-8acd-4cb4-9280-7f6de783e1d9",
-      "name": "Respond to Webhook",
-      "alwaysOutputData": true,
-      "disabled": true
     },
     {
       "parameters": {
@@ -163,8 +145,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -256,
-        -384
+        -464,
+        -464
       ],
       "id": "fefde12b-d25b-4b39-8018-05407af245dc",
       "name": "Edit Fields1"
@@ -176,13 +158,13 @@
             {
               "id": "1e2fab34-e022-463c-8148-54ba54fefb4d",
               "name": "report_name",
-              "value": "={{ $json.query.report_name }}",
+              "value": "={{ $json.report_name }}",
               "type": "string"
             },
             {
               "id": "7561f957-4e5d-4ae9-9ace-1f164ff6b1b9",
               "name": "unit_id",
-              "value": "={{ $json.query.unit_id }}",
+              "value": "={{ $json.unit_id }}",
               "type": "string"
             }
           ]
@@ -192,7 +174,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -576,
+        -832,
         -384
       ],
       "id": "c7464323-ae21-4528-b238-d88488a5f0e5",
@@ -212,7 +194,7 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $('Webhook').item.json.query.report_name }}",
+                    "leftValue": "={{ $('Webhook').item.json.body.report_name }}",
                     "rightValue": "unit_assets_all",
                     "operator": {
                       "type": "string",
@@ -233,57 +215,55 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -416,
-        -384
+        -672,
+        -512
       ],
       "id": "f4c54d3a-e144-43b2-bc0d-34dc9bac783c",
       "name": "Switch"
     },
     {
       "parameters": {
-        "jsCode": "const jwt = require('jsonwebtoken');\n\ntry {\n  // If data comes from input, use $json\n  const { report_name, n8n_url, n8n_jwt, unit_id } = $json.query;\n\n  //return {\n  //  report_name,\n  //  n8n_url,\n  //  n8n_jwt\n  //};\n\n  if (!report_name) throw new Error('report_name é obrigatório');\n  if (!n8n_url) throw new Error('n8n_url é obrigatório');\n  if (!n8n_jwt) throw new Error('n8n_jwt é obrigatório');\n\n  const token = jwt.sign(\n    {\n      report_name: String(report_name),\n      n8n_url: String(n8n_url),\n      unit_id: String(unit_id),\n      iat: Math.floor(Date.now() / 1000),\n      exp: Math.floor(Date.now() / 1000) + 1800 // 30 min\n    },\n    String(n8n_jwt),\n    { algorithm: 'HS256' }\n  );\n\n  return [{\n    json: {\n      file_url: `${n8n_url}/webhook/exportToExcel?token=${encodeURIComponent(token)}`,\n      status: 'success'\n    }\n  }];\n\n} catch (error) {\n  return [{\n    json: {\n      file_url: null,\n      error: true,\n      message: (error && error.message) || 'Erro ao gerar token',\n      status: 'error'\n    }\n  }];\n}\n\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -752,
-        -384
-      ],
-      "id": "cf9230b1-da56-4297-8c27-3efdccdd379d",
-      "name": "Code",
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "mode": "raw",
-        "jsonOutput": "={\n    \"file_url\": \"{{ $('Code').item.json.file_url || '' }}\"\n}\n",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        384,
-        -384
-      ],
-      "id": "f0891e72-663d-432d-bed1-49c932c556da",
-      "name": "Edit Fields3",
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
+        "httpMethod": "POST",
         "path": "exportToExcel",
-        "responseMode": "lastNode",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -976,
-        -352
+        -1008,
+        -384
       ],
       "id": "8ef557ea-8733-4eab-ae5a-cf633bf361d1",
       "name": "Webhook",
       "webhookId": "a3f4d6ef-dbf1-4a7d-bbbc-52b9308f5fba"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Webhook').item.json.body.storage_url }}/{{ $('Webhook').item.json.body.storage_bucket }}/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "=Authorization ",
+              "value": "=Bearer {{ $('Webhook').item.json.body.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        256,
+        -384
+      ],
+      "id": "f46083f8-3681-4053-929a-addbe6bcf98a",
+      "name": "HTTP Request",
+      "alwaysOutputData": true
     }
   ],
   "connections": {
@@ -313,7 +293,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields3",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -353,27 +333,11 @@
         ]
       ]
     },
-    "Respond to Webhook": {
-      "main": [
-        []
-      ]
-    },
-    "Code": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Webhook": {
       "main": [
         [
           {
-            "node": "Code",
+            "node": "Edit Fields2",
             "type": "main",
             "index": 0
           }
@@ -389,7 +353,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "c1dbec87-7023-4747-8110-a8641149d9dc",
+  "versionId": "f8016748-6e37-4cee-ab90-a95341a0bf95",
   "triggerCount": 1,
   "tags": []
 }
