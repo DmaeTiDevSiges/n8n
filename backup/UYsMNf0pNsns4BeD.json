@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-08-29T12:46:15.042Z",
-  "updatedAt": "2025-08-31T02:54:19.512Z",
+  "updatedAt": "2025-08-31T04:28:54.513Z",
   "id": "UYsMNf0pNsns4BeD",
   "name": "SigesExportToExcel",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -11,6 +11,7 @@
         "operation": "getAll",
         "tableId": "v_assets",
         "returnAll": true,
+        "matchType": "allFilters",
         "filters": {
           "conditions": [
             {
@@ -25,7 +26,7 @@
       "typeVersion": 1,
       "position": [
         -304,
-        -384
+        -464
       ],
       "id": "33c64584-7ca5-4cab-b735-c97a4f9947bf",
       "name": "Get many rows",
@@ -129,13 +130,13 @@
             {
               "id": "fd813ca9-1f74-4b93-8aa9-d2555dfd4dd8",
               "name": "unit_id",
-              "value": "={{ $('Webhook').item.json.query.unit_id }}",
-              "type": "string"
+              "value": "={{ $('Webhook').item.json.body.unit_id }}",
+              "type": "number"
             },
             {
               "id": "42c04211-e008-41c5-a72a-d658ca24deac",
               "name": "report_name",
-              "value": "={{ $('Webhook').item.json.query.report_name }}",
+              "value": "={{ $('Webhook').item.json.body.report_name }}",
               "type": "string"
             }
           ]
@@ -158,14 +159,20 @@
             {
               "id": "1e2fab34-e022-463c-8148-54ba54fefb4d",
               "name": "report_name",
-              "value": "={{ $json.report_name }}",
+              "value": "={{ $json.body.report_name }}",
               "type": "string"
             },
             {
               "id": "7561f957-4e5d-4ae9-9ace-1f164ff6b1b9",
               "name": "unit_id",
-              "value": "={{ $json.unit_id }}",
-              "type": "string"
+              "value": "={{ $json.body.unit_id }}",
+              "type": "number"
+            },
+            {
+              "id": "369071e7-0d27-4e1d-8cdf-e2ba82eb2df1",
+              "name": "asset_tag_id",
+              "value": 0,
+              "type": "number"
             }
           ]
         },
@@ -207,6 +214,31 @@
               },
               "renameOutput": true,
               "outputKey": "unit_assets_all"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c1b25783-0f64-4a1f-ac4a-3e7700bf171f",
+                    "leftValue": "={{ $('Webhook').item.json.body.report_name }}",
+                    "rightValue": "unit_assets_tag",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "unit_assets_tag"
             }
           ]
         },
@@ -215,8 +247,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -672,
-        -512
+        -688,
+        -384
       ],
       "id": "f4c54d3a-e144-43b2-bc0d-34dc9bac783c",
       "name": "Switch"
@@ -224,7 +256,8 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "exportToExcel",
+        "path": "assetsExportToExcel",
+        "responseMode": "responseNode",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
@@ -240,13 +273,19 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('Webhook').item.json.body.storage_url }}/{{ $('Webhook').item.json.body.storage_bucket }}/",
+        "url": "={{ $('Webhook').item.json.body.storage_url }}/{{ $('Webhook').item.json.body.storage_bucket }}/temp/reports/{{ $binary.data.fileName }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "=Authorization ",
               "value": "=Bearer {{ $('Webhook').item.json.body.api_key }}"
+            },
+            {
+              "name": "apikey",
+              "value": "={{ $('Webhook').item.json.body.api_key }}"
             }
           ]
         },
@@ -263,7 +302,99 @@
       ],
       "id": "f46083f8-3681-4053-929a-addbe6bcf98a",
       "name": "HTTP Request",
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"fileUrl\": \"{{ $('Webhook').item.json.body.storage_url }}/{{ $json.Key }}\",\n\"filename\": \"{{ $('Convert to File').item.binary.data.fileName }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        256,
+        -544
+      ],
+      "id": "78ee7d55-2d6e-427c-b811-3176c51371ab",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fd813ca9-1f74-4b93-8aa9-d2555dfd4dd8",
+              "name": "unit_id",
+              "value": "={{ $('Webhook').item.json.body.unit_id }}",
+              "type": "string"
+            },
+            {
+              "id": "42c04211-e008-41c5-a72a-d658ca24deac",
+              "name": "report_name",
+              "value": "={{ $('Webhook').item.json.body.report_name }}",
+              "type": "string"
+            },
+            {
+              "id": "c46b855f-1917-47a0-b057-904c7c051452",
+              "name": "asset_tag_id",
+              "value": "={{ $('Webhook').item.json.body.asset_tag_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -464,
+        -288
+      ],
+      "id": "7261ac9b-97a9-464e-b740-048e93e8754a",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "v_assets",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "unit_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.unit_id }}"
+            },
+            {
+              "keyName": "tag_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.asset_tag_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        -288
+      ],
+      "id": "aba27671-b0fa-46c9-be65-0c1ebec557c5",
+      "name": "Get many rows1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
     }
   ],
   "connections": {
@@ -330,6 +461,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -338,6 +476,39 @@
         [
           {
             "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Get many rows1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -353,7 +524,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "f8016748-6e37-4cee-ab90-a95341a0bf95",
+  "versionId": "addec4af-c9c7-4ab0-a957-4ca915a21237",
   "triggerCount": 1,
   "tags": []
 }
