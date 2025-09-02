@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-29T12:46:15.042Z",
-  "updatedAt": "2025-08-31T04:28:54.513Z",
+  "updatedAt": "2025-09-01T16:54:28.719Z",
   "id": "UYsMNf0pNsns4BeD",
   "name": "SigesExportToExcel",
   "active": true,
@@ -8,41 +8,10 @@
   "nodes": [
     {
       "parameters": {
-        "operation": "getAll",
-        "tableId": "v_assets",
-        "returnAll": true,
-        "matchType": "allFilters",
-        "filters": {
-          "conditions": [
-            {
-              "keyName": "unit_id",
-              "condition": "eq",
-              "keyValue": "={{ $('Webhook').item.json.body.unit_id }}"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
-      "position": [
-        -304,
-        -464
-      ],
-      "id": "33c64584-7ca5-4cab-b735-c97a4f9947bf",
-      "name": "Get many rows",
-      "credentials": {
-        "supabaseApi": {
-          "id": "3e1v0m7ap64TE24A",
-          "name": "SIGES Supabase"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "xlsx",
         "options": {
           "compression": true,
-          "fileName": "=Unidade_{{ $json['Código Unidade'] }}_Ativos_{{ DateTime.now().toFormat('yyyy-MM-dd_HH-mm-ss') }}.xlsx",
+          "fileName": "=Unidade_{{ $('Get Unit').item.json.code }}_Ativos_{{ $('Get_Webhook_Parameters').item.json.report_name_additional }}_{{ DateTime.now().toFormat('yyyy-MM-dd_HH-mm-ss') }}.xlsx",
           "headerRow": true,
           "sheetName": "Ativos"
         }
@@ -50,8 +19,8 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        80,
-        -384
+        -176,
+        -192
       ],
       "id": "a6a62cce-2ac8-481c-9b4e-9a40a4fec501",
       "name": "Convert to File",
@@ -64,7 +33,7 @@
             {
               "id": "2550a352-3452-4056-b53e-6cd8e0a8ba2f",
               "name": "Código Unidade",
-              "value": "={{$json.unit_code}}",
+              "value": "={{ $('Get Unit').item.json.code }}",
               "type": "string"
             },
             {
@@ -116,8 +85,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -96,
-        -384
+        -368,
+        -320
       ],
       "id": "92a67f71-20f5-4945-8e6d-8d86e3cd5529",
       "name": "Edit Fields",
@@ -138,6 +107,12 @@
               "name": "report_name",
               "value": "={{ $('Webhook').item.json.body.report_name }}",
               "type": "string"
+            },
+            {
+              "id": "91eb06c0-72f1-437f-afbc-ddb7f558adfa",
+              "name": "filenameAdditional",
+              "value": "Todos",
+              "type": "string"
             }
           ]
         },
@@ -146,46 +121,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -464,
-        -464
+        -736,
+        -400
       ],
       "id": "fefde12b-d25b-4b39-8018-05407af245dc",
       "name": "Edit Fields1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "1e2fab34-e022-463c-8148-54ba54fefb4d",
-              "name": "report_name",
-              "value": "={{ $json.body.report_name }}",
-              "type": "string"
-            },
-            {
-              "id": "7561f957-4e5d-4ae9-9ace-1f164ff6b1b9",
-              "name": "unit_id",
-              "value": "={{ $json.body.unit_id }}",
-              "type": "number"
-            },
-            {
-              "id": "369071e7-0d27-4e1d-8cdf-e2ba82eb2df1",
-              "name": "asset_tag_id",
-              "value": 0,
-              "type": "number"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -832,
-        -384
-      ],
-      "id": "c7464323-ae21-4528-b238-d88488a5f0e5",
-      "name": "Edit Fields2"
     },
     {
       "parameters": {
@@ -239,6 +179,31 @@
               },
               "renameOutput": true,
               "outputKey": "unit_assets_tag"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "46e805d6-b51d-497f-b231-440cfabc6fd7",
+                    "leftValue": "={{ $('Webhook').item.json.body.report_name }}",
+                    "rightValue": "unit_assets_tag_available",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "unit_assets_tag_available"
             }
           ]
         },
@@ -247,8 +212,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -688,
-        -384
+        -1040,
+        -240
       ],
       "id": "f4c54d3a-e144-43b2-bc0d-34dc9bac783c",
       "name": "Switch"
@@ -263,52 +228,12 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -1008,
-        -384
+        -1824,
+        -240
       ],
       "id": "8ef557ea-8733-4eab-ae5a-cf633bf361d1",
       "name": "Webhook",
       "webhookId": "a3f4d6ef-dbf1-4a7d-bbbc-52b9308f5fba"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "={{ $('Webhook').item.json.body.storage_url }}/{{ $('Webhook').item.json.body.storage_bucket }}/temp/reports/{{ $binary.data.fileName }}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "supabaseApi",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "=Authorization ",
-              "value": "=Bearer {{ $('Webhook').item.json.body.api_key }}"
-            },
-            {
-              "name": "apikey",
-              "value": "={{ $('Webhook').item.json.body.api_key }}"
-            }
-          ]
-        },
-        "sendBody": true,
-        "contentType": "binaryData",
-        "inputDataFieldName": "=data",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        256,
-        -384
-      ],
-      "id": "f46083f8-3681-4053-929a-addbe6bcf98a",
-      "name": "HTTP Request",
-      "alwaysOutputData": true,
-      "credentials": {
-        "supabaseApi": {
-          "id": "3e1v0m7ap64TE24A",
-          "name": "SIGES Supabase"
-        }
-      }
     },
     {
       "parameters": {
@@ -319,8 +244,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        256,
-        -544
+        192,
+        -192
       ],
       "id": "78ee7d55-2d6e-427c-b811-3176c51371ab",
       "name": "Respond to Webhook"
@@ -346,6 +271,12 @@
               "name": "asset_tag_id",
               "value": "={{ $('Webhook').item.json.body.asset_tag_id }}",
               "type": "number"
+            },
+            {
+              "id": "cc6686f9-bfb9-4a4a-a382-ba9d24edde7a",
+              "name": "filenameAdditional",
+              "value": "Setor",
+              "type": "string"
             }
           ]
         },
@@ -354,11 +285,265 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -464,
-        -288
+        -736,
+        -224
       ],
       "id": "7261ac9b-97a9-464e-b740-048e93e8754a",
       "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fd813ca9-1f74-4b93-8aa9-d2555dfd4dd8",
+              "name": "unit_id",
+              "value": "={{ $('Webhook').item.json.body.unit_id }}",
+              "type": "string"
+            },
+            {
+              "id": "42c04211-e008-41c5-a72a-d658ca24deac",
+              "name": "report_name",
+              "value": "={{ $('Webhook').item.json.body.report_name }}",
+              "type": "string"
+            },
+            {
+              "id": "c46b855f-1917-47a0-b057-904c7c051452",
+              "name": "asset_tag_id",
+              "value": "={{ $('Webhook').item.json.body.asset_tag_id }}",
+              "type": "number"
+            },
+            {
+              "id": "98ed47aa-87bf-4f49-96f3-ec4e7ba330e0",
+              "name": "filenameAdditional",
+              "value": "Disponibilidade",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -736,
+        -48
+      ],
+      "id": "1349e64e-76c7-4ccd-b2a0-263934595272",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d3a294b0-5c3e-4183-9d15-cbcc535bba65",
+              "name": "Unidade",
+              "value": "={{$json.unit_description}}",
+              "type": "string"
+            },
+            {
+              "id": "2116a1ba-478c-4dcf-b3c0-f1636cd17d20",
+              "name": "Setores",
+              "value": "={{$json.tag_description}}",
+              "type": "string"
+            },
+            {
+              "id": "4c25a328-a5b4-4016-a21a-ab8970a45ba2",
+              "name": "Posições",
+              "value": "={{$json.tag_sub_description}}",
+              "type": "string"
+            },
+            {
+              "id": "ce4f00b1-8adb-429b-a453-94f8f9c3a39c",
+              "name": "Data ",
+              "value": "={{ DateTime.fromISO($json.status_at).toFormat('dd/MM/yyyy') }}",
+              "type": "string"
+            },
+            {
+              "id": "42ad0a30-7638-459f-a653-d307d470dce3",
+              "name": "Disponível",
+              "value": "={{$json.is_available}}",
+              "type": "string"
+            },
+            {
+              "id": "1c834813-7890-4a92-b387-f3a675e32570",
+              "name": "Anexo",
+              "value": "={{$json.file_path}}/{{$json.file_name}}",
+              "type": "string"
+            },
+            {
+              "id": "76705e59-97e1-49b0-a460-41743d1dcbf8",
+              "name": "Comentários",
+              "value": "={{$json.comments}}",
+              "type": "string"
+            },
+            {
+              "id": "3163e8e5-ba7d-487b-b62e-df58dad7e2f6",
+              "name": "Responsável",
+              "value": "={{$json.reported_user_name_short}}",
+              "type": "string"
+            },
+            {
+              "id": "1c051d1f-3224-4799-befd-8003c557f2e7",
+              "name": "Código Unidade",
+              "value": "={{ $('Get Unit').item.json.code }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -368,
+        -48
+      ],
+      "id": "78927ff4-2fa7-4f6f-9509-d7c61db698f0",
+      "name": "Edit Fields5",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "38dae9f9-12ca-481d-a9c3-351e0d3084af",
+              "leftValue": "={{ $json.unit_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1424,
+        -240
+      ],
+      "id": "5f531a0a-11c2-4a8e-a57a-83355b226b86",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1e2fab34-e022-463c-8148-54ba54fefb4d",
+              "name": "report_name",
+              "value": "={{ $json.body.report_name }}",
+              "type": "string"
+            },
+            {
+              "id": "7561f957-4e5d-4ae9-9ace-1f164ff6b1b9",
+              "name": "unit_id",
+              "value": "={{ $json.body.unit_id }}",
+              "type": "number"
+            },
+            {
+              "id": "369071e7-0d27-4e1d-8cdf-e2ba82eb2df1",
+              "name": "asset_tag_id",
+              "value": "={{ $json.body.asset_tag_id }}",
+              "type": "number"
+            },
+            {
+              "id": "47868e3a-ba66-4e39-a74a-66b9671523fb",
+              "name": "report_name_additional",
+              "value": "={{ $json.body.report_name_additional }}",
+              "type": "string"
+            },
+            {
+              "id": "bf32c3ca-0d85-4841-8851-a938b9a1f448",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1648,
+        -240
+      ],
+      "id": "c7464323-ae21-4528-b238-d88488a5f0e5",
+      "name": "Get_Webhook_Parameters"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "v_units",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.unit_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -1216,
+        -336
+      ],
+      "id": "a5dfbd2f-9868-42ae-a1ef-31bc7f6b21f1",
+      "name": "Get Unit",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "v_assets",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "unit_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Webhook').item.json.body.unit_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -400
+      ],
+      "id": "33c64584-7ca5-4cab-b735-c97a4f9947bf",
+      "name": "Get Unit Assets All",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
     },
     {
       "parameters": {
@@ -384,11 +569,74 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -304,
-        -288
+        -576,
+        -224
       ],
       "id": "aba27671-b0fa-46c9-be65-0c1ebec557c5",
-      "name": "Get many rows1",
+      "name": "Get Unit Assets Tag",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "v_assets_available",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "unit_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.unit_id }}"
+            },
+            {
+              "keyName": "asset_tag_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.asset_tag_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -48
+      ],
+      "id": "550e4e02-5938-43ad-879d-096a6b059d4c",
+      "name": "Get Unit Assets Tag Available",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Webhook').item.json.body.storage_url }}/{{ $('Webhook').item.json.body.storage_bucket }}/temp/reports/{{ $binary.data.fileName }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        -192
+      ],
+      "id": "f46083f8-3681-4053-929a-addbe6bcf98a",
+      "name": "HTTP SB Storage Upload",
+      "alwaysOutputData": true,
       "credentials": {
         "supabaseApi": {
           "id": "3e1v0m7ap64TE24A",
@@ -398,17 +646,6 @@
     }
   ],
   "connections": {
-    "Get many rows": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Edit Fields": {
       "main": [
         [
@@ -424,7 +661,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "HTTP SB Storage Upload",
             "type": "main",
             "index": 0
           }
@@ -435,18 +672,7 @@
       "main": [
         [
           {
-            "node": "Get many rows",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields2": {
-      "main": [
-        [
-          {
-            "node": "Switch",
+            "node": "Get Unit Assets All",
             "type": "main",
             "index": 0
           }
@@ -468,6 +694,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -475,18 +708,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "Respond to Webhook",
+            "node": "Get_Webhook_Parameters",
             "type": "main",
             "index": 0
           }
@@ -497,18 +719,113 @@
       "main": [
         [
           {
-            "node": "Get many rows1",
+            "node": "Get Unit Assets Tag",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Get many rows1": {
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Get Unit Assets Tag Available",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get Unit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Webhook_Parameters": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Unit": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Unit Assets All": {
       "main": [
         [
           {
             "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Unit Assets Tag": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Unit Assets Tag Available": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP SB Storage Upload": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
             "type": "main",
             "index": 0
           }
@@ -524,7 +841,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "addec4af-c9c7-4ab0-a957-4ca915a21237",
+  "versionId": "bd237bdf-ab80-414f-8b91-998f57361ac7",
   "triggerCount": 1,
   "tags": []
 }
