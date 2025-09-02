@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-29T12:46:15.042Z",
-  "updatedAt": "2025-09-01T16:54:28.719Z",
+  "updatedAt": "2025-09-02T21:09:17.647Z",
   "id": "UYsMNf0pNsns4BeD",
   "name": "SigesExportToExcel",
   "active": true,
@@ -221,7 +221,7 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "assetsExportToExcel",
+        "path": "exportToExcel",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -357,7 +357,7 @@
             {
               "id": "ce4f00b1-8adb-429b-a453-94f8f9c3a39c",
               "name": "Data ",
-              "value": "={{ DateTime.fromISO($json.status_at).toFormat('dd/MM/yyyy') }}",
+              "value": "={{ DateTime.fromISO($json.reported_at).toFormat('dd/MM/yyyy HH:mm:ss') }}",
               "type": "string"
             },
             {
@@ -369,7 +369,7 @@
             {
               "id": "1c834813-7890-4a92-b387-f3a675e32570",
               "name": "Anexo",
-              "value": "={{$json.file_path}}/{{$json.file_name}}",
+              "value": "={{ $('Get_Webhook_Parameters').item.json.storage_url_public }}/{{ $('Get_Webhook_Parameters').item.json.storage_bucket }}/{{$json.file_path}}/{{$json.file_name}}",
               "type": "string"
             },
             {
@@ -468,8 +468,14 @@
             },
             {
               "id": "bf32c3ca-0d85-4841-8851-a938b9a1f448",
-              "name": "",
-              "value": "",
+              "name": "storage_url_upload",
+              "value": "={{ $json.body.storage_url }}",
+              "type": "string"
+            },
+            {
+              "id": "848a0bf3-5d3a-405e-8104-34705494dd04",
+              "name": "storage_bucket",
+              "value": "={{ $json.body.storage_bucket }}",
               "type": "string"
             }
           ]
@@ -479,7 +485,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1648,
+        -1616,
         -240
       ],
       "id": "c7464323-ae21-4528-b238-d88488a5f0e5",
@@ -525,7 +531,7 @@
             {
               "keyName": "unit_id",
               "condition": "eq",
-              "keyValue": "={{ $('Webhook').item.json.body.unit_id }}"
+              "keyValue": "={{ $('Get_Webhook_Parameters').item.json.unit_id }}"
             }
           ]
         }
@@ -556,12 +562,12 @@
             {
               "keyName": "unit_id",
               "condition": "eq",
-              "keyValue": "={{ $json.unit_id }}"
+              "keyValue": "={{ $('Get_Webhook_Parameters').item.json.unit_id }}"
             },
             {
               "keyName": "tag_id",
               "condition": "eq",
-              "keyValue": "={{ $json.asset_tag_id }}"
+              "keyValue": "={{ $('Get_Webhook_Parameters').item.json.asset_tag_id }}"
             }
           ]
         }
@@ -592,12 +598,12 @@
             {
               "keyName": "unit_id",
               "condition": "eq",
-              "keyValue": "={{ $json.unit_id }}"
+              "keyValue": "={{ $('Get_Webhook_Parameters').item.json.unit_id }}"
             },
             {
               "keyName": "asset_tag_id",
               "condition": "eq",
-              "keyValue": "={{ $json.asset_tag_id }}"
+              "keyValue": "={{ $('Get_Webhook_Parameters').item.json.asset_tag_id }}"
             }
           ]
         }
@@ -620,7 +626,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('Webhook').item.json.body.storage_url }}/{{ $('Webhook').item.json.body.storage_bucket }}/temp/reports/{{ $binary.data.fileName }}",
+        "url": "={{ $('Get_Webhook_Parameters').item.json.storage_url_upload }}/{{ $('Get_Webhook_Parameters').item.json.storage_bucket }}/temp/reports/{{ $binary.data.fileName }}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "supabaseApi",
         "sendBody": true,
@@ -841,7 +847,16 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "bd237bdf-ab80-414f-8b91-998f57361ac7",
+  "versionId": "0e500806-2b25-4015-adf4-7b4e9764604c",
   "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-08-29T12:46:15.042Z",
+      "updatedAt": "2025-08-29T12:46:15.042Z",
+      "role": "workflow:owner",
+      "workflowId": "UYsMNf0pNsns4BeD",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
   "tags": []
 }
