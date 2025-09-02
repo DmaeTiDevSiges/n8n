@@ -1,10 +1,10 @@
 {
   "createdAt": "2025-08-02T01:34:45.251Z",
-  "updatedAt": "2025-08-02T12:06:12.442Z",
+  "updatedAt": "2025-09-02T15:40:24.805Z",
   "id": "a0uWC4BEm7wjdPjP",
   "name": "My workflow 4",
   "active": false,
-  "isArchived": false,
+  "isArchived": true,
   "nodes": [
     {
       "parameters": {},
@@ -220,7 +220,16 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "1f0d4c55-10e7-4080-a703-e99dbd0c989d",
+  "versionId": "aa3d5faa-e822-4ccf-b21d-1518b6186b47",
   "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-08-02T01:34:45.251Z",
+      "updatedAt": "2025-08-02T01:34:45.251Z",
+      "role": "workflow:owner",
+      "workflowId": "a0uWC4BEm7wjdPjP",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
   "tags": []
 }
