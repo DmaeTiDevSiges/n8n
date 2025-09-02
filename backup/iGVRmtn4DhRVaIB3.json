@@ -1,10 +1,10 @@
 {
   "createdAt": "2025-08-24T12:31:50.769Z",
-  "updatedAt": "2025-08-24T12:31:50.769Z",
+  "updatedAt": "2025-09-02T15:40:09.059Z",
   "id": "iGVRmtn4DhRVaIB3",
   "name": "My workflow 6",
   "active": false,
-  "isArchived": false,
+  "isArchived": true,
   "nodes": [
     {
       "parameters": {
@@ -83,7 +83,16 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "f40d2ecc-84a7-41dc-b3ae-b7ca0facfc65",
+  "versionId": "6c4ab915-bb0c-4bca-9131-929367a6a033",
   "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-08-24T12:31:50.769Z",
+      "updatedAt": "2025-08-24T12:31:50.769Z",
+      "role": "workflow:owner",
+      "workflowId": "iGVRmtn4DhRVaIB3",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
   "tags": []
 }
