@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-02T01:04:29.814Z",
-  "updatedAt": "2025-08-03T23:38:45.668Z",
+  "updatedAt": "2025-09-02T21:34:26.204Z",
   "id": "3A3sUYztvtrjjJJV",
   "name": "backupGithub",
   "active": true,
@@ -647,7 +647,9 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "3A3sUYztvtrjjJJV"
   },
   "staticData": {
     "node:Schedule Trigger": {
@@ -658,7 +660,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "7934dea2-bd49-42cc-b96a-62870cacbee7",
+  "versionId": "d46b5b6f-27a2-48bb-945e-912a07cbedb8",
   "triggerCount": 1,
   "shared": [
     {
