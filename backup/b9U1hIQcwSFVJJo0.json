@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-29T13:55:14.793Z",
-  "updatedAt": "2025-09-04T00:07:51.834Z",
+  "updatedAt": "2025-09-05T01:34:02.881Z",
   "id": "b9U1hIQcwSFVJJo0",
   "name": "SigesWhatsAppAssetsAvailable",
   "active": true,
@@ -33,8 +33,8 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        -208,
-        16
+        -336,
+        96
       ],
       "id": "625184b1-58d3-4631-881d-5c8a31de0911",
       "name": "Enviar texto",
@@ -237,7 +237,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "31d4814f-bf90-405b-9f3a-92284f9acb07",
+  "versionId": "5aca18fe-887c-47ad-b776-19d887794a82",
   "triggerCount": 1,
   "shared": [
     {
