@@ -1,0 +1,197 @@
+{
+  "createdAt": "2025-09-06T01:23:31.970Z",
+  "updatedAt": "2025-09-06T02:08:00.863Z",
+  "id": "vP2HRCy7CokZrhOY",
+  "name": "convertToThumbnail",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "convertToThumbnail",
+        "options": {}
+      },
+      "id": "4eca85bc-9970-45ad-90e4-2948bd9b378a",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "52a0017f-2a23-4bbb-a231-17c48fddd5ea"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.body.img_url }}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "25ed0e7d-5fbd-44b3-841a-edf7054fc21e",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        176,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "fileName": "original",
+        "options": {}
+      },
+      "id": "d6a43dbc-7ef8-4b9b-a2b2-98d606ea6e01",
+      "name": "Write File",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        320,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=convert /data/original -resize 200x200 /data/thumb_{{$json[\"img_url\"].split('/').pop()}}"
+      },
+      "id": "bcb3049b-f561-4c12-8175-0aa9c54d9423",
+      "name": "Convert Thumbnail",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        464,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "=/data/thumb_{{$json[\"img_url\"].split('/').pop()}}"
+      },
+      "id": "a0ca0ca7-b866-49fb-889b-74177cc0df2f",
+      "name": "Read Thumb",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        624,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$json[\"imageUrl\"].replace(/([^/]+$)/,'thumb_$1')}}",
+        "options": {}
+      },
+      "id": "50744d5a-de99-4de8-b716-6754e593ab6f",
+      "name": "Upload Thumb",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        832,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Get_Webhook_Parameters').item.json.storage_url_upload }}/{{ $('Get_Webhook_Parameters').item.json.storage_bucket }}/temp/reports/{{ $binary.data.fileName }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        832,
+        -224
+      ],
+      "id": "bf000359-9f53-43e0-9418-75288a5d9428",
+      "name": "HTTP SB Storage Upload",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "Write File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write File": {
+      "main": [
+        [
+          {
+            "node": "Convert Thumbnail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Thumbnail": {
+      "main": [
+        [
+          {
+            "node": "Read Thumb",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Thumb": {
+      "main": [
+        [
+          {
+            "node": "Upload Thumb",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "9372fa08-7042-41a0-9495-b6383764cf43",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-06T01:23:31.970Z",
+      "updatedAt": "2025-09-06T01:23:31.970Z",
+      "role": "workflow:owner",
+      "workflowId": "vP2HRCy7CokZrhOY",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
