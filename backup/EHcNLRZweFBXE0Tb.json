@@ -1,0 +1,137 @@
+{
+  "createdAt": "2025-09-06T03:21:36.635Z",
+  "updatedAt": "2025-09-06T04:51:40.808Z",
+  "id": "EHcNLRZweFBXE0Tb",
+  "name": "convertToThumbnail",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "url": "={{ $json.body.storage_url_public }}/{{ $json.body.storage_bucket }}/{{ $json.body.img_path }}/{{ $json.body.img_name }}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "b2d697ae-c6c4-440c-bfab-d3e05ea32189",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        192,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "convertToThumbnail",
+        "options": {}
+      },
+      "id": "401fa09a-06fa-42c8-90fc-5b9afea25362",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "3ac73b27-b23a-422c-8c56-f6561c34e330"
+    },
+    {
+      "parameters": {
+        "operation": "resize",
+        "width": 250,
+        "height": 250,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        368,
+        0
+      ],
+      "id": "caca590d-3aa2-45cd-b212-4d7d23384cef",
+      "name": "Edit Image"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.body.storage_url_upload }}/{{ $json.body.storage_bucket }}/{{ $json.body.img_path }}/thumb_{{ $json.body.img_name }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        544,
+        0
+      ],
+      "id": "3b9e68c3-999b-4728-98f0-095fdf9b32fc",
+      "name": "HTTP SB Storage Upload",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "Edit Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image": {
+      "main": [
+        [
+          {
+            "node": "HTTP SB Storage Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "b1dbf87b-a331-4cb5-9cd0-ea0b6605bb3c",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-09-06T03:21:36.635Z",
+      "updatedAt": "2025-09-06T03:21:36.635Z",
+      "role": "workflow:owner",
+      "workflowId": "EHcNLRZweFBXE0Tb",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
