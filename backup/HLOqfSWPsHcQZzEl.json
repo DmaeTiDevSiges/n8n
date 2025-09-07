@@ -1,0 +1,87 @@
+{
+  "createdAt": "2025-09-06T16:31:29.724Z",
+  "updatedAt": "2025-09-06T16:31:29.724Z",
+  "id": "HLOqfSWPsHcQZzEl",
+  "name": "My workflow 8",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "c308e0c6-bbf4-4164-af86-1f7d13234a43"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fe0290a4-e998-4667-b733-6be70fcb05bc",
+      "name": "MCP Server Trigger",
+      "webhookId": "c308e0c6-bbf4-4164-af86-1f7d13234a43"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "v_orders_visits_assets",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "code",
+              "condition": "eq",
+              "keyValue": "21943"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        96,
+        208
+      ],
+      "id": "5cad9703-c223-46c5-85c9-74857a992b2e",
+      "name": "Get many rows in Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Get many rows in Supabase": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "8b813ce8-484d-46f8-838e-105b54e0d77e",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-06T16:31:29.724Z",
+      "updatedAt": "2025-09-06T16:31:29.724Z",
+      "role": "workflow:owner",
+      "workflowId": "HLOqfSWPsHcQZzEl",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
