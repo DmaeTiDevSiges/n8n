@@ -1,0 +1,232 @@
+{
+  "createdAt": "2025-09-07T17:23:03.481Z",
+  "updatedAt": "2025-09-08T01:23:34.284Z",
+  "id": "8iAJoQKc1I5FeusC",
+  "name": "Siges_AI_Units",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "prompt"
+            },
+            {
+              "name": "sessionId"
+            },
+            {
+              "name": "unitDescription"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a1b588c4-4d0d-40e6-ba3c-042896c7b43d",
+      "name": "When Executed by Another Workflow",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt }}",
+        "options": {
+          "systemMessage": "Voce é um assistente para responder duvidas e questionamentos de usuarios sobre informaçoes das unidades operacionais baseada na consulta de uma view do banco de dados. O usuario deve obrigatoriamente informar o código ou a descrição parcial da unidade."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "2e6413be-7bf6-49e4-9d1a-bf7ad46dd6a4",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "58eefd28-5f3f-4616-a9b7-fe5d811e3f2f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "dbYHbMOI7Nqe9oyt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8a7dd96a-bfb0-4bdb-bed2-95412e0c9629",
+              "name": "answer",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        0
+      ],
+      "id": "c97dc39c-651e-428a-8795-b8a77620039c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        208
+      ],
+      "id": "e43b1044-c1fa-4ae2-94ad-cdf8d63f37ad",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Obter apenas informações relativas a uma unidade em especifica ou resumos de unidades agrupadas por determinados caracteristicas campos. \nPara informações específica de uma unidade, o usuário deve informar obrigatoriamente informar o codigo da unidade (unitCode) ou a descrição parcial (unitDescription). \nPara informações gerais das unidades, o usuario deve informar quais caracteristicas das unidades a agrupar.",
+        "operation": "getAll",
+        "tableId": "v_units",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "description_full",
+              "condition": "like",
+              "keyValue": "={{ $fromAI('conditions0_Field_Value', `descrição parcial da unidade`, 'string') }}"
+            },
+            {
+              "keyName": "code",
+              "condition": "eq",
+              "keyValue": "={{ $fromAI('conditions1_Field_Value', `código da unidade`, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        368,
+        208
+      ],
+      "id": "c55ac17b-925e-40ee-9344-3006ea2f5f7a",
+      "name": "Get many rows in Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows in Supabase": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "prompt": "ola",
+          "sessionId": "yuytuytyu",
+          "unitDescription": "3012"
+        }
+      }
+    ]
+  },
+  "versionId": "66cd2333-9148-43be-873c-2cfb81ef9895",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-07T17:23:03.481Z",
+      "updatedAt": "2025-09-07T17:23:03.481Z",
+      "role": "workflow:owner",
+      "workflowId": "8iAJoQKc1I5FeusC",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
