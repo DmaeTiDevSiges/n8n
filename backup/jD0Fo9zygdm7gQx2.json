@@ -1,0 +1,233 @@
+{
+  "createdAt": "2025-09-07T15:35:46.815Z",
+  "updatedAt": "2025-09-07T17:38:38.378Z",
+  "id": "jD0Fo9zygdm7gQx2",
+  "name": "Siges_AI_Units_Available_Rate",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "prompt"
+            },
+            {
+              "name": "sessionId"
+            },
+            {
+              "name": "unitCode"
+            },
+            {
+              "name": "assetTagDescription"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "609be247-2058-4b2f-85a4-ec00a5fe6abb",
+      "name": "When Executed by Another Workflow",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt }}",
+        "options": {
+          "systemMessage": "Voce é um assistente para responder duvidas e questionamentos de usuarios sobre a disponibilidade de ativos de uma determinada unidade operacional baseada na consulta de uma view do banco de dados."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "f3fdb6c9-b05a-49cb-9cf5-65e950417bea",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "008d9c01-394f-4687-a5b9-24860b2e8ca3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "dbYHbMOI7Nqe9oyt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8a7dd96a-bfb0-4bdb-bed2-95412e0c9629",
+              "name": "answer",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        0
+      ],
+      "id": "4ed40f1f-7abb-4b96-8d7f-751e1e2286a3",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        208
+      ],
+      "id": "39ec9412-7c64-4048-82c2-f226416c0799",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "O campo total_last_asset_available_rate representa a disponilididade dos ativos instalados por Setor da Unidade operacional. Este valor é representado em percentual.",
+        "operation": "get",
+        "tableId": "v_units_assets_tags_available_rate",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "asset_tag_description",
+              "keyValue": "={{ $fromAI('assetTagDescription', ``, 'string').toUpperCase() }}"
+            },
+            {
+              "keyName": "unit_code",
+              "keyValue": "={{ $fromAI('unitCode', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        416,
+        208
+      ],
+      "id": "26aa05d7-8b34-4cbd-8510-f3198b4d81fe",
+      "name": "Get a row in Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row in Supabase": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "prompt": "qual a disponibilade da unidade 3012 do setor de Bombeamento ?",
+          "sessionId": "51994080770",
+          "unitCode": "3012",
+          "assetTagDescription": "bombeamento"
+        }
+      }
+    ]
+  },
+  "versionId": "581a41c6-48e0-4a67-b9d2-23db09911c48",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-07T15:35:46.815Z",
+      "updatedAt": "2025-09-07T15:35:46.815Z",
+      "role": "workflow:owner",
+      "workflowId": "jD0Fo9zygdm7gQx2",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
