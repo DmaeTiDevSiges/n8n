@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-29T13:55:14.793Z",
-  "updatedAt": "2025-09-06T03:31:39.242Z",
+  "updatedAt": "2025-09-09T20:42:40.183Z",
   "id": "b9U1hIQcwSFVJJo0",
   "name": "SigesWhatsAppAssetsAvailable",
   "active": true,
@@ -26,7 +26,7 @@
       "parameters": {
         "resource": "messages-api",
         "instanceName": "SIGES",
-        "remoteJid": "120363402818790181@g.us",
+        "remoteJid": "120363402140206159@g.us",
         "messageText": "={{ $json.msg }}",
         "options_message": {}
       },
@@ -79,7 +79,7 @@
         "resource": "messages-api",
         "operation": "send-image",
         "instanceName": "SIGES",
-        "remoteJid": "120363402818790181@g.us",
+        "remoteJid": "120363402140206159@g.us",
         "media": "={{ $('Edit Fields').item.json.imgUrl }}",
         "caption": "={{ $('Edit Fields').item.json.msg }}",
         "options_message": {}
@@ -173,7 +173,7 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -880,
+        -928,
         -256
       ],
       "typeVersion": 1,
@@ -237,7 +237,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "9b0daad5-7d74-49a4-8802-b8668f93dad0",
+  "versionId": "f4d1c359-a76a-4ed0-b9ee-40aa38c90dba",
   "triggerCount": 1,
   "shared": [
     {
