@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-14T00:35:31.378Z",
-  "updatedAt": "2025-07-14T01:37:37.732Z",
+  "updatedAt": "2025-09-18T12:27:21.085Z",
   "id": "OOfxC9jjuvbSnnxA",
   "name": "ExtractPDF",
   "active": false,
@@ -40,7 +40,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        220,
+        224,
         0
       ],
       "id": "ae6efd3c-62a2-42db-bb04-2a9c8b6cf26b",
@@ -56,7 +56,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        440,
+        448,
         0
       ],
       "id": "0830a4b3-fd45-4293-a715-ebd441e6f594",
@@ -64,13 +64,13 @@
     },
     {
       "parameters": {
-        "jsonSchemaExample": "[\n\t{\n\t\t\"Número da UC\": 40899446,\n\t\t\"Conta mês\": \"06/2025\",\n\t\t\"Vencimento\": \"20/06/2025\",\n\t\t\"Total a pagar\": \"R$158,00\",\n\t\t\"Leitura Anterior\": \"03/05/2025\",\n\t\t\"Leitura Atual\": \"03/06/2025\",\n\t\t\"No de Dias\": 31,\n\t\t\"Próxima Leitura\": \"04/07/2025\",\n\t\t\"Serviços\": [\n\t\t\t{\n\t\t\t\t\"Itens da Fatura\": \"CONSUMO TUSD\",\n\t\t\t\t\"Unid.\": \"KWh\",\n\t\t\t\t\"Quant.\": 431,\n\t\t\t\t\"Preço unit (R$) com tributos\": \"0,541233\",\n\t\t\t\t\"Valor (R$)\": \"235,51\",\n\t\t\t\t\"PIS/COFINS\": \"12,36\",\n\t\t\t\t\"Base Calc. ICMS (R$)\": \"233,51\",\n\t\t\t\t\"Alíquota. ICMS (R$)\": \"17%\",\n\t\t\t\t\"ICMS\": \"39,70\",\n\t\t\t\t\"Tarifa unit. (R$)\": \"0,233\"\n\t\t\t}\n\t\t]\n\t\t\t\n\n\t}\n]\n"
+        "jsonSchemaExample": "[\n\t{\n\t\t\"Número da UC\": 40899446,\n\t\t\"Conta mês\": \"06/2025\",\n\t\t\"Vencimento\": \"20/06/2025\",\n\t\t\"Total a pagar\": \"R$158,00\",\n\t\t\"Leitura Anterior\": \"03/05/2025\",\n\t\t\"Leitura Atual\": \"03/06/2025\",\n\t\t\"No de Dias\": 31,\n\t\t\"Próxima Leitura\": \"04/07/2025\",\n\t\t\"Serviços\": [\n\t\t\t{\n\t\t\t\t\"Itens da Fatura\": \"CONSUMO TUSD\",\n\t\t\t\t\"Unid.\": \"KWh\",\n\t\t\t\t\"Quant.\": 431,\n\t\t\t\t\"Preço unit (R$) com tributos\": 54,\n\t\t\t\t\"Valor (R$)\": 235,\n\t\t\t\t\"PIS/COFINS\": 12,\n\t\t\t\t\"Base Calc. ICMS (R$)\": 233,\n\t\t\t\t\"Alíquota. ICMS (R$)\": \"17%\",\n\t\t\t\t\"ICMS\": 39,\n\t\t\t\t\"Tarifa unit. (R$)\": 233\n\t\t\t}\n\t\t]\n\t\t\t\n\n\t}\n]\n"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
         640,
-        180
+        192
       ],
       "id": "df0f6462-473a-4775-9eee-d68b899647cc",
       "name": "Structured Output Parser"
@@ -97,7 +97,7 @@
       "typeVersion": 1,
       "position": [
         400,
-        180
+        192
       ],
       "id": "79de5546-fbcd-4c0a-9cd8-98d8ec6ff9a7",
       "name": "Google Gemini Chat Model",
@@ -115,7 +115,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1020,
+        1024,
         0
       ],
       "id": "fb60db55-b4a7-4a61-8ff0-22fe089eef92",
@@ -127,8 +127,8 @@
       "name": "Replace Me",
       "typeVersion": 1,
       "position": [
-        1260,
-        100
+        1264,
+        112
       ],
       "id": "f7a16b6f-b6a2-4de3-8891-9153d6325036"
     }
@@ -255,7 +255,7 @@
       }
     ]
   },
-  "versionId": "7c7be44d-b8e3-4516-be89-1cf56e6aace2",
+  "versionId": "63d75890-0dd1-40c7-8f44-0502f9da8b8f",
   "triggerCount": 1,
   "shared": [
     {
