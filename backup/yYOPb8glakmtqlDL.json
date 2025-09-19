@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-11T20:54:59.451Z",
-  "updatedAt": "2025-09-11T21:40:47.383Z",
+  "updatedAt": "2025-09-18T12:13:38.785Z",
   "id": "yYOPb8glakmtqlDL",
   "name": "ExtractPDFPowerInvoice",
   "active": false,
@@ -77,13 +77,14 @@
     },
     {
       "parameters": {
+        "modelName": "models/gemini-2.0-flash",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        400,
-        192
+        368,
+        224
       ],
       "id": "d12862dc-010f-49fd-8715-3589cda55c55",
       "name": "Google Gemini Chat Model",
@@ -169,6 +170,25 @@
       ],
       "id": "30eb7fb4-dba1-4c34-8df0-ff42c8043ec4",
       "name": "Split Out Grandezas"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        224,
+        208
+      ],
+      "id": "64686849-2385-4f8a-aaca-0d7584252956",
+      "name": "DeepSeek Chat Model",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "fZwdiNZoyeoycsdq",
+          "name": "DeepSeek account"
+        }
+      }
     }
   ],
   "connections": {
@@ -299,6 +319,11 @@
           }
         ]
       ]
+    },
+    "DeepSeek Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
     }
   },
   "settings": {
@@ -309,7 +334,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "3155cbd4-ce0b-4ed8-9f17-d57ada5a7a80",
+  "versionId": "c3a08d1f-3446-40c9-8c86-6fce1b3e5e7c",
   "triggerCount": 1,
   "shared": [
     {
