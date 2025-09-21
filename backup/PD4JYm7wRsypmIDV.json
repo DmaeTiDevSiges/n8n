@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-24T12:31:50.829Z",
-  "updatedAt": "2025-09-06T03:31:34.673Z",
+  "updatedAt": "2025-09-21T02:21:05.307Z",
   "id": "PD4JYm7wRsypmIDV",
   "name": "SigesWhatsappUserNotification",
   "active": true,
@@ -186,7 +186,7 @@
       }
     ]
   },
-  "versionId": "704dd427-cbe0-4254-890d-75d95c871930",
+  "versionId": "472db176-1cc6-40b5-b1ae-418010f77e55",
   "triggerCount": 1,
   "shared": [
     {
