@@ -1,0 +1,923 @@
+{
+  "createdAt": "2025-09-22T13:17:38.249Z",
+  "updatedAt": "2025-09-22T13:17:38.249Z",
+  "id": "rjXJgVfbtfUatJll",
+  "name": "My workflow 9",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "93296fd3-2dfb-4b6e-9d8a-944838a1517f",
+              "name": "file_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "81b98d63-cf55-4844-8661-1ca713c2d3a7",
+              "name": "file_type",
+              "value": "={{ $json.mimeType }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -928,
+        128
+      ],
+      "id": "ee0afa35-e61a-417a-99b1-ff3eb256baf0",
+      "name": "Edit Fields",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Edit Fields').item.json.file_id }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "text/plain",
+              "drawingsToFormat": "image/png"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -560,
+        112
+      ],
+      "id": "5f526158-af13-4887-964f-c2321fd01d9b",
+      "name": "Google Drive",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        0,
+        352
+      ],
+      "id": "340024ff-739b-4365-b11d-ed771d213c6f",
+      "name": "Extract from File",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        512,
+        80
+      ],
+      "id": "ec2c767e-7daa-4e60-8209-e553ccc2dbed",
+      "name": "Supabase Vector Store",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.data || $json.text || $json.concatenated_data }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "file_id",
+                "value": "={{ $('Edit Fields').item.json.file_id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        688,
+        320
+      ],
+      "id": "f6464fb6-3fc5-4b0e-90f9-6f121049facb",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        768,
+        528
+      ],
+      "id": "1752594d-b5aa-42db-9595-c19bb0975ee5",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "tableId": "documents",
+        "filterType": "string",
+        "filterString": "=metadata->>file_id=like.*{{ $json.file_id }}*"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        112
+      ],
+      "id": "57fe26fe-7fc6-4fb5-af7a-04d87093b491",
+      "name": "Supabase",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "=Você é um assistente especializado em analisar relatórios de atividades de uma empresa na área de manutenção industrial.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -368,
+        592
+      ],
+      "id": "88c8a5b4-223f-4571-b65c-69f75b22772d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1376,
+        688
+      ],
+      "id": "6c11249b-230a-45fe-951e-1777f1bc60a9",
+      "name": "When chat message received",
+      "webhookId": "ac796740-cf29-4be9-a516-5f31546acbdb"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        800
+      ],
+      "id": "ede3018a-233b-456a-b931-6df51bf40a08",
+      "name": "Postgres Chat Memory"
+    },
+    {
+      "parameters": {
+        "name": "documents",
+        "description": "=Você é um assistente especializado em analisar detalhadamente relatórios de atividades.\nOs relatórios já foram carregados e estão disponíveis na tabela vetorial documents do Supabase. \n\n### Suas tarefas são:\n1. Usar o RAG para buscar informações nos documentos carregados.\n2. Extrair informações detalhadas sobre os serviços de manutenção realizados, com base nos relatórios disponíveis. \n\n### Siga estas instruções:\n1.\tIdentifique nos relatorios de atendimentos as seguintes informações:\n1.1\tDados de Solicitação:\n1.1.1\tIdentificação da Ordem de Serviço ou OS;\n1.1.2\tPrioridade;\n1.1.3\tData solicitação;\n1.1.4\tUnidade;\n1.1.5\tSetor;\n1.1.6\tServiços a serem executados.\n\n1.2\tDados do Atendimento:\n1.2.1\tEmpresa responsável;\n1.2.2\tContrato;\n1.2.3\tData (inicio e fim);\n1.2.4\tEquipe;\n1.2.5\tSituação OS;\n1.2.6\tMotivo;\n1.2.7\tCausa;\n1.2.8\tObservações.\n\n1.3\tCusto geral (material, serviços e transporte);\n\n1.4\tDados das Atividades realizadas por Ativo:\n1.4.1\tDescrição do Ativo;\n1.4.2\tCodigo do Ativo;\n1.4.3\tDados de localização (Antes e depois do atendimento):\n1.4.3.1\tUnidade;\n1.4.3.2\tSetor;\n1.4.3.3\tPosição;\n1.4.3.4\tSituação;\n1.4.3.5\tData situação.\n1.4.3.6\tComentários;\nObservações: \nCasos os dados de localização antes e depois sejam diferentes, significa que houve uma movimentação de ativo.\n1.4.4\tIntervenções realizadas;\n1.4.5\tCusto por atividade (valores de materiais, serviços e transporte);\nObservações: \nA soma dos custos das atividades deverá ser o custo total do relatorio de atividades;\n1.5\tDados de processamento das informações (reportada, Revisada, Rejeitada e Arquivada):\n1.5.1\tData;\n1.5.2\tResponsável.\n\n### OBSERVAÇÔES\nA depender do questionamento do usuário poderá ser necessário agrupar informações de mais de um relatorio de atividades como por exemplo:\n\t\"Quais os serviços realizados no equipamento de código 1234 ?\"\n\"Quantos atentimentos houveram numa determinada Unidade ?\"\n\"Quais os custos de manutenção de OS eletricas preventivas da unidade XYZ ?\"\n\nCaso não encontre informações: \n- Informe que nao foram encontrados dados atualizados.\n",
+        "topK": 12
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        800
+      ],
+      "id": "cd201c75-f537-455d-912c-5932b761eb6e",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        1024
+      ],
+      "id": "7835732e-0da5-452d-b270-42755fbcf36f",
+      "name": "Supabase Vector Store1"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1JL6rgjzk4idjQg_NMh02NmvYlQO-GkxA",
+          "mode": "list",
+          "cachedResultName": "knowledge_base",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1JL6rgjzk4idjQg_NMh02NmvYlQO-GkxA"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1168,
+        48
+      ],
+      "id": "571922e9-e9b4-4804-bf26-4920c8fa2d3b",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "BiC9ZI1GHJNbQwMF",
+          "name": "Google Drive Account ECM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1JL6rgjzk4idjQg_NMh02NmvYlQO-GkxA",
+          "mode": "list",
+          "cachedResultName": "knowledge_base",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1JL6rgjzk4idjQg_NMh02NmvYlQO-GkxA"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1168,
+        240
+      ],
+      "id": "7b48f400-6780-496b-9217-d7e052642de1",
+      "name": "Google Drive Trigger1"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "799c70ae-3da0-475b-9759-d1954a4d8c88",
+      "name": "Extract from File1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Edit Fields').item.json.file_type }}",
+                    "rightValue": "application/pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "47c68362-267e-404f-bba6-e7c5f816cd31",
+                    "leftValue": "={{ $('Edit Fields').item.json.file_type }}",
+                    "rightValue": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "593fb2c9-4763-4fec-8e9e-718f3399bea7",
+                    "leftValue": "={{ $('Edit Fields').item.json.file_type }}",
+                    "rightValue": "application/vnd.google-apps.document",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 2,
+          "allMatchingOutputs": false
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -384,
+        144
+      ],
+      "id": "5abfe69a-5efc-4e50-abee-65036065be3d",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        160
+      ],
+      "id": "fc951076-d8f0-4791-8065-92fdb9be3444",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1,
+      "position": [
+        144,
+        160
+      ],
+      "id": "96027987-3c06-4531-bb57-937d238c9bc5",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        304
+      ],
+      "id": "996e3e34-8d86-449b-95b0-b6dfef726f15",
+      "name": "Embeddings OpenAI"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        784
+      ],
+      "id": "6528823b-0d3f-45d4-a013-6294db2d242a",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        224,
+        1024
+      ],
+      "id": "d3cbbdfb-b5bb-4087-9759-b1a542180550",
+      "name": "OpenAI Chat Model1"
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -176,
+        1248
+      ],
+      "id": "4bf032d4-ad71-45a8-ab43-e48bad6c3694",
+      "name": "Embeddings OpenAI1"
+    },
+    {
+      "parameters": {
+        "name": "servicesReports",
+        "description": "Busca de informações baseados nos relatorios de atendimentos.",
+        "topK": 12
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        960
+      ],
+      "id": "0608e424-489f-4a7a-b441-f10b9fe68c5a",
+      "name": "Vector Store Tool"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -960,
+        752
+      ],
+      "id": "c08391cb-5f6e-4dc2-83f4-d650bf7700e4",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "options": {
+          "responseFormat": "text",
+          "topP": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -1024,
+        928
+      ],
+      "id": "d08f227a-72eb-4294-8063-ca4c6de550b0",
+      "name": "OpenAI Chat Model2"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -896,
+        928
+      ],
+      "id": "0b958bb7-31f3-40da-a2ee-48a5fa279235",
+      "name": "Postgres Chat Memory1"
+    },
+    {
+      "parameters": {
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        -976,
+        1120
+      ],
+      "id": "e60290a9-6614-4f5a-8e63-cfdb7219220c",
+      "name": "Supabase Vector Store2"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {
+          "responseFormat": "text"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        1184
+      ],
+      "id": "f638a816-535e-4729-92f4-998a301c5291",
+      "name": "OpenAI Chat Model3"
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {
+          "dimensions": 3072
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -960,
+        1280
+      ],
+      "id": "37d66ee8-fc51-4023-b4c0-8c995b56e772",
+      "name": "Embeddings OpenAI2"
+    }
+  ],
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store2": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store2",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "cff483d1-6445-42f3-ac8e-da53d51382a9",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-22T13:17:38.249Z",
+      "updatedAt": "2025-09-22T13:17:38.249Z",
+      "role": "workflow:owner",
+      "workflowId": "rjXJgVfbtfUatJll",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
