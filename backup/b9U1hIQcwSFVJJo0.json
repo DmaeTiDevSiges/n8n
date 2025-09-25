@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-29T13:55:14.793Z",
-  "updatedAt": "2025-09-23T17:09:40.903Z",
+  "updatedAt": "2025-09-24T17:28:31.927Z",
   "id": "b9U1hIQcwSFVJJo0",
   "name": "SigesWhatsAppAssetsAvailable",
   "active": true,
@@ -150,7 +150,7 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -928,
+        -1056,
         -256
       ],
       "typeVersion": 1,
@@ -232,7 +232,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "51e94d62-fd5c-4b66-8f74-0027eb4fdf79",
+  "versionId": "9bfaa551-bf8c-4396-9a96-162d07523d26",
   "triggerCount": 1,
   "shared": [
     {
