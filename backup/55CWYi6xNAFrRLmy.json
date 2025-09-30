@@ -1,0 +1,102 @@
+{
+  "createdAt": "2025-09-30T00:39:54.321Z",
+  "updatedAt": "2025-09-30T00:49:19.305Z",
+  "id": "55CWYi6xNAFrRLmy",
+  "name": "My workflow 10",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://automacao-evo.n4rbtj.easypanel.host/message/sendText/Siges",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "30008E12C798-44DC-8B15-1067C2B6D79B"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Webhook').item.json.body.record.user_to_whatsapp }}"
+            },
+            {
+              "name": "textMessage",
+              "value": "{\n  \"text\": \"={{ $json.body.record.body }}\"\n}"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "9856fec8-2501-4c13-b9c2-6386c3d242fb",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sendMsg",
+        "options": {}
+      },
+      "id": "ffc8923c-b634-411a-be2c-6446dfded921",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        80,
+        160
+      ],
+      "webhookId": "89bb094d-322d-4aa1-9c53-94f38ab3798c"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "f1bb47bb-f375-42bb-9cb6-e1be8f1991a9",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-30T00:39:54.321Z",
+      "updatedAt": "2025-09-30T00:39:54.321Z",
+      "role": "workflow:owner",
+      "workflowId": "55CWYi6xNAFrRLmy",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
