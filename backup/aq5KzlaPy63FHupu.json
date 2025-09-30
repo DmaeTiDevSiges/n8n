@@ -1,0 +1,247 @@
+{
+  "createdAt": "2025-09-29T18:37:42.884Z",
+  "updatedAt": "2025-09-29T19:01:08.342Z",
+  "id": "aq5KzlaPy63FHupu",
+  "name": "SigesWhatsAppAssetsAvailableOriginal",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "acb60432-aa94-4941-90f9-59a08fc3935f",
+        "options": {}
+      },
+      "id": "e4649632-3921-47fe-a073-99014720c94e",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -848,
+        0
+      ],
+      "webhookId": "acb60432-aa94-4941-90f9-59a08fc3935f"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "98ae3b5f-ad82-4a99-a8df-3e8fe25d11af",
+              "name": "msg",
+              "value": "={{ $json.body.msg }}",
+              "type": "string"
+            },
+            {
+              "id": "e6eda33e-35e1-452e-a52e-672fa49eb6cb",
+              "name": "imgUrl",
+              "value": "={{ $json.body.imgUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -672,
+        0
+      ],
+      "id": "5738badd-7f6d-4b01-973c-ff10e38276f4",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "operation": "send-image",
+        "instanceName": "SIGES",
+        "remoteJid": "120363402140206159@g.us",
+        "media": "={{ $('Edit Fields').item.json.imgUrl }}",
+        "caption": "={{ $('Edit Fields').item.json.msg }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -96
+      ],
+      "id": "c43f3c61-73ef-40f5-99f0-81904efed826",
+      "name": "Enviar imagem",
+      "credentials": {
+        "evolutionApi": {
+          "id": "L9NGnOBfKW7Jkuq8",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.imgUrl }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "a722d96c-d73d-4aa6-a107-f3d8b4ce9f07"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "4c1f4a72-4b93-4788-ade1-ee7de85cfbfa",
+                    "leftValue": "={{ $json.imgUrl }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "noImage"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -528,
+        0
+      ],
+      "id": "8343b2d1-992a-44e7-a7c3-47f788c482da",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "content": "## Whatsapp Group Ids ##\nDPCCDU Operação EBAP's\n120363402140206159@g.us\n\nSiges Avisos Temporários\n120363402818790181@g.us\n",
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1056,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "d151bbea-000c-4e20-a75e-d6da8ea1608e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "SIGES",
+        "remoteJid": "120363402140206159@g.us",
+        "messageText": "={{ $('Edit Fields').item.json.msg }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        96
+      ],
+      "id": "62cfa97e-0ed1-45a7-b154-cc01c4958ec9",
+      "name": "Enviar texto",
+      "credentials": {
+        "evolutionApi": {
+          "id": "L9NGnOBfKW7Jkuq8",
+          "name": "Evolution account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Enviar imagem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "29511f32-904d-4ad9-994b-9d3f64d48c94",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-09-29T18:37:42.884Z",
+      "updatedAt": "2025-09-29T18:37:42.884Z",
+      "role": "workflow:owner",
+      "workflowId": "aq5KzlaPy63FHupu",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
