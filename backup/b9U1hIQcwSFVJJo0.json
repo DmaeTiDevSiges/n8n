@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-29T13:55:14.793Z",
-  "updatedAt": "2025-09-24T17:28:31.927Z",
+  "updatedAt": "2025-09-30T01:30:45.300Z",
   "id": "b9U1hIQcwSFVJJo0",
   "name": "SigesWhatsAppAssetsAvailable",
   "active": true,
@@ -17,8 +17,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -848,
-        0
+        -1072,
+        160
       ],
       "webhookId": "89bb094d-322d-4aa1-9c53-94f38ab3798c"
     },
@@ -29,13 +29,13 @@
             {
               "id": "98ae3b5f-ad82-4a99-a8df-3e8fe25d11af",
               "name": "msg",
-              "value": "={{ $json.body.msg }}",
+              "value": "={{ $('Webhook').item.json.body.msg }}",
               "type": "string"
             },
             {
               "id": "e6eda33e-35e1-452e-a52e-672fa49eb6cb",
               "name": "imgUrl",
-              "value": "={{ $json.body.imgUrl }}",
+              "value": "={{ $('Webhook').item.json.body.imgUrl }}",
               "type": "string"
             }
           ]
@@ -45,27 +45,28 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -672,
-        0
+        -400,
+        -16
       ],
       "id": "7368e5ce-965d-46ba-8f8c-821b53de251c",
-      "name": "Edit Fields"
+      "name": "Edit Fields",
+      "alwaysOutputData": true
     },
     {
       "parameters": {
         "resource": "messages-api",
         "operation": "send-image",
         "instanceName": "SIGES",
-        "remoteJid": "120363402140206159@g.us",
-        "media": "={{ $('Edit Fields').item.json.imgUrl }}",
-        "caption": "={{ $('Edit Fields').item.json.msg }}",
+        "remoteJid": "120363402818790181@g.us",
+        "media": "={{ $json.imgUrl }}",
+        "caption": "={{ $json.msg }}",
         "options_message": {}
       },
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        -320,
-        -96
+        48,
+        -112
       ],
       "id": "4f92c20b-2787-43e9-9fb2-e637c26a3d13",
       "name": "Enviar imagem",
@@ -137,8 +138,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -528,
-        0
+        -176,
+        -16
       ],
       "id": "6bcac03d-be2b-4067-af5c-8d619fd5e79a",
       "name": "Switch"
@@ -160,25 +161,112 @@
     {
       "parameters": {
         "resource": "messages-api",
-        "instanceName": "SIGES",
-        "remoteJid": "120363402140206159@g.us",
-        "messageText": "={{ $('Edit Fields').item.json.msg }}",
+        "instanceName": "=SIGES",
+        "remoteJid": "=120363402818790181@g.us",
+        "messageText": "={{ $json.msg }}",
         "options_message": {}
       },
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        -320,
-        96
+        48,
+        80
       ],
       "id": "625184b1-58d3-4631-881d-5c8a31de0911",
       "name": "Enviar texto",
+      "retryOnFail": true,
       "credentials": {
         "evolutionApi": {
           "id": "L9NGnOBfKW7Jkuq8",
           "name": "Evolution account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "instance-connect",
+        "instanceName": "SIGES"
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        160
+      ],
+      "id": "74e3b310-a270-4e41-a5a0-6e5c6ed03907",
+      "name": "Conectar instancia",
+      "credentials": {
+        "evolutionApi": {
+          "id": "L9NGnOBfKW7Jkuq8",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fc493a77-e944-4dcd-bbc3-887af1104091",
+              "leftValue": "={{ $json.data.instance.state }}",
+              "rightValue": "open",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -624,
+        80
+      ],
+      "id": "99596935-dd22-4a77-a269-b75cf5188dd4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "restart-instance",
+        "instanceName": "SIGES"
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        256
+      ],
+      "id": "3f0aab46-b253-43d3-961a-87751d7274f0",
+      "name": "Reiniciar instancia",
+      "credentials": {
+        "evolutionApi": {
+          "id": "L9NGnOBfKW7Jkuq8",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        176
+      ],
+      "id": "ca74c39a-137a-4073-ac6c-81ce65aa0225",
+      "name": "Wait",
+      "webhookId": "af646b4d-6fb8-481f-b638-78500db9bbb3"
     }
   ],
   "connections": {
@@ -186,7 +274,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Conectar instancia",
             "type": "main",
             "index": 0
           }
@@ -221,6 +309,57 @@
           }
         ]
       ]
+    },
+    "Conectar instancia": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reiniciar instancia": {
+      "main": [
+        [
+          {
+            "node": "Conectar instancia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Reiniciar instancia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -231,8 +370,36 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "9bfaa551-bf8c-4396-9a96-162d07523d26",
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "services-n8n-editor.2unk5k.easypanel.host",
+            "user-agent": "Dart/3.8 (dart:io)",
+            "content-length": "159",
+            "accept-encoding": "gzip",
+            "content-type": "application/json; charset=utf-8",
+            "x-forwarded-for": "181.216.144.11",
+            "x-forwarded-host": "services-n8n-editor.2unk5k.easypanel.host",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "46bd6351a544",
+            "x-real-ip": "181.216.144.11"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "msg": "INDISPONIBILIDADE:\n333 - EBAT SAO MANOEL\nBOMBEAMENTO / GMB 02\nMotor: alto ruido.\nDESCONSIDERAR\nMattos em 29/09/2025 15:56 h",
+            "imgUrl": ""
+          },
+          "webhookUrl": "https://services-n8n-webhook.2unk5k.easypanel.host/webhook/whatsappSendMsg",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "7e182f09-aaa2-4823-9b2a-8172d6d6c7d8",
   "triggerCount": 1,
   "shared": [
     {
