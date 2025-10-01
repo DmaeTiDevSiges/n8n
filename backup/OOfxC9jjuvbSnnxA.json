@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-14T00:35:31.378Z",
-  "updatedAt": "2025-09-18T12:27:21.085Z",
+  "updatedAt": "2025-09-30T18:42:07.699Z",
   "id": "OOfxC9jjuvbSnnxA",
   "name": "ExtractPDF",
   "active": false,
@@ -25,7 +25,7 @@
       "typeVersion": 2.2,
       "position": [
         0,
-        0
+        32
       ],
       "id": "8a3db364-c274-43dc-a839-8ac867006de3",
       "name": "On form submission",
@@ -41,7 +41,7 @@
       "typeVersion": 1,
       "position": [
         224,
-        0
+        32
       ],
       "id": "ae6efd3c-62a2-42db-bb04-2a9c8b6cf26b",
       "name": "Extract from File"
@@ -57,54 +57,380 @@
       "typeVersion": 1.7,
       "position": [
         448,
-        0
+        32
       ],
       "id": "0830a4b3-fd45-4293-a715-ebd441e6f594",
       "name": "Basic LLM Chain"
     },
     {
       "parameters": {
-        "jsonSchemaExample": "[\n\t{\n\t\t\"Número da UC\": 40899446,\n\t\t\"Conta mês\": \"06/2025\",\n\t\t\"Vencimento\": \"20/06/2025\",\n\t\t\"Total a pagar\": \"R$158,00\",\n\t\t\"Leitura Anterior\": \"03/05/2025\",\n\t\t\"Leitura Atual\": \"03/06/2025\",\n\t\t\"No de Dias\": 31,\n\t\t\"Próxima Leitura\": \"04/07/2025\",\n\t\t\"Serviços\": [\n\t\t\t{\n\t\t\t\t\"Itens da Fatura\": \"CONSUMO TUSD\",\n\t\t\t\t\"Unid.\": \"KWh\",\n\t\t\t\t\"Quant.\": 431,\n\t\t\t\t\"Preço unit (R$) com tributos\": 54,\n\t\t\t\t\"Valor (R$)\": 235,\n\t\t\t\t\"PIS/COFINS\": 12,\n\t\t\t\t\"Base Calc. ICMS (R$)\": 233,\n\t\t\t\t\"Alíquota. ICMS (R$)\": \"17%\",\n\t\t\t\t\"ICMS\": 39,\n\t\t\t\t\"Tarifa unit. (R$)\": 233\n\t\t\t}\n\t\t]\n\t\t\t\n\n\t}\n]\n"
+        "jsonSchemaExample": "[\n\t{\n\t\t\"Número da UC\": 40899446,\n\t\t\"Conta mês\": \"06/2025\",\n\t\t\"Vencimento\": \"20/06/2025\",\n\t\t\"Total a pagar\": \"R$158,00\",\n\t\t\"Leitura Anterior\": \"03/05/2025\",\n\t\t\"Leitura Atual\": \"03/06/2025\",\n\t\t\"No de Dias\": 31,\n\t\t\"Próxima Leitura\": \"04/07/2025\",\n\t\t\"Servicos\": [\n\t\t\t{\n\t\t\t\t\"Itens da Fatura\": \"CONSUMO TUSD\",\n\t\t\t\t\"Unid.\": \"KWh\",\n\t\t\t\t\"Quant.\": 431,\n\t\t\t\t\"Preço unit (R$) com tributos\": 541233,\n\t\t\t\t\"Valor (R$)\": 235,\n\t\t\t\t\"PIS/COFINS\": 12,\n\t\t\t\t\"Base Calc. ICMS (R$)\": 233,\n\t\t\t\t\"Alíquota. ICMS (R$)\": \"17%\",\n\t\t\t\t\"ICMS\": 39,\n\t\t\t\t\"Tarifa unit. (R$)\": 233\n\t\t\t}\n\t\t],\n      \"Grandezas\": [\n\t\t\t{\n\t\t\t\t\"Medidor\": 23131,\n                \"Grandezas\": \"CONSUMO kWh\",\n                \"Postos horários\": \"TP\",\n\t\t\t\t\"Leitura Anterior\": 1000,\n\t\t\t\t\"Leitura Atual\": 1431,\n\t\t\t\t\"Const Medidor\": 1,\n\t\t\t\t\"Consumo kWh\": 2351\n\t\t\t}\n\t\t],\n      \"Tributos\": [\n        {\n            \"Tributo\": \"ICMS\",\n          \"Base (R$)\": 122,\n          \"Aliquota (%)\": \"12%\",\n          \"Valor (R$)\": 12\n        }\n      ]\n\n\t}\n]"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        640,
-        192
+        584,
+        256
       ],
       "id": "df0f6462-473a-4775-9eee-d68b899647cc",
       "name": "Structured Output Parser"
     },
     {
       "parameters": {
-        "fieldToSplitOut": "output[0]['Serviços']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1024,
+        -160
+      ],
+      "id": "fb60db55-b4a7-4a61-8ff0-22fe089eef92",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        -64
+      ],
+      "id": "f7a16b6f-b6a2-4de3-8891-9153d6325036"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE",
+          "mode": "list",
+          "cachedResultName": "Geracao",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 142539991,
+          "mode": "list",
+          "cachedResultName": "Resumos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit#gid=142539991"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Número da UC": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
+            "Conta mês": "={{ $('Basic LLM Chain').item.json.output[0]['Conta mês'] }}",
+            "Vencimento": "={{ $('Basic LLM Chain').item.json.output[0].Vencimento }}",
+            "Total a pagar": "={{ $('Basic LLM Chain').item.json.output[0]['Total a pagar'] }}",
+            "Data Leitura Anterior": "="
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nota Fiscal",
+              "displayName": "Nota Fiscal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Parceiro de Negócio",
+              "displayName": "Parceiro de Negócio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Número da UC",
+              "displayName": "Número da UC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Conta mês",
+              "displayName": "Conta mês",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Vencimento",
+              "displayName": "Vencimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total a pagar",
+              "displayName": "Total a pagar",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data Leitura Anterior",
+              "displayName": "Data Leitura Anterior",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data Leitura Atual",
+              "displayName": "Data Leitura Atual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "No.de Dias",
+              "displayName": "No.de Dias",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data Próxima Leitura",
+              "displayName": "Data Próxima Leitura",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        800,
+        -352
+      ],
+      "id": "68c39521-8116-4c53-9b70-bcac1b496337",
+      "name": "Append row in Resumos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FzBftf4jZzuSfzZZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output[0]['Servicos']",
         "options": {}
       },
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
         800,
-        0
+        -160
       ],
       "id": "07480c15-3fe1-4b1a-b9f8-c4bc1c73734a",
-      "name": "Split Out"
+      "name": "Split Out Servicos"
     },
     {
       "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE",
+          "mode": "list",
+          "cachedResultName": "Geracao",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 849809564,
+          "mode": "list",
+          "cachedResultName": "Itens de fatura",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit#gid=849809564"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Número da UC": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
+            "Conta mês": "={{ $('Basic LLM Chain').item.json.output[0]['Conta mês'] }}",
+            "Vencimento": "={{ $('Basic LLM Chain').item.json.output[0].Vencimento }}",
+            "Item": "={{ $json['Itens da Fatura'] }}",
+            "Unid": "={{ $json['Unid.'] }}",
+            "Qte": "={{ $json['Quant.'] }}",
+            "Preço unit (R$) com tributos": "={{ $json['Preço unit (R$) com tributos'] }}",
+            "Valor (R$)": "={{ $json['Valor (R$)'] }}",
+            "PIS/COFINS": "={{ $json['PIS/COFINS'] }}",
+            "Base Calc. ICMS (R$)": "={{ $json.ICMS }}",
+            "ICMS": "={{ $json.ICMS }}",
+            "Tarifa unit (R$)": "={{ $json['Tarifa unit. (R$)'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nota Fiscal",
+              "displayName": "Nota Fiscal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Parceiro de Negócio",
+              "displayName": "Parceiro de Negócio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Número da UC",
+              "displayName": "Número da UC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Conta mês",
+              "displayName": "Conta mês",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Vencimento",
+              "displayName": "Vencimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Item",
+              "displayName": "Item",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Unid",
+              "displayName": "Unid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Qte",
+              "displayName": "Qte",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Preço unit (R$) com tributos",
+              "displayName": "Preço unit (R$) com tributos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Valor (R$)",
+              "displayName": "Valor (R$)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PIS/COFINS",
+              "displayName": "PIS/COFINS",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Base Calc. ICMS (R$)",
+              "displayName": "Base Calc. ICMS (R$)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ICMS",
+              "displayName": "ICMS",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tarifa unit (R$)",
+              "displayName": "Tarifa unit (R$)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
       "position": [
-        400,
-        192
+        1248,
+        -256
       ],
-      "id": "79de5546-fbcd-4c0a-9cd8-98d8ec6ff9a7",
-      "name": "Google Gemini Chat Model",
+      "id": "50d24d30-9563-4247-a36a-1e889fe670e1",
+      "name": "Append row in Itens de Fatura",
       "credentials": {
-        "googlePalmApi": {
-          "id": "dbYHbMOI7Nqe9oyt",
-          "name": "Google Gemini(PaLM) Api account"
+        "googleSheetsOAuth2Api": {
+          "id": "FzBftf4jZzuSfzZZ",
+          "name": "Google Sheets account"
         }
       }
     },
@@ -116,21 +442,399 @@
       "typeVersion": 3,
       "position": [
         1024,
-        0
+        224
       ],
-      "id": "fb60db55-b4a7-4a61-8ff0-22fe089eef92",
-      "name": "Loop Over Items"
+      "id": "6c8fcf26-fa5a-4492-b3e8-da07d09e4150",
+      "name": "Loop Over Items1"
     },
     {
       "parameters": {},
       "type": "n8n-nodes-base.noOp",
-      "name": "Replace Me",
+      "name": "Replace Me1",
       "typeVersion": 1,
       "position": [
-        1264,
-        112
+        1248,
+        320
       ],
-      "id": "f7a16b6f-b6a2-4de3-8891-9153d6325036"
+      "id": "ba5e7b89-1268-4299-91f9-33c60a97dc14"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output[0]['Grandezas']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        800,
+        224
+      ],
+      "id": "1edc92a3-58df-4a82-8cea-a4d02d6f99c5",
+      "name": "Split Out Grandezas"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE",
+          "mode": "list",
+          "cachedResultName": "Geracao",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1234156237,
+          "mode": "list",
+          "cachedResultName": "Grandezas",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit#gid=1234156237"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Número da UC": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
+            "Conta mês": "={{ $('Basic LLM Chain').item.json.output[0]['Conta mês'] }}",
+            "Vencimento": "={{ $('Basic LLM Chain').item.json.output[0].Vencimento }}",
+            "Medidor": "={{ $json.Medidor }}",
+            "Grandezas": "={{ $json.Grandezas }}",
+            "Postos horários": "={{ $json['Postos horários'] }}",
+            "Const Medidor": "={{ $json['Const Medidor'] }}",
+            "Consumo kWh": "={{ $json['Consumo kWh'] }}",
+            "Leitura Anterior": "={{ $json['Leitura Anterior'] }}",
+            "Leitura Atual": "={{ $json['Leitura Atual'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nota Fiscal",
+              "displayName": "Nota Fiscal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Parceiro de Negócio",
+              "displayName": "Parceiro de Negócio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Número da UC",
+              "displayName": "Número da UC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Conta mês",
+              "displayName": "Conta mês",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Vencimento",
+              "displayName": "Vencimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Medidor",
+              "displayName": "Medidor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Grandezas",
+              "displayName": "Grandezas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Postos horários",
+              "displayName": "Postos horários",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Const Medidor",
+              "displayName": "Const Medidor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Consumo kWh",
+              "displayName": "Consumo kWh",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Leitura Anterior",
+              "displayName": "Leitura Anterior",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Leitura Atual",
+              "displayName": "Leitura Atual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1248,
+        128
+      ],
+      "id": "4762be98-c08a-4cfd-a78f-bc74ec1fc943",
+      "name": "Append row in Grandezas",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FzBftf4jZzuSfzZZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1024,
+        608
+      ],
+      "id": "4bc6fe6d-b481-4722-b585-c2f77054f658",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me2",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        704
+      ],
+      "id": "aac07d34-8715-4ee8-a076-e55e49d1ef3e"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output[0]['Tributos']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        800,
+        608
+      ],
+      "id": "2cc457b7-3423-4892-963d-5f9b6ce098ed",
+      "name": "Split Out Tributos"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE",
+          "mode": "list",
+          "cachedResultName": "Geracao",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1083593030,
+          "mode": "list",
+          "cachedResultName": "Tributos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit#gid=1083593030"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Número da UC": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
+            "Conta mês": "={{ $('Basic LLM Chain').item.json.output[0]['Conta mês'] }}",
+            "Vencimento": "={{ $('Basic LLM Chain').item.json.output[0].Vencimento }}",
+            "Tributo": "={{ $json.Tributo }}",
+            "Nota Fiscal": "=",
+            "Base (R$)": "={{ $json['Base (R$)'] }}",
+            "Aliquota (%)": "={{ $json['Aliquota (%)'] }}",
+            "Valor (R$)": "={{ $json['Valor (R$)'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nota Fiscal",
+              "displayName": "Nota Fiscal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Parceiro de Negócio",
+              "displayName": "Parceiro de Negócio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Número da UC",
+              "displayName": "Número da UC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Conta mês",
+              "displayName": "Conta mês",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Vencimento",
+              "displayName": "Vencimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tributo",
+              "displayName": "Tributo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Base (R$)",
+              "displayName": "Base (R$)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Aliquota (%)",
+              "displayName": "Aliquota (%)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Valor (R$)",
+              "displayName": "Valor (R$)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1248,
+        512
+      ],
+      "id": "fc86e2e7-aa16-4444-9d54-67dbe9caf0a3",
+      "name": "Append row in Tributos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FzBftf4jZzuSfzZZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        456,
+        256
+      ],
+      "id": "1d897233-c938-4d4e-bace-3a2f2aff935e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "dbYHbMOI7Nqe9oyt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
     }
   ],
   "connections": {
@@ -171,29 +875,22 @@
       "main": [
         [
           {
-            "node": "Split Out",
+            "node": "Split Out Servicos",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        [
+          },
           {
-            "node": "Basic LLM Chain",
-            "type": "ai_languageModel",
+            "node": "Append row in Resumos",
+            "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Split Out": {
-      "main": [
-        [
+          },
           {
-            "node": "Loop Over Items",
+            "node": "Split Out Grandezas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out Tributos",
             "type": "main",
             "index": 0
           }
@@ -202,7 +899,13 @@
     },
     "Loop Over Items": {
       "main": [
-        [],
+        [
+          {
+            "node": "Append row in Itens de Fatura",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Replace Me",
@@ -222,6 +925,113 @@
           }
         ]
       ]
+    },
+    "Split Out Servicos": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in Itens de Fatura": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Append row in Grandezas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out Grandezas": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [
+          {
+            "node": "Append row in Tributos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out Tributos": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -231,31 +1041,8 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {
-    "Extract from File": [
-      {
-        "json": {
-          "numpages": 2,
-          "numrender": 2,
-          "info": {
-            "PDFFormatVersion": "1.5",
-            "Language": null,
-            "EncryptFilterName": null,
-            "IsLinearized": false,
-            "IsAcroFormPresent": false,
-            "IsXFAPresent": false,
-            "IsCollectionPresent": false,
-            "IsSignaturesPresent": false,
-            "Producer": "www.plpdf.com 4.9.6",
-            "CreationDate": "D:20250710083521"
-          },
-          "text": "Segunda Via\nSegunda Via\nSegunda Via\n127-127 117 133 \nTipo de Tarifa: B1_CONVENC\n40899446\n4089944\nEDUARDO CAMARA DE MATTOS\nCPF - ***7811903*-**\nAV NITEROI, 147 -\nMEDIANEIRA\nPORTO ALEGRE - RS - CEP 90880-270\nRESIDENCIAL / RESIDENCIAL BIFASICO\n06/2025 20/06/2025 R$158,00\nNOTA FISCAL No. 62906909 - SÉRIE 0 DATA DE EMISSÃO: 04/06/2025\nConsulte Chave de Acesso em:\nhttps://dfe-portal.svrs.rs.gov.br/Nf3e/Consulta\nChave de Acesso\n4325 0608 4671 1500 0100 6600 0062 9069 0910 4974 5360\nProtocolo de Autorização: 1432500028673594 04/06/2025 11:44:45\nUTC\n03/05/2025 03/06/2025 31 04/07/2025\nO montante da devolução é resultado da multiplicação do CONSUMO COMPENSADO pela mini/microgeração (327 kWh) pela tarifa proporcionalizada, quando for o caso.\nDemonstrativos de Saldos em kWh referente a Mini e Micro Geração, conforme REN Nº 482/2012. Saldo Mês no (TP) Todos os Períodos 0, Saldo Acumulado no (TP) Todos\nos Períodos 0, Saldo a Expirar Próximo Mês no (TP) Todos os Períodos 0.\nPeriodos Band.Tarif.: Amarela:04/05-31/05 Vermelha P1:01/06-03/06\nCONSUMO TUSD\nCONSUMO TE\nENERGIA INJETADA TUSD 06/2025 GDII-II\nENERGIA INJETADA TE 06/2025 GDII-II\nADICIONAL BAND. AMARELA\nADICIONAL BAND. VERMELHA P1\nENERGIA INJ. BAND. AMARELA TE\nENERGIA INJ. BAND. VERMELHA TE P1\nCIP MUNICIPAL\nkWh\nkWh\nkWh\nkWh\nkWh\nkWh\nkWh\nkWh\n431\n431\n-327\n-327\n389,290323\n41,709677\n-295,354839\n-31,645161\n0,541787\n0,325615\n0,372752\n0,325596\n0,024224\n0,057061\n0,024208\n0,057513\n233,51\n140,34\n-121,89\n-106,47\n9,43\n2,38\n-7,15\n-1,82\n9,67\n12,36\n7,43\n-7,77\n-5,63\n0,50\n0,12\n-0,38\n-0,10\n233,51\n140,34\n0,00\n-106,47\n9,43\n2,38\n-7,15\n-1,82\n17%\n17%\n17%\n17%\n17%\n17%\n17%\n39,70\n23,86\n0,00\n-18,10\n1,60\n0,40\n-1,21\n-0,31\n0,421010\n0,253030\n0,349017\n0,253030\n0,018850\n0,044630\n0,018850\n0,044630\nTOTAL \n158,00\nICMS\nCOFINS\nPIS\n270,22\n102,40\n102,40\n17%\n5,2441%\n1,1347%\n45,94\n5,37\n1,16\nConsumo DiárioDias\n2025 JUN 31\nMAI 30\nABR 28\nMAR 29\nFEV 30\nJAN 32\n2024 DEZ 30\nNOV 32\nOUT 30\nSET 30\nAGO 33\nJUL 29\nJUN 32\n431,0\n468,0\n715,0\n480,0\n478,0\n443,0\n368,0\n528,0\n347,0\n119,0\n661,0\n481,0\n572,0\n13,90\n15,60\n25,54\n16,55\n15,93\n13,84\n12,27\n16,50\n11,57\n3,97\n20,03\n16,59\n17,88\n52823024\n52823024\nCONSUMO kWh\nGERAC kWh\nTP\nTP\n3946\n2654\n4377\n2981\n1\n1\n431\n327\nRE-3413/2024 12/06/2025\n6927.A49C.31A7.BD68.072B.E4C2.E5EE.2D58\nCITIBANK\nLocal de Pagamento\nPAGAVEL NA REDE BANCARIA.\nVencimento\n20/06/2025\nBeneficiário \nCNPJ: 08.467.115/0001-00 COMPANHIA ESTADUAL DE DISTRIBUICAO DE ENERGIA ELETRICA\nAV CLOVIS PAIM GRIVOT, 11 - - HUMAITA - PORTO ALEGRE - RS - CEP: 90250-020\nAgência/Código Cedente\nData Documento\n04/06/2025\nNúmero de Referência\nFAT-01-202545894974536.58\nEspécie Documento Aceite\nN\nData Processamento\n04/06/2025\nNosso Número\n000057532421\nUso do Banco\nCLIENTE RCO\nCarteira\n1\nEspécie\nR$\nQuantidade Valor\n158,00\n(=) Valor do Documento\n158,00\n(-) Desconto/Abatimento\n(+) Mora/Multa\n(=) Valor Cobrado\n158,00\nInstruções\nPARA PAGAMENTOS APOS O VENCIMENTO. OS ENCARGOS (MULTA, JUROS E CORRECAO MONETARIA)\nSERAO COBRADOS NA PROXIMA FATURA.\nPagador\nEDUARDO CAMARA DE MATTOS CPF: 589.781.190-34\nAV NITEROI, 147 - - MEDIANEIRA\nCEP 90880-270 - PORTO ALEGRE - RS\nAutenticação Mecânica\nNÃO RECEBER - FATURA ARRECADADA\n74593.10046 25383.019004 00575.324215 1 11180000015800745-5\nDANFECEEEB (V1.00)\n\nSegunda Via\nSegunda Via\nSegunda Via\nEDUARDO CAMARA DE MATTOS\nAv Niteroi, 147\nMedianeira\n90880-270 - Porto Alegre - RS\nAbril/2025\n7,00\n3,00\n5,00\n13,00\n0,00\n0,00\n0,00\n301,02\nDANFECEEEB (V1.00)",
-          "version": "5.3.31"
-        }
-      }
-    ]
-  },
-  "versionId": "63d75890-0dd1-40c7-8f44-0502f9da8b8f",
+  "pinData": {},
+  "versionId": "86ff2f18-8e55-4981-9ed9-e550c9c6edbb",
   "triggerCount": 1,
   "shared": [
     {
