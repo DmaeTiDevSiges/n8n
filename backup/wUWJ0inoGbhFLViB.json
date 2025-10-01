@@ -1,0 +1,1199 @@
+{
+  "createdAt": "2025-09-30T18:43:59.993Z",
+  "updatedAt": "2025-09-30T19:17:19.823Z",
+  "id": "wUWJ0inoGbhFLViB",
+  "name": "ExtractPDF_1_GDrive",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        912,
+        32
+      ],
+      "id": "cea9ff1f-56fe-458c-bd35-7bfdeb78addf",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1136,
+        32
+      ],
+      "id": "a771e557-e620-4e1b-a7e6-fd2b34f9230c",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\n\t{\n\t\t\"Número da UC\": 40899446,\n\t\t\"Conta mês\": \"06/2025\",\n\t\t\"Vencimento\": \"20/06/2025\",\n\t\t\"Total a pagar\": \"R$158,00\",\n\t\t\"Leitura Anterior\": \"03/05/2025\",\n\t\t\"Leitura Atual\": \"03/06/2025\",\n\t\t\"No de Dias\": 31,\n\t\t\"Próxima Leitura\": \"04/07/2025\",\n\t\t\"Servicos\": [\n\t\t\t{\n\t\t\t\t\"Itens da Fatura\": \"CONSUMO TUSD\",\n\t\t\t\t\"Unid.\": \"KWh\",\n\t\t\t\t\"Quant.\": 431,\n\t\t\t\t\"Preço unit (R$) com tributos\": 541233,\n\t\t\t\t\"Valor (R$)\": 235,\n\t\t\t\t\"PIS/COFINS\": 12,\n\t\t\t\t\"Base Calc. ICMS (R$)\": 233,\n\t\t\t\t\"Alíquota. ICMS (R$)\": \"17%\",\n\t\t\t\t\"ICMS\": 39,\n\t\t\t\t\"Tarifa unit. (R$)\": 233\n\t\t\t}\n\t\t],\n      \"Grandezas\": [\n\t\t\t{\n\t\t\t\t\"Medidor\": 23131,\n                \"Grandezas\": \"CONSUMO kWh\",\n                \"Postos horários\": \"TP\",\n\t\t\t\t\"Leitura Anterior\": 1000,\n\t\t\t\t\"Leitura Atual\": 1431,\n\t\t\t\t\"Const Medidor\": 1,\n\t\t\t\t\"Consumo kWh\": 2351\n\t\t\t}\n\t\t],\n      \"Tributos\": [\n        {\n            \"Tributo\": \"ICMS\",\n          \"Base (R$)\": 122,\n          \"Aliquota (%)\": \"12%\",\n          \"Valor (R$)\": 12\n        }\n      ]\n\n\t}\n]"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1280,
+        256
+      ],
+      "id": "16fe454d-936f-4c97-9774-7dbfbefc2ed2",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1712,
+        -160
+      ],
+      "id": "d87bed63-eea3-4c33-bac8-5d4374644faa",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1936,
+        -64
+      ],
+      "id": "31063db7-54a7-440a-9f6f-5967b18a8236"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE",
+          "mode": "list",
+          "cachedResultName": "Geracao",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 142539991,
+          "mode": "list",
+          "cachedResultName": "Resumos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit#gid=142539991"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Número da UC": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
+            "Conta mês": "={{ $('Basic LLM Chain').item.json.output[0]['Conta mês'] }}",
+            "Vencimento": "={{ $('Basic LLM Chain').item.json.output[0].Vencimento }}",
+            "Total a pagar": "={{ $('Basic LLM Chain').item.json.output[0]['Total a pagar'] }}",
+            "Data Leitura Anterior": "="
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nota Fiscal",
+              "displayName": "Nota Fiscal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Parceiro de Negócio",
+              "displayName": "Parceiro de Negócio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Número da UC",
+              "displayName": "Número da UC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Conta mês",
+              "displayName": "Conta mês",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Vencimento",
+              "displayName": "Vencimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total a pagar",
+              "displayName": "Total a pagar",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data Leitura Anterior",
+              "displayName": "Data Leitura Anterior",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data Leitura Atual",
+              "displayName": "Data Leitura Atual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "No.de Dias",
+              "displayName": "No.de Dias",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data Próxima Leitura",
+              "displayName": "Data Próxima Leitura",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1488,
+        -352
+      ],
+      "id": "cb3a4695-c99a-4249-bc99-ec2036a6f16b",
+      "name": "Append row in Resumos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FzBftf4jZzuSfzZZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output[0]['Servicos']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        -160
+      ],
+      "id": "f37384e1-1e97-422f-b7f0-fd931670ffb7",
+      "name": "Split Out Servicos"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE",
+          "mode": "list",
+          "cachedResultName": "Geracao",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 849809564,
+          "mode": "list",
+          "cachedResultName": "Itens de fatura",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit#gid=849809564"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Número da UC": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
+            "Conta mês": "={{ $('Basic LLM Chain').item.json.output[0]['Conta mês'] }}",
+            "Vencimento": "={{ $('Basic LLM Chain').item.json.output[0].Vencimento }}",
+            "Item": "={{ $json['Itens da Fatura'] }}",
+            "Unid": "={{ $json['Unid.'] }}",
+            "Qte": "={{ $json['Quant.'] }}",
+            "Preço unit (R$) com tributos": "={{ $json['Preço unit (R$) com tributos'] }}",
+            "Valor (R$)": "={{ $json['Valor (R$)'] }}",
+            "PIS/COFINS": "={{ $json['PIS/COFINS'] }}",
+            "Base Calc. ICMS (R$)": "={{ $json.ICMS }}",
+            "ICMS": "={{ $json.ICMS }}",
+            "Tarifa unit (R$)": "={{ $json['Tarifa unit. (R$)'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nota Fiscal",
+              "displayName": "Nota Fiscal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Parceiro de Negócio",
+              "displayName": "Parceiro de Negócio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Número da UC",
+              "displayName": "Número da UC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Conta mês",
+              "displayName": "Conta mês",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Vencimento",
+              "displayName": "Vencimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Item",
+              "displayName": "Item",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Unid",
+              "displayName": "Unid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Qte",
+              "displayName": "Qte",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Preço unit (R$) com tributos",
+              "displayName": "Preço unit (R$) com tributos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Valor (R$)",
+              "displayName": "Valor (R$)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PIS/COFINS",
+              "displayName": "PIS/COFINS",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Base Calc. ICMS (R$)",
+              "displayName": "Base Calc. ICMS (R$)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ICMS",
+              "displayName": "ICMS",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tarifa unit (R$)",
+              "displayName": "Tarifa unit (R$)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1936,
+        -256
+      ],
+      "id": "b6f4f3fd-fc21-4dd5-877c-eda4f8c58ef3",
+      "name": "Append row in Itens de Fatura",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FzBftf4jZzuSfzZZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1712,
+        224
+      ],
+      "id": "0ecf51d5-98aa-4203-9e6a-fa8ca1e03693",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me1",
+      "typeVersion": 1,
+      "position": [
+        1936,
+        320
+      ],
+      "id": "4f3c906d-376a-4756-8011-95cb2e7ce5ba"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output[0]['Grandezas']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        224
+      ],
+      "id": "ef798845-c79b-47a8-98cc-3ef244de5f4a",
+      "name": "Split Out Grandezas"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE",
+          "mode": "list",
+          "cachedResultName": "Geracao",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1234156237,
+          "mode": "list",
+          "cachedResultName": "Grandezas",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit#gid=1234156237"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Número da UC": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
+            "Conta mês": "={{ $('Basic LLM Chain').item.json.output[0]['Conta mês'] }}",
+            "Vencimento": "={{ $('Basic LLM Chain').item.json.output[0].Vencimento }}",
+            "Medidor": "={{ $json.Medidor }}",
+            "Grandezas": "={{ $json.Grandezas }}",
+            "Postos horários": "={{ $json['Postos horários'] }}",
+            "Const Medidor": "={{ $json['Const Medidor'] }}",
+            "Consumo kWh": "={{ $json['Consumo kWh'] }}",
+            "Leitura Anterior": "={{ $json['Leitura Anterior'] }}",
+            "Leitura Atual": "={{ $json['Leitura Atual'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nota Fiscal",
+              "displayName": "Nota Fiscal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Parceiro de Negócio",
+              "displayName": "Parceiro de Negócio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Número da UC",
+              "displayName": "Número da UC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Conta mês",
+              "displayName": "Conta mês",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Vencimento",
+              "displayName": "Vencimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Medidor",
+              "displayName": "Medidor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Grandezas",
+              "displayName": "Grandezas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Postos horários",
+              "displayName": "Postos horários",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Const Medidor",
+              "displayName": "Const Medidor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Consumo kWh",
+              "displayName": "Consumo kWh",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Leitura Anterior",
+              "displayName": "Leitura Anterior",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Leitura Atual",
+              "displayName": "Leitura Atual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1936,
+        128
+      ],
+      "id": "7b0ec915-a7ad-4e0d-83c0-a742ae8b0407",
+      "name": "Append row in Grandezas",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FzBftf4jZzuSfzZZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1712,
+        608
+      ],
+      "id": "d1d89a93-b5bc-4bbe-9949-67f9241ca83b",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me2",
+      "typeVersion": 1,
+      "position": [
+        1936,
+        704
+      ],
+      "id": "533f872f-d3dc-4aa3-9835-290b6f3411ec"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output[0]['Tributos']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        608
+      ],
+      "id": "161c815b-e836-4714-a364-bb1fe4b53bc3",
+      "name": "Split Out Tributos"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE",
+          "mode": "list",
+          "cachedResultName": "Geracao",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1083593030,
+          "mode": "list",
+          "cachedResultName": "Tributos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit#gid=1083593030"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Número da UC": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
+            "Conta mês": "={{ $('Basic LLM Chain').item.json.output[0]['Conta mês'] }}",
+            "Vencimento": "={{ $('Basic LLM Chain').item.json.output[0].Vencimento }}",
+            "Tributo": "={{ $json.Tributo }}",
+            "Nota Fiscal": "=",
+            "Base (R$)": "={{ $json['Base (R$)'] }}",
+            "Aliquota (%)": "={{ $json['Aliquota (%)'] }}",
+            "Valor (R$)": "={{ $json['Valor (R$)'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nota Fiscal",
+              "displayName": "Nota Fiscal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Parceiro de Negócio",
+              "displayName": "Parceiro de Negócio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Número da UC",
+              "displayName": "Número da UC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Conta mês",
+              "displayName": "Conta mês",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Vencimento",
+              "displayName": "Vencimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tributo",
+              "displayName": "Tributo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Base (R$)",
+              "displayName": "Base (R$)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Aliquota (%)",
+              "displayName": "Aliquota (%)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Valor (R$)",
+              "displayName": "Valor (R$)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1936,
+        512
+      ],
+      "id": "e721a14d-e5ab-4e78-a29a-0292ddbc67f1",
+      "name": "Append row in Tributos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FzBftf4jZzuSfzZZ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        256
+      ],
+      "id": "17404fa9-22d4-4575-a99d-9e929415935d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "dbYHbMOI7Nqe9oyt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 15,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1yBiCXt0piQtkcgOVXIqnjyocLYvkib9t",
+          "mode": "list",
+          "cachedResultName": "uploaded",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1yBiCXt0piQtkcgOVXIqnjyocLYvkib9t"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        16,
+        32
+      ],
+      "id": "6dda2bbf-ce80-4eb8-bf8d-4bb12f1c7e32",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "BiC9ZI1GHJNbQwMF",
+          "name": "Google Drive Account ECM"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a927e858-8223-4a28-be5f-78b46d311489",
+              "leftValue": "={{ $json.mimeType }}",
+              "rightValue": "application/pdf",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        32
+      ],
+      "id": "5a5cc2e4-5369-454c-a11a-ca372897dd93",
+      "name": "If Pdf",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "93296fd3-2dfb-4b6e-9d8a-944838a1517f",
+              "name": "file_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "81b98d63-cf55-4844-8661-1ca713c2d3a7",
+              "name": "file_type",
+              "value": "={{ $json.mimeType }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        32
+      ],
+      "id": "56df9bbc-e8c5-4d06-9a24-b2bb43a2d0ad",
+      "name": "Edit Fields",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Edit Fields').item.json.file_id }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        688,
+        32
+      ],
+      "id": "9f14007d-f3b1-4ce5-a30d-7df760afcd3d",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "BiC9ZI1GHJNbQwMF",
+          "name": "Google Drive Account ECM"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Split Out Servicos",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append row in Resumos",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out Grandezas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out Tributos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Append row in Itens de Fatura",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out Servicos": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in Itens de Fatura": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Append row in Grandezas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out Grandezas": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [
+          {
+            "node": "Append row in Tributos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out Tributos": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "If Pdf",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Pdf": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in Resumos": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "a2ff24b2-354f-4753-b1fc-aa4812220881",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-09-30T18:43:59.993Z",
+      "updatedAt": "2025-09-30T18:43:59.993Z",
+      "role": "workflow:owner",
+      "workflowId": "wUWJ0inoGbhFLViB",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
