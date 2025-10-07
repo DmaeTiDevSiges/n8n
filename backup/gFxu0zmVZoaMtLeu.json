@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-10-04T16:02:20.406Z",
-  "updatedAt": "2025-10-04T20:53:30.330Z",
+  "updatedAt": "2025-10-07T01:09:00.049Z",
   "id": "gFxu0zmVZoaMtLeu",
   "name": "SigesWhatsAppAssetsAvailableDraft",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -12,11 +12,10 @@
       "typeVersion": 1,
       "position": [
         80,
-        0
+        80
       ],
       "id": "b89bd60a-03bf-452b-ac8f-30c2a7c6aee5",
-      "name": "When clicking ‘Execute workflow’",
-      "disabled": true
+      "name": "When clicking ‘Execute workflow’"
     },
     {
       "parameters": {
@@ -69,7 +68,7 @@
       "name": "Replace Me",
       "typeVersion": 1,
       "position": [
-        960,
+        752,
         0
       ],
       "id": "752ede58-5872-41db-a47e-e154e9d93bcb"
@@ -102,7 +101,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1184,
+        976,
         80
       ],
       "id": "60e6a437-7b81-4f9d-9da1-9a9e24a7f823",
@@ -135,7 +134,7 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        960,
+        752,
         -192
       ],
       "id": "bf1b4974-a683-4737-929f-e05b3afb5b93",
@@ -160,25 +159,11 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        112,
-        -160
+        80,
+        -128
       ],
       "id": "0204cbbf-aa30-4114-b291-a34a2bd2dbe4",
       "name": "Schedule Trigger"
-    },
-    {
-      "parameters": {
-        "amount": 10
-      },
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        736,
-        -96
-      ],
-      "id": "8513b7c9-a7e3-4be0-bb6a-d3bba77bd545",
-      "name": "Wait",
-      "webhookId": "5f5f1bad-fc30-4b8f-a54c-e11c79cdbf92"
     }
   ],
   "connections": {
@@ -208,7 +193,7 @@
       "main": [
         [
           {
-            "node": "Wait",
+            "node": "Create a row1",
             "type": "main",
             "index": 0
           }
@@ -254,17 +239,6 @@
           }
         ]
       ]
-    },
-    "Wait": {
-      "main": [
-        [
-          {
-            "node": "Create a row1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "settings": {
@@ -279,7 +253,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "6a5ad484-b6b2-4f21-a1ce-f236f027c5a9",
+  "versionId": "75df5388-71ec-4689-a38e-9c3d82479856",
   "triggerCount": 1,
   "shared": [
     {
