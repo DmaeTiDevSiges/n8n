@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-29T12:46:15.042Z",
-  "updatedAt": "2025-09-02T21:09:17.647Z",
+  "updatedAt": "2025-10-09T01:25:32.154Z",
   "id": "UYsMNf0pNsns4BeD",
   "name": "SigesExportToExcel",
   "active": true,
@@ -337,6 +337,12 @@
         "assignments": {
           "assignments": [
             {
+              "id": "1c051d1f-3224-4799-befd-8003c557f2e7",
+              "name": "Código Unidade",
+              "value": "={{ $('Get Unit').item.json.code }}",
+              "type": "string"
+            },
+            {
               "id": "d3a294b0-5c3e-4183-9d15-cbcc535bba65",
               "name": "Unidade",
               "value": "={{$json.unit_description}}",
@@ -379,15 +385,27 @@
               "type": "string"
             },
             {
+              "id": "09f9cf74-9557-4425-96e4-9c5b59c1921a",
+              "name": "=Motivos",
+              "value": "={{ $('Get Unit').item.json.code }}",
+              "type": "string"
+            },
+            {
               "id": "3163e8e5-ba7d-487b-b62e-df58dad7e2f6",
               "name": "Responsável",
               "value": "={{$json.reported_user_name_short}}",
               "type": "string"
             },
             {
-              "id": "1c051d1f-3224-4799-befd-8003c557f2e7",
-              "name": "Código Unidade",
-              "value": "={{ $('Get Unit').item.json.code }}",
+              "id": "e68902a1-8b1b-4a6b-b53d-efa8641ae258",
+              "name": "Distancia (m)",
+              "value": "={{$json.unit_reported_distance_m}}",
+              "type": "number"
+            },
+            {
+              "id": "ba7a4d59-2c5c-4d61-b9b0-98ef22baf457",
+              "name": "Motivos",
+              "value": "={{$json.asset_unavailable_reason_description}}",
               "type": "string"
             }
           ]
@@ -847,7 +865,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "0e500806-2b25-4015-adf4-7b4e9764604c",
+  "versionId": "4aaad8cb-bc4e-456b-8e05-f0a72647d15c",
   "triggerCount": 1,
   "shared": [
     {
