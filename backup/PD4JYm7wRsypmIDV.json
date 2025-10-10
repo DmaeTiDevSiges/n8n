@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-24T12:31:50.829Z",
-  "updatedAt": "2025-09-21T02:21:05.307Z",
+  "updatedAt": "2025-10-09T11:20:54.483Z",
   "id": "PD4JYm7wRsypmIDV",
   "name": "SigesWhatsappUserNotification",
   "active": true,
@@ -38,6 +38,7 @@
       ],
       "id": "d665e788-eb5d-4163-afeb-e054b6d41171",
       "name": "Enviar texto",
+      "retryOnFail": true,
       "credentials": {
         "evolutionApi": {
           "id": "L9NGnOBfKW7Jkuq8",
@@ -186,7 +187,7 @@
       }
     ]
   },
-  "versionId": "472db176-1cc6-40b5-b1ae-418010f77e55",
+  "versionId": "6aa304f0-1032-4480-889a-ed7ad1db48f5",
   "triggerCount": 1,
   "shared": [
     {
