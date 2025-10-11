@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-29T13:55:14.793Z",
-  "updatedAt": "2025-10-08T00:58:43.771Z",
+  "updatedAt": "2025-10-10T16:33:26.511Z",
   "id": "b9U1hIQcwSFVJJo0",
   "name": "SigesWhatsAppAssetsAvailable",
   "active": true,
@@ -365,7 +365,8 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "callerPolicy": "workflowsFromSameOwner"
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
   },
   "staticData": null,
   "meta": {
@@ -400,7 +401,7 @@
       }
     ]
   },
-  "versionId": "fe03d6df-1eaa-4f9b-8097-27a2b3ba3bea",
+  "versionId": "f4eaeb0a-e8aa-4946-ac79-b39998169a12",
   "triggerCount": 1,
   "shared": [
     {
