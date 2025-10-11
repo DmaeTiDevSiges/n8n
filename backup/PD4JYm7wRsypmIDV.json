@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-24T12:31:50.829Z",
-  "updatedAt": "2025-10-09T11:20:54.483Z",
+  "updatedAt": "2025-10-10T16:32:58.548Z",
   "id": "PD4JYm7wRsypmIDV",
   "name": "SigesWhatsappUserNotification",
   "active": true,
@@ -125,7 +125,9 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
   },
   "staticData": null,
   "meta": {
@@ -187,7 +189,7 @@
       }
     ]
   },
-  "versionId": "6aa304f0-1032-4480-889a-ed7ad1db48f5",
+  "versionId": "632ffd72-0e07-4eb4-b161-ff6fdbc0df42",
   "triggerCount": 1,
   "shared": [
     {
