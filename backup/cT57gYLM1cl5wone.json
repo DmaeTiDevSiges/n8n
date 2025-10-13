@@ -1,0 +1,937 @@
+{
+  "createdAt": "2025-10-12T22:14:46.503Z",
+  "updatedAt": "2025-10-12T22:50:03.079Z",
+  "id": "cT57gYLM1cl5wone",
+  "name": "ContaboVpsSnapshot",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "71a51067-08ed-4300-a831-48f1d7d2ada2",
+              "name": "data[0].snapshotId",
+              "type": "string",
+              "value": "={{ $json.data[0].snapshotId }}"
+            },
+            {
+              "id": "00161e54-f324-4f6e-a5df-d27d1c4b7706",
+              "name": "displayName",
+              "type": "string",
+              "value": "={{ $json.displayName }}"
+            },
+            {
+              "id": "b4fbf9e6-c634-4dc7-b75e-44aa048b2e32",
+              "name": "instanceId",
+              "type": "number",
+              "value": "={{ $json.instanceId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "82c39a0f-43e1-43db-b8e9-9eb21a9e6041",
+      "name": "Set snapshot attributes",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        3072,
+        624
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 2
+            }
+          ]
+        }
+      },
+      "id": "836d51ad-d4d1-4f28-b008-16f86c58db1c",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        160,
+        432
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {},
+      "id": "2ca89da6-066d-4b6f-9d34-3b9d821d9ed2",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        160,
+        624
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "135cfcc3-050e-4128-b6b0-b8905d160498",
+              "name": "CLIENT_ID",
+              "type": "string",
+              "value": "INT-12799893"
+            },
+            {
+              "id": "b05aa3e9-80c6-474f-b653-8e49654e3da7",
+              "name": "CLIENT_SECRET",
+              "type": "string",
+              "value": "mOxJpYcBDtvfHjBLLZ9r2vdi3aOL9DGH"
+            },
+            {
+              "id": "72c345ba-674e-4db2-946e-bb4a9e6f8763",
+              "name": "API_USER",
+              "type": "string",
+              "value": "dmae.tidev.siges@gmail.com"
+            },
+            {
+              "id": "7d1d03e3-86cc-4fd1-9d2a-a3771d913565",
+              "name": "API_PASSWORD",
+              "type": "string",
+              "value": "Cont@1961"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bee4157a-73bc-4ef5-9f1a-bcb8333e889e",
+      "name": "Credential",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        832,
+        528
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "content": "## Credential\n\nInformation required to access Contabo API\n\n- CLIENT_ID\n- CLIENT_SECRET\n- API_USER\n- API_PASSWORD\n\n[Contabo Credential](https://my.contabo.com/api/details)\n\n[Contabo API Doc](https://api.contabo.com/)",
+        "height": 519,
+        "width": 427
+      },
+      "id": "879b931b-2d52-4b7a-8d0b-213e10048db1",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        784,
+        176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://auth.contabo.com/auth/realms/contabo/protocol/openid-connect/token",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "client_id",
+              "value": "={{ $json.CLIENT_ID }}"
+            },
+            {
+              "name": "client_secret",
+              "value": "={{ $json.CLIENT_SECRET }}"
+            },
+            {
+              "name": "username",
+              "value": "={{ $json.API_USER }}"
+            },
+            {
+              "name": "password",
+              "value": "={{ $json.API_PASSWORD }}"
+            },
+            {
+              "name": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "23cde267-df88-4ab5-8d46-b017c8c8b142",
+      "name": "Authorization",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1056,
+        528
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://api.contabo.com/v1/compute/instances",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $('Authorization').item.json['token_type'] }} {{ $('Authorization').item.json['access_token'] }}"
+            },
+            {
+              "name": "x-request-id",
+              "value": "={{ $('UUID').item.json['data'] }}"
+            },
+            {
+              "name": "x-trace-id",
+              "value": "={{ $('TRACE ID').item.json['data'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7b052c4f-c4ac-46fc-9bba-6ffc3d2a15f4",
+      "name": "List instances",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1728,
+        528
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "f3629b16-226a-4188-9675-7a4e139ae8aa",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        1952,
+        528
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://www.uuidgenerator.net/api/version4",
+        "options": {}
+      },
+      "id": "4a538a56-b35b-4e8f-b9e5-9e7f3735b97e",
+      "name": "UUID",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1280,
+        528
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://www.uuidgenerator.net/api/version4",
+        "options": {}
+      },
+      "id": "e5cd1d56-f532-4df6-ab48-8bcf6b1ab250",
+      "name": "TRACE ID",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1504,
+        528
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## get UUID\n\nGenerates the UUIDs that will be used in the 'x-request-id' and 'x-trace-id'\n\n[uuidgenerator](https://www.uuidgenerator.net/api)",
+        "height": 521.9218381008977,
+        "width": 411.2199570815453
+      },
+      "id": "dbeadd38-1ef6-46a5-8ee9-e44730c33373",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1234.5,
+        166
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "=https://api.contabo.com/v1/compute/instances/{{ $('Split Out').item.json['instanceId'] }}/snapshots",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $('Authorization').item.json['token_type'] }} {{ $('Authorization').item.json['access_token'] }}"
+            },
+            {
+              "name": "x-request-id",
+              "value": "={{ $('UUID1').item.json['data'] }}"
+            },
+            {
+              "name": "x-trace-id",
+              "value": "={{ $('TRACE ID').item.json['data'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0ffebc5c-170d-4f16-b5fb-7bdab5d93905",
+      "name": "List snapshots",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        2400,
+        456
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://www.uuidgenerator.net/api/version4",
+        "options": {}
+      },
+      "id": "cb61404b-8e5f-4e32-843c-6d0f8028d63d",
+      "name": "UUID1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        2176,
+        456
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## List your instances     ",
+        "height": 279,
+        "width": 384
+      },
+      "id": "16ca1203-eafa-49c5-979e-eb7499f9000c",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1728,
+        448
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## List existing Snapshots\n\n- Generates a new UUID for the request\n\n- Checks if the instance already has a Snapshot",
+        "height": 467.2593220338978,
+        "width": 733.0237288135586
+      },
+      "id": "0b3edc90-a8b1-460f-8dfd-0718eb900136",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2224,
+        256
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "89290c1e-da33-469e-85a7-c1e16039073a",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        2624,
+        528
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "options": {
+          "timezone": "America/Sao_Paulo"
+        }
+      },
+      "id": "4024ed27-a228-42a0-a627-2fd47b890150",
+      "name": "get Date & Time",
+      "type": "n8n-nodes-base.dateTime",
+      "position": [
+        384,
+        528
+      ],
+      "retryOnFail": true,
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://api.contabo.com/v1/compute/instances/{{ $('Set snapshot attributes').item.json['instanceId'] }}/snapshots/{{ $('Set snapshot attributes').item.json['data'][0].snapshotId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $('Authorization').item.json['token_type'] }} {{ $('Authorization').item.json['access_token'] }}"
+            },
+            {
+              "name": "x-request-id",
+              "value": "={{ $('UUID3').item.json['data'] }}"
+            },
+            {
+              "name": "x-trace-id",
+              "value": "={{ $('TRACE ID').item.json['data'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6826b6ec-aa91-4a3e-adf7-bfe10a50d1a1",
+      "name": "Delete existing snapshot",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3520,
+        624
+      ],
+      "retryOnFail": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.contabo.com/v1/compute/instances/{{ $('set snapshot attributes').item.json['instanceId'] }}/snapshots",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $('Authorization').item.json['token_type'] }} {{ $('Authorization').item.json['access_token'] }}"
+            },
+            {
+              "name": "x-request-id",
+              "value": "={{ $('UUID2').item.json['data'] }}"
+            },
+            {
+              "name": "x-trace-id",
+              "value": "={{ $('TRACE ID').item.json['data'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $('Formatted Date').item.json['formattedDate'] }}"
+            },
+            {
+              "name": "description",
+              "value": "={{ $('set snapshot attributes').item.json['displayName'] }} {{ $('Formatted Date').item.json['formattedDate'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "30c844bd-f601-4140-ad89-be27ffbaff70",
+      "name": "Create a new snapshot",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3520,
+        432
+      ],
+      "retryOnFail": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.contabo.com/v1/compute/instances/{{ $('Set snapshot attributes').item.json['instanceId'] }}/snapshots",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $('Authorization').item.json['token_type'] }} {{ $('Authorization').item.json['access_token'] }}"
+            },
+            {
+              "name": "x-request-id",
+              "value": "={{ $('UUID4').item.json['data'] }}"
+            },
+            {
+              "name": "x-trace-id",
+              "value": "={{ $('TRACE ID').item.json['data'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $('Formatted Date').item.json['formattedDate'] }}"
+            },
+            {
+              "name": "description",
+              "value": "={{ $('Set snapshot attributes').item.json['displayName'] }} {{ $('Formatted Date').item.json['formattedDate'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fead237d-bd69-427f-87ea-587517612d82",
+      "name": "Create a new snapshot1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3968,
+        624
+      ],
+      "retryOnFail": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://www.uuidgenerator.net/api/version4",
+        "options": {}
+      },
+      "id": "ff8bfc2b-1898-41bf-9e4e-276bc782464c",
+      "name": "UUID2",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3296,
+        432
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://www.uuidgenerator.net/api/version4",
+        "options": {}
+      },
+      "id": "13ac68e9-c10f-4e3f-97eb-b3cacf038c5c",
+      "name": "UUID3",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3296,
+        624
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://www.uuidgenerator.net/api/version4",
+        "options": {}
+      },
+      "id": "c0013e4c-3512-4a06-87b0-d2e484c82b2b",
+      "name": "UUID4",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3744,
+        624
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "## Delete existing snapshot by id\n",
+        "height": 467.87473554386463,
+        "width": 486.8901611698841
+      },
+      "id": "90961ced-434a-488e-8e7e-4f923c59dbcd",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3200,
+        320
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Create a new snapshot",
+        "height": 468.61270146235483,
+        "width": 576.6684015952959
+      },
+      "id": "65bb6bf4-e150-48c6-ac66-89d02731e163",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3712,
+        320
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Contabo Backups Workflow\nThis workflow will automatically backup (snapshot) your VPS's hosted on Contabo every day at midnight.\n\n### Setup\nOpen **Credential** and update the values ​​below\n\n- **CLIENT_ID**\n- **CLIENT_SECRET**\n- **API_USER**\n- **API_PASSWORD**\n\nYou will find this information in the [Customer Control Panel.](https://my.contabo.com/api/details)\n\nWorkflow created by [Marcos Antonio](https://www.linkedin.com/in/compromitto/)\n[Linkedin](https://www.linkedin.com/in/compromitto/)\n[GitHub](https://github.com/dubcom) 🇧🇷",
+        "height": 415.52346358766624,
+        "width": 769.2098244001793
+      },
+      "id": "433e4eeb-65b2-43d0-bf06-28ae9be736c8",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json.currentDate }}",
+        "format": "custom",
+        "customFormat": "dd-MM-yyyy",
+        "options": {}
+      },
+      "id": "37b249a8-c249-4465-a2ff-dc6686e35d9e",
+      "name": "Formatted Date",
+      "type": "n8n-nodes-base.dateTime",
+      "position": [
+        608,
+        528
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "2bd58580-020f-411b-b25d-e63467d615bc",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $('List snapshots').item.json['data'] }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2da6055e-d239-40cf-b7da-15438e09e2a8",
+      "name": "Whether snapshot there is no snapshot",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        2848,
+        528
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b9af7eb7-bd87-4949-ac95-e40025c3c419",
+              "name": "instanceId",
+              "type": "string",
+              "value": "={{ $json.instanceId }}"
+            },
+            {
+              "id": "3d8cb230-4512-4b65-be3a-6ea59cb80ddd",
+              "name": "displayName",
+              "type": "string",
+              "value": "={{ $json.displayName }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "54154c3d-e32a-4e35-8253-052fe7cff88a",
+      "name": "set snapshot attributes",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        3072,
+        432
+      ],
+      "typeVersion": 3.4
+    }
+  ],
+  "connections": {
+    "Set snapshot attributes": {
+      "main": [
+        [
+          {
+            "node": "UUID3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "get Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "get Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Credential": {
+      "main": [
+        [
+          {
+            "node": "Authorization",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Authorization": {
+      "main": [
+        [
+          {
+            "node": "UUID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List instances": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "UUID1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "UUID": {
+      "main": [
+        [
+          {
+            "node": "TRACE ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TRACE ID": {
+      "main": [
+        [
+          {
+            "node": "List instances",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List snapshots": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UUID1": {
+      "main": [
+        [
+          {
+            "node": "List snapshots",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Whether snapshot there is no snapshot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Formatted Date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete existing snapshot": {
+      "main": [
+        [
+          {
+            "node": "UUID4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UUID2": {
+      "main": [
+        [
+          {
+            "node": "Create a new snapshot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UUID3": {
+      "main": [
+        [
+          {
+            "node": "Delete existing snapshot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UUID4": {
+      "main": [
+        [
+          {
+            "node": "Create a new snapshot1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatted Date": {
+      "main": [
+        [
+          {
+            "node": "Credential",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Whether snapshot there is no snapshot": {
+      "main": [
+        [
+          {
+            "node": "set snapshot attributes",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set snapshot attributes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set snapshot attributes": {
+      "main": [
+        [
+          {
+            "node": "UUID2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "fb36816a-79a3-4ead-ac97-648f4629f23b",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-10-12T22:14:46.503Z",
+      "updatedAt": "2025-10-12T22:14:46.503Z",
+      "role": "workflow:owner",
+      "workflowId": "cT57gYLM1cl5wone",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
