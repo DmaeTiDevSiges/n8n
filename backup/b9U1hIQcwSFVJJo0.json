@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-29T13:55:14.793Z",
-  "updatedAt": "2025-10-10T16:33:26.511Z",
+  "updatedAt": "2025-10-13T21:08:47.003Z",
   "id": "b9U1hIQcwSFVJJo0",
   "name": "SigesWhatsAppAssetsAvailable",
   "active": true,
@@ -57,7 +57,7 @@
         "resource": "messages-api",
         "operation": "send-image",
         "instanceName": "SIGES",
-        "remoteJid": "120363402140206159@g.us",
+        "remoteJid": "120363402818790181@g.us",
         "media": "={{ $json.imgUrl }}",
         "caption": "={{ $json.msg }}",
         "options_message": {}
@@ -162,7 +162,7 @@
       "parameters": {
         "resource": "messages-api",
         "instanceName": "=SIGES",
-        "remoteJid": "=120363402140206159@g.us",
+        "remoteJid": "=120363402818790181@g.us",
         "messageText": "={{ $json.msg }}",
         "options_message": {}
       },
@@ -401,7 +401,7 @@
       }
     ]
   },
-  "versionId": "f4eaeb0a-e8aa-4946-ac79-b39998169a12",
+  "versionId": "4d75e139-7eef-4c4f-a5e1-e5a41707fbfb",
   "triggerCount": 1,
   "shared": [
     {
