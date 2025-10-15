@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-29T13:55:14.793Z",
-  "updatedAt": "2025-10-13T21:08:47.003Z",
+  "updatedAt": "2025-10-14T23:22:40.850Z",
   "id": "b9U1hIQcwSFVJJo0",
   "name": "SigesWhatsAppAssetsAvailable",
   "active": true,
@@ -17,8 +17,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -1072,
-        160
+        -1136,
+        0
       ],
       "webhookId": "89bb094d-322d-4aa1-9c53-94f38ab3798c"
     },
@@ -45,8 +45,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -400,
-        -16
+        -464,
+        -176
       ],
       "id": "7368e5ce-965d-46ba-8f8c-821b53de251c",
       "name": "Edit Fields",
@@ -57,7 +57,7 @@
         "resource": "messages-api",
         "operation": "send-image",
         "instanceName": "SIGES",
-        "remoteJid": "120363402818790181@g.us",
+        "remoteJid": "120363402140206159@g.us",
         "media": "={{ $json.imgUrl }}",
         "caption": "={{ $json.msg }}",
         "options_message": {}
@@ -65,11 +65,12 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        48,
-        -112
+        -16,
+        -272
       ],
       "id": "4f92c20b-2787-43e9-9fb2-e637c26a3d13",
       "name": "Enviar imagem",
+      "retryOnFail": true,
       "credentials": {
         "evolutionApi": {
           "id": "L9NGnOBfKW7Jkuq8",
@@ -138,8 +139,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -176,
-        -16
+        -240,
+        -176
       ],
       "id": "6bcac03d-be2b-4067-af5c-8d619fd5e79a",
       "name": "Switch"
@@ -151,8 +152,8 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -1056,
-        -256
+        -1120,
+        -272
       ],
       "typeVersion": 1,
       "id": "d0f233b2-258b-40d1-8c62-b6aff77886ec",
@@ -162,15 +163,15 @@
       "parameters": {
         "resource": "messages-api",
         "instanceName": "=SIGES",
-        "remoteJid": "=120363402818790181@g.us",
+        "remoteJid": "=120363402140206159@g.us",
         "messageText": "={{ $json.msg }}",
         "options_message": {}
       },
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        48,
-        80
+        -16,
+        -80
       ],
       "id": "625184b1-58d3-4631-881d-5c8a31de0911",
       "name": "Enviar texto",
@@ -190,8 +191,8 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        -848,
-        160
+        -912,
+        0
       ],
       "id": "74e3b310-a270-4e41-a5a0-6e5c6ed03907",
       "name": "Conectar instancia",
@@ -231,8 +232,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -624,
-        80
+        -688,
+        -80
       ],
       "id": "99596935-dd22-4a77-a269-b75cf5188dd4",
       "name": "If"
@@ -245,11 +246,12 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        -176,
-        256
+        -240,
+        96
       ],
       "id": "3f0aab46-b253-43d3-961a-87751d7274f0",
       "name": "Reiniciar instancia",
+      "retryOnFail": true,
       "credentials": {
         "evolutionApi": {
           "id": "L9NGnOBfKW7Jkuq8",
@@ -262,8 +264,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        -400,
-        176
+        -464,
+        16
       ],
       "id": "ca74c39a-137a-4073-ac6c-81ce65aa0225",
       "name": "Wait",
@@ -401,7 +403,7 @@
       }
     ]
   },
-  "versionId": "4d75e139-7eef-4c4f-a5e1-e5a41707fbfb",
+  "versionId": "c90bb0a0-bb5d-4f69-b2c9-363a4eea2221",
   "triggerCount": 1,
   "shared": [
     {
