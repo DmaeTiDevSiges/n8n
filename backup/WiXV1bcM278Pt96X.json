@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T03:09:22.644Z",
-  "updatedAt": "2025-10-07T03:34:07.381Z",
+  "updatedAt": "2025-10-16T21:37:29.646Z",
   "id": "WiXV1bcM278Pt96X",
   "name": "Dpccdu_ExtractPDFPowerInvoice",
   "active": false,
@@ -14,8 +14,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -464,
-        64
+        432,
+        -368
       ],
       "id": "65c0183f-1047-4356-ab14-632953c85d81",
       "name": "Extract from File",
@@ -31,8 +31,8 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        -240,
-        64
+        656,
+        -368
       ],
       "id": "b23944d0-d613-4272-9aa9-779a5dfa08a0",
       "name": "Basic LLM Chain",
@@ -43,13 +43,13 @@
     },
     {
       "parameters": {
-        "jsonSchemaExample": "[\n\t{\n\t\t\"Número da UC\": 40899446,\n\t\t\"Conta mês\": \"06/2025\",\n\t\t\"Vencimento\": \"20/06/2025\",\n\t\t\"Total a pagar\": \"R$158,00\",\n\t\t\"Leitura Anterior\": \"03/05/2025\",\n\t\t\"Leitura Atual\": \"03/06/2025\",\n\t\t\"No de Dias\": 31,\n\t\t\"Próxima Leitura\": \"04/07/2025\",\n\t\t\"Servicos\": [\n\t\t\t{\n\t\t\t\t\"Itens da Fatura\": \"CONSUMO TUSD\",\n\t\t\t\t\"Unid.\": \"KWh\",\n\t\t\t\t\"Quant.\": 431,\n\t\t\t\t\"Preço unit (R$) com tributos\": 541233,\n\t\t\t\t\"Valor (R$)\": 235,\n\t\t\t\t\"PIS/COFINS\": 12,\n\t\t\t\t\"Base Calc. ICMS (R$)\": 233,\n\t\t\t\t\"Alíquota. ICMS (R$)\": \"17%\",\n\t\t\t\t\"ICMS\": 39,\n\t\t\t\t\"Tarifa unit. (R$)\": 233,\n                \"CIP Municipal\": 30,\n                \"IMP.RET. IRPJ(1,20%)\": -12,\n                \"IMP.RET. IRPJ(4,20%)\": -23\n\t\t\t}\n\t\t],\n      \"Grandezas\": [\n\t\t\t{\n\t\t\t\t\"Medidor\": 23131,\n                \"Grandezas\": \"CONSUMO kWh\",\n                \"Postos horários\": \"TP\",\n\t\t\t\t\"Leitura Anterior\": 1000,\n\t\t\t\t\"Leitura Atual\": 1431,\n\t\t\t\t\"Const Medidor\": 1,\n\t\t\t\t\"Consumo kWh\": 2351\n\t\t\t}\n\t\t]\t\n\n\t}\n]"
+        "jsonSchemaExample": "[\n\t{\n\t\t\"Número da UC\": 40899446,\n\t\t\"Conta mês\": \"06/2025\",\n\t\t\"Vencimento\": \"20/06/2025\",\n\t\t\"Total a pagar\": \"R$158,00\",\n\t\t\"Leitura Anterior\": \"03/05/2025\",\n\t\t\"Leitura Atual\": \"03/06/2025\",\n\t\t\"No de Dias\": 31,\n\t\t\"Próxima Leitura\": \"04/07/2025\",\n\t\t\"Servicos\": [\n\t\t\t{\n\t\t\t\t\"Itens da Fatura\": \"CONSUMO TUSD\",\n\t\t\t\t\"Unid.\": \"KWh\",\n\t\t\t\t\"Quant.\": 431,\n\t\t\t\t\"Preço unit (R$) com tributos\": 541233,\n\t\t\t\t\"Valor (R$)\": 235,\n\t\t\t\t\"PIS/COFINS\": 12,\n\t\t\t\t\"Base Calc. ICMS (R$)\": 233,\n\t\t\t\t\"Alíquota. ICMS (R$)\": \"17%\",\n\t\t\t\t\"ICMS\": 39,\n\t\t\t\t\"Tarifa unit. (R$)\": 233,\n                \"CIP Municipal\": 30,\n                \"IMP.RET. IRPJ(1,20%)\": -12,\n                \"IMP.RET. IRPJ(4,20%)\": -23\n\t\t\t}\n\t\t],\n      \"Grandezas\": [\n\t\t\t{\n\t\t\t\t\"Medidor\": 23131,\n                \"Grandezas\": \"CONSUMO kWh\",\n                \"Postos horários\": \"TP\",\n\t\t\t\t\"Leitura Anterior\": 1000,\n\t\t\t\t\"Leitura Atual\": 1431,\n\t\t\t\t\"Const Medidor\": 1,\n\t\t\t\t\"Consumo kWh\": 2351\n\t\t\t}\n\t\t],\n      \"Tributos\": [\n\t\t\t{\n\t\t\t\t\"Tributo\": \"CONSUMO kWh\",\n                \"Base (R$)\": 1000,\n\t\t\t\t\"Alíquota (%)\": \"17%\",\n\t\t\t\t\"Valor (R$)\": 2351\n\t\t\t}\n\t\t]\t\n\n\t}\n]"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        -112,
-        288
+        864,
+        -112
       ],
       "id": "2ecae9b3-56d8-4277-9162-533ecde4774d",
       "name": "Structured Output Parser",
@@ -57,14 +57,13 @@
     },
     {
       "parameters": {
-        "modelName": "models/gemini-2.0-flash",
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -240,
-        288
+        608,
+        -128
       ],
       "id": "c4cdfcfe-9af9-4c2c-a0dc-efec55d1fab5",
       "name": "Google Gemini Chat Model",
@@ -85,8 +84,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        784,
-        64
+        1680,
+        -368
       ],
       "id": "9debe25d-2c16-4021-89dd-3e9e9b714d45",
       "name": "Loop Over Items2",
@@ -98,8 +97,8 @@
       "name": "Replace Me1",
       "typeVersion": 1,
       "position": [
-        1008,
-        160
+        1904,
+        -272
       ],
       "id": "0c6a0e8b-6b54-4818-b6a1-eca34da42e11"
     },
@@ -129,7 +128,7 @@
       "typeVersion": 1,
       "position": [
         -464,
-        -464
+        -352
       ],
       "id": "fa5a57bc-1dfa-43a0-9ad4-08bb839d63ae",
       "name": "Google Drive Trigger",
@@ -168,8 +167,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -240,
-        -464
+        -224,
+        -352
       ],
       "id": "5adba41d-abe1-4f54-944a-c8637cf0032d",
       "name": "If Pdf",
@@ -199,7 +198,7 @@
       "typeVersion": 3.4,
       "position": [
         -16,
-        -464
+        -368
       ],
       "id": "bb93a912-bb86-4933-b89e-f5ca0e383886",
       "name": "Edit Fields",
@@ -221,7 +220,7 @@
       "typeVersion": 3,
       "position": [
         208,
-        -464
+        -368
       ],
       "id": "a8e409a6-6da1-48f0-a97e-17e170735651",
       "name": "Download file",
@@ -237,28 +236,33 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE",
+          "value": "1mWKF0jo8x-0vSRY_uaWe6zff4h9fpB4sTIfEIySKtvo",
           "mode": "list",
-          "cachedResultName": "Geracao",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit?usp=drivesdk"
+          "cachedResultName": "Historico",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mWKF0jo8x-0vSRY_uaWe6zff4h9fpB4sTIfEIySKtvo/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
-          "value": 1234156237,
+          "value": 633410982,
           "mode": "list",
           "cachedResultName": "Grandezas",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit#gid=1234156237"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mWKF0jo8x-0vSRY_uaWe6zff4h9fpB4sTIfEIySKtvo/edit#gid=633410982"
         },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
+            "Nota Fiscal": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
+            "Parceiro de Negócio": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
             "Número da UC": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
             "Conta mês": "={{ $('Basic LLM Chain').item.json.output[0]['Conta mês'] }}",
+            "Vencimento": "={{ $('Basic LLM Chain').item.json.output[0].Vencimento }}",
             "Medidor": "={{ $('Basic LLM Chain').item.json.output[0].Grandezas[0].Medidor }}",
             "Grandezas": "={{ $('Basic LLM Chain').item.json.output[0].Grandezas[0].Grandezas }}",
             "Postos horários": "={{ $('Basic LLM Chain').item.json.output[0].Grandezas[0]['Postos horários'] }}",
             "Const Medidor": "={{ $('Basic LLM Chain').item.json.output[0].Grandezas[0]['Const Medidor'] }}",
-            "Consumo kWh": "={{ $('Basic LLM Chain').item.json.output[0].Grandezas[0]['Consumo kWh'] }}"
+            "Consumo kWh": "={{ $('Basic LLM Chain').item.json.output[0].Grandezas[0]['Consumo kWh'] }}",
+            "Leitura Anterior": "={{ $('Basic LLM Chain').item.json.output[0].Grandezas[0]['Leitura Anterior'] }}",
+            "Leitura Atual": "={{ $('Basic LLM Chain').item.json.output[0].Grandezas[0]['Leitura Atual'] }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -351,6 +355,24 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true
+            },
+            {
+              "id": "Leitura Anterior",
+              "displayName": "Leitura Anterior",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Leitura Atual",
+              "displayName": "Leitura Atual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -361,15 +383,15 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1008,
-        -32
+        1904,
+        -464
       ],
       "id": "2071f606-b17d-4efc-89d4-3ec6d18944f5",
       "name": "Append row in sheet1",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "FzBftf4jZzuSfzZZ",
-          "name": "Google Sheets account"
+          "id": "8WKylFxZ2XQuE2El",
+          "name": "Google Sheets DmaeDpccdu"
         }
       }
     },
@@ -378,32 +400,32 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE",
+          "value": "1mWKF0jo8x-0vSRY_uaWe6zff4h9fpB4sTIfEIySKtvo",
           "mode": "list",
-          "cachedResultName": "Geracao",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit?usp=drivesdk"
+          "cachedResultName": "Historico",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mWKF0jo8x-0vSRY_uaWe6zff4h9fpB4sTIfEIySKtvo/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
-          "value": 849809564,
+          "value": 1591761855,
           "mode": "list",
           "cachedResultName": "Itens de fatura",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit#gid=849809564"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mWKF0jo8x-0vSRY_uaWe6zff4h9fpB4sTIfEIySKtvo/edit#gid=1591761855"
         },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
             "Número da UC": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
             "Conta mês": "={{ $('Basic LLM Chain').item.json.output[0]['Conta mês'] }}",
-            "Item": "={{ $('Basic LLM Chain').item.json.output[0]['Serviços'][0]['Itens da Fatura'] }}",
-            "Unid": "={{ $('Basic LLM Chain').item.json.output[0]['Serviços'][0]['Unid.'] }}",
-            "Qte": "={{ $('Basic LLM Chain').item.json.output[0]['Serviços'][0]['Quant.'] }}",
-            "Preço unit (R$) com tributos": "={{ $('Basic LLM Chain').item.json.output[0]['Serviços'][0]['Preço unit (R$) com tributos'] }}",
-            "Valor (R$)": "={{ $('Basic LLM Chain').item.json.output[0]['Serviços'][0]['Valor (R$)'] }}",
-            "PIS/COFINS": "={{ $('Basic LLM Chain').item.json.output[0]['Serviços'][0]['PIS/COFINS'] }}",
-            "Base Calc. ICMS (R$)": "={{ $('Basic LLM Chain').item.json.output[0]['Serviços'][0]['Base Calc. ICMS (R$)'] }}",
-            "ICMS": "={{ $('Basic LLM Chain').item.json.output[0]['Serviços'][0].ICMS }}",
-            "Tarifa unit (R$)": "={{ $('Basic LLM Chain').item.json.output[0]['Serviços'][0]['Tarifa unit. (R$)'] }}"
+            "Item": "={{ $('Basic LLM Chain').item.json.output[0].Servicos[0]['Itens da Fatura'] }}",
+            "Unid": "={{ $('Basic LLM Chain').item.json.output[0].Servicos[0]['Unid.'] }}",
+            "Qte": "={{ $('Basic LLM Chain').item.json.output[0].Servicos[0]['Quant.'] }}",
+            "Preço unit (R$) com tributos": "={{ $('Basic LLM Chain').item.json.output[0].Servicos[0]['Preço unit (R$) com tributos'] }}",
+            "Valor (R$)": "={{ $('Basic LLM Chain').item.json.output[0].Servicos[0]['Valor (R$)'] }}",
+            "PIS/COFINS": "={{ $('Basic LLM Chain').item.json.output[0].Servicos[0]['PIS/COFINS'] }}",
+            "Base Calc. ICMS (R$)": "={{ $('Basic LLM Chain').item.json.output[0].Servicos[0]['Base Calc. ICMS (R$)'] }}",
+            "ICMS": "={{ $('Basic LLM Chain').item.json.output[0].Servicos[0].ICMS }}",
+            "Tarifa unit (R$)": "={{ $('Basic LLM Chain').item.json.output[0].Servicos[0]['Tarifa unit. (R$)'] }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -542,15 +564,15 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1008,
-        544
+        1904,
+        -80
       ],
       "id": "af7379ec-855c-4694-beed-27a07392b4c4",
       "name": "Append row in sheet2",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "FzBftf4jZzuSfzZZ",
-          "name": "Google Sheets account"
+          "id": "8WKylFxZ2XQuE2El",
+          "name": "Google Sheets DmaeDpccdu"
         }
       }
     },
@@ -559,17 +581,17 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE",
+          "value": "1mWKF0jo8x-0vSRY_uaWe6zff4h9fpB4sTIfEIySKtvo",
           "mode": "list",
-          "cachedResultName": "Geracao",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit?usp=drivesdk"
+          "cachedResultName": "Historico",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mWKF0jo8x-0vSRY_uaWe6zff4h9fpB4sTIfEIySKtvo/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
-          "value": 142539991,
+          "value": 789993356,
           "mode": "list",
           "cachedResultName": "Resumos",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit#gid=142539991"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mWKF0jo8x-0vSRY_uaWe6zff4h9fpB4sTIfEIySKtvo/edit#gid=789993356"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -581,7 +603,9 @@
             "Data Leitura Anterior": "={{ $('Basic LLM Chain').item.json.output[0]['Leitura Anterior'] }}",
             "Data Leitura Atual": "={{ $('Basic LLM Chain').item.json.output[0]['Leitura Atual'] }}",
             "No.de Dias": "={{ $('Basic LLM Chain').item.json.output[0]['No de Dias'] }}",
-            "Data Próxima Leitura": "={{ $('Basic LLM Chain').item.json.output[0]['Próxima Leitura'] }}"
+            "Data Próxima Leitura": "={{ $('Basic LLM Chain').item.json.output[0]['Próxima Leitura'] }}",
+            "Nota Fiscal": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}",
+            "Parceiro de Negócio": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -592,8 +616,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "Parceiro de Negócio",
@@ -602,8 +625,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "Número da UC",
@@ -612,8 +634,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "Conta mês",
@@ -622,8 +643,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "Vencimento",
@@ -632,8 +652,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "Total a pagar",
@@ -642,8 +661,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "Data Leitura Anterior",
@@ -652,8 +670,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "Data Leitura Atual",
@@ -662,8 +679,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "No.de Dias",
@@ -672,8 +688,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "Data Próxima Leitura",
@@ -682,8 +697,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -694,58 +708,11 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        560,
-        -128
+        1456,
+        -560
       ],
       "id": "a1ba66bb-1d8c-4f1a-a6ae-e16903251975",
       "name": "Append row in sheet",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "FzBftf4jZzuSfzZZ",
-          "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "1mbP27mrE_NsVzcJ-rnQJMiH5T9dnHoelmyVTe-y3IeI",
-          "mode": "list",
-          "cachedResultName": "FornecimentoEnergiaEletrica",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mbP27mrE_NsVzcJ-rnQJMiH5T9dnHoelmyVTe-y3IeI/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 142539991,
-          "mode": "list",
-          "cachedResultName": "Resumos",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RwmAZ3qWpVW9FfT5pF86kZrHThcre-o4ki95W2o46gE/edit#gid=142539991"
-        },
-        "filtersUI": {
-          "values": [
-            {
-              "lookupColumn": "Número da UC",
-              "lookupValue": "={{ $('Basic LLM Chain').item.json.output[0]['Número da UC'] }}"
-            },
-            {
-              "lookupColumn": "Conta mês",
-              "lookupValue": "={{ $('Basic LLM Chain').item.json.output[0]['Conta mês'] }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.7,
-      "position": [
-        112,
-        64
-      ],
-      "id": "f99bdb59-1d55-4261-9603-188e26a190ab",
-      "name": "Get row(s) in sheet",
-      "alwaysOutputData": true,
-      "retryOnFail": true,
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "8WKylFxZ2XQuE2El",
@@ -781,8 +748,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        336,
-        64
+        1232,
+        -368
       ],
       "id": "c5a288ef-c03e-4d08-9d79-57ea8dfe0267",
       "name": "If",
@@ -797,8 +764,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        560,
-        64
+        1456,
+        -368
       ],
       "id": "7a40678f-23b3-4649-b1a2-ea7b96faf288",
       "name": "Split Out Grandezas",
@@ -813,8 +780,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        784,
-        544
+        1680,
+        16
       ],
       "id": "2df4666d-f0a1-49af-8d0e-4f340a499e63",
       "name": "Loop Over Items1"
@@ -825,8 +792,8 @@
       "name": "Replace Me2",
       "typeVersion": 1,
       "position": [
-        1008,
-        736
+        1904,
+        112
       ],
       "id": "c56950bf-9e66-4292-a28f-11d150f2ba70"
     },
@@ -838,27 +805,11 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        560,
-        544
+        1456,
+        16
       ],
       "id": "713af0da-82c6-4ef1-a89f-10bfedb03d93",
       "name": "Split Out Servicos",
-      "alwaysOutputData": true,
-      "retryOnFail": true
-    },
-    {
-      "parameters": {
-        "fieldToSplitOut": "={{ $('Basic LLM Chain').item.json.output[0].Servicos }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitOut",
-      "typeVersion": 1,
-      "position": [
-        1008,
-        352
-      ],
-      "id": "a9d08f0c-e72a-4d17-8202-1a365aecb2c2",
-      "name": "Split Out",
       "alwaysOutputData": true,
       "retryOnFail": true
     },
@@ -869,8 +820,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1232,
-        -464
+        336,
+        448
       ],
       "id": "5a2a3cf2-1c5f-447a-837e-4eec96e84cf5",
       "name": "Loop Over Items"
@@ -881,8 +832,8 @@
       "name": "Replace Me",
       "typeVersion": 1,
       "position": [
-        1456,
-        -464
+        560,
+        448
       ],
       "id": "16c56aa6-fa62-41ad-90df-215511534af4"
     },
@@ -895,8 +846,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        432,
-        -464
+        -464,
+        448
       ],
       "id": "97bccc7b-e0bf-4ba3-a284-1bb99c1dd4c2",
       "name": "Extract from File1"
@@ -910,8 +861,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        1008,
-        -464
+        112,
+        448
       ],
       "id": "1bf9575f-b037-4a08-ba2c-503a03971cae",
       "name": "Split Out1",
@@ -928,8 +879,8 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        656,
-        -560
+        -240,
+        448
       ],
       "id": "d122165a-5fd5-4e49-9c7e-775a8b08adc4",
       "name": "Basic LLM Chain1",
@@ -945,8 +896,8 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        800,
-        -336
+        -112,
+        672
       ],
       "id": "ba5dfe60-42b6-4822-904c-01216c41c5f3",
       "name": "Structured Output Parser1",
@@ -960,8 +911,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        672,
-        -336
+        -240,
+        672
       ],
       "id": "9fb08616-095f-4d42-b133-aecf62d886c8",
       "name": "Google Gemini Chat Model1",
@@ -969,6 +920,53 @@
         "googlePalmApi": {
           "id": "dbYHbMOI7Nqe9oyt",
           "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1mWKF0jo8x-0vSRY_uaWe6zff4h9fpB4sTIfEIySKtvo",
+          "mode": "list",
+          "cachedResultName": "Historico",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mWKF0jo8x-0vSRY_uaWe6zff4h9fpB4sTIfEIySKtvo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 789993356,
+          "mode": "list",
+          "cachedResultName": "Resumos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mWKF0jo8x-0vSRY_uaWe6zff4h9fpB4sTIfEIySKtvo/edit#gid=789993356"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Número da UC",
+              "lookupValue": "={{ $json.output[0]['Número da UC'] }}"
+            },
+            {
+              "lookupColumn": "Conta mês",
+              "lookupValue": "={{ $json.output[0]['Conta mês'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1008,
+        -368
+      ],
+      "id": "f99bdb59-1d55-4261-9603-188e26a190ab",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8WKylFxZ2XQuE2El",
+          "name": "Google Sheets DmaeDpccdu"
         }
       }
     }
@@ -1084,7 +1082,7 @@
       "main": [
         [
           {
-            "node": "Extract from File1",
+            "node": "Extract from File",
             "type": "main",
             "index": 0
           }
@@ -1099,17 +1097,6 @@
     "Append row in sheet": {
       "main": [
         []
-      ]
-    },
-    "Get row(s) in sheet": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
       ]
     },
     "If": {
@@ -1149,11 +1136,6 @@
         [
           {
             "node": "Append row in sheet2",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Split Out",
             "type": "main",
             "index": 0
           }
@@ -1266,6 +1248,17 @@
           }
         ]
       ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1299,7 +1292,7 @@
       }
     ]
   },
-  "versionId": "55586ae2-b973-4b48-b8ea-6607067d19a0",
+  "versionId": "dd50f669-dbf3-47f8-a16b-d75f6a68a17c",
   "triggerCount": 1,
   "shared": [
     {
