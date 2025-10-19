@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-18T00:24:07.350Z",
-  "updatedAt": "2025-10-18T01:13:25.004Z",
+  "updatedAt": "2025-10-18T11:53:52.488Z",
   "id": "jvE43rnRypanwhQR",
   "name": "My workflow 12",
   "active": false,
@@ -11,8 +11,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -208,
-        -128
+        -512,
+        -256
       ],
       "id": "382f2fc6-4c38-479f-ab1d-febaf2ea9d96",
       "name": "When clicking ‘Execute workflow’"
@@ -53,11 +53,48 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -32,
-        -256
+        -816,
+        -336
       ],
       "id": "bc15323b-b173-4196-9e94-79f0534f3c16",
       "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://automation-browserless.2unk5k.easypanel.host/function",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "7b49ab0510e5deb668fc8f00ac18e415"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/javascript",
+        "body": "export default async function ({ page }) {\n  try {\n    // Acessa a página de login e espera o carregamento total\n    await page.goto('https://rs.equatorialenergia.com.br/login', { \n      waitUntil: 'networkidle2',\n      timeout: 120000\n    });\n\n    // Aguarda o campo de login estar visível\n    await page.waitForSelector('#txtDocumentoLogin', { visible: true, timeout: 60000 });\n    await page.type('#txtDocumentoLogin', '58978119034', { delay: 80 });\n\n    // Aguarda o campo de senha\n    await page.waitForSelector('#txtSenhaLogin', { visible: true, timeout: 60000 });\n    await page.type('#txtSenhaLogin', 'Ceee@6939', { delay: 80 });\n\n    // Aguarda o botão e clica\n    await page.waitForSelector('button[type=\"submit\"]', { visible: true, timeout: 60000 });\n    await page.click('button[type=\"submit\"]');\n\n    // Espera carregamento após login (aumentado o timeout)\n    await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 120000 });\n\n    // Espera o conteúdo da área logada aparecer\n    await page.waitForSelector('div#content', { visible: true, timeout: 90000 });\n    const content = await page.$eval('div#content', el => el.innerText.trim());\n\n    // Retorna o conteúdo coletado\n    return {\n      data: { success: true, content },\n      type: 'application/json',\n    };\n\n  } catch (error) {\n    // Captura erros e retorna log completo\n    console.error('Erro ao executar script:', error.message);\n\n    // Faz um screenshot da tela atual para depuração\n    await page.screenshot({ path: '/tmp/browserless-error.png' });\n\n    return {\n      data: { success: false, error: error.message },\n      type: 'application/json',\n    };\n  }\n}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -304,
+        -256
+      ],
+      "id": "ed41b32f-1b0a-479a-84b0-5b6a110f042c",
+      "name": "HTTP Request1"
     }
   ],
   "connections": {
@@ -65,7 +102,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "HTTP Request1",
             "type": "main",
             "index": 0
           }
@@ -79,7 +116,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "5d4bd4bf-f91e-4736-a13f-817ac6e3e527",
+  "versionId": "ffef7893-83f7-4a4d-bfac-170795dfc4a8",
   "triggerCount": 0,
   "shared": [
     {
