@@ -1,0 +1,28 @@
+{
+  "createdAt": "2025-10-22T01:27:57.616Z",
+  "updatedAt": "2025-10-22T01:27:57.616Z",
+  "id": "ry6juq0f9LFwNjLa",
+  "name": "Siges_AI_Manual",
+  "active": false,
+  "isArchived": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "17cb150c-72d5-44ad-ac03-8a7ad84c0283",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-22T01:27:57.616Z",
+      "updatedAt": "2025-10-22T01:27:57.616Z",
+      "role": "workflow:owner",
+      "workflowId": "ry6juq0f9LFwNjLa",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
