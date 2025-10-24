@@ -1,0 +1,190 @@
+{
+  "createdAt": "2025-10-23T17:43:38.421Z",
+  "updatedAt": "2025-10-23T18:12:46.140Z",
+  "id": "LhFybGyy4xXRNnOt",
+  "name": "My workflow 14",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chatManual",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -240,
+        -112
+      ],
+      "id": "249a0ffd-3b04-4506-9804-7fb72382a14c",
+      "name": "Webhook",
+      "webhookId": "a2d39fd7-af23-44b4-8a8b-4b20c8c9f63d"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cd1e4d97-aa8f-4d1c-87de-4ff81721cf75",
+              "name": "msg",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -32,
+        -112
+      ],
+      "id": "cac1c9cb-087e-4f5c-a05b-c6fad2d4fab3",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Webhook').item.json.body.msg }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        176,
+        -112
+      ],
+      "id": "5f37c6a9-78ab-4782-bcb9-413995e2944c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        48,
+        96
+      ],
+      "id": "f437a6ee-1a00-4ed8-89c1-c2f17533459d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "dbYHbMOI7Nqe9oyt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.body.user_id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        256,
+        240
+      ],
+      "id": "c7e4692f-6178-42bb-9952-8604850910fb",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"output\": {{ JSON.stringify($json.output) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        528,
+        -112
+      ],
+      "id": "bc564c59-eaed-4474-8aa1-8b6afa36806b",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "9c6ed32f-ec37-40fe-82b5-c55e8735a592",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-23T17:43:38.421Z",
+      "updatedAt": "2025-10-23T17:43:38.421Z",
+      "role": "workflow:owner",
+      "workflowId": "LhFybGyy4xXRNnOt",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
