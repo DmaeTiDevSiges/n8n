@@ -1,19 +1,1001 @@
 {
   "createdAt": "2025-10-22T01:27:57.616Z",
-  "updatedAt": "2025-10-22T01:27:57.616Z",
+  "updatedAt": "2025-10-23T17:42:45.172Z",
   "id": "ry6juq0f9LFwNjLa",
-  "name": "Siges_AI_Manual",
+  "name": "BaseConhecimento",
   "active": false,
   "isArchived": false,
-  "nodes": [],
-  "connections": {},
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "93296fd3-2dfb-4b6e-9d8a-944838a1517f",
+              "name": "file_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "81b98d63-cf55-4844-8661-1ca713c2d3a7",
+              "name": "file_type",
+              "value": "={{ $json.mimeType }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1200,
+        144
+      ],
+      "id": "bc5ff052-efd6-44c3-b6c3-fddb70502a18",
+      "name": "Edit Fields",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Edit Fields').item.json.file_id }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "text/plain",
+              "drawingsToFormat": "image/png"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -752,
+        144
+      ],
+      "id": "793007dc-76a1-485f-97f4-e84da318e450",
+      "name": "Google Drive",
+      "alwaysOutputData": true,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        336
+      ],
+      "id": "7ad342ce-0dcc-4d38-8709-5296ded0c52f",
+      "name": "Extract from File",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        176,
+        144
+      ],
+      "id": "b7359121-7c25-4e0f-8f8c-808ec39b26ca",
+      "name": "Supabase Vector Store",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.data || $json.text || $json.concatenated_data }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "file_id",
+                "value": "={{ $('Edit Fields').item.json.file_id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        272,
+        368
+      ],
+      "id": "0f0c7ce8-7d4c-4ebc-8e2a-37a5d79e334d",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        352,
+        576
+      ],
+      "id": "e11f6f37-6590-4268-8e0a-8b55cf6567c5",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "tableId": "documents",
+        "filterType": "string",
+        "filterString": "=metadata->>file_id=like.*{{ $json.file_id }}*"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -976,
+        144
+      ],
+      "id": "3353f21b-93b1-411e-bdca-efced8287ee5",
+      "name": "Supabase",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "=Você é um assistente especializado em analisar relatórios de atividades de uma empresa na área de manutenção industrial.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -1368,
+        1944
+      ],
+      "id": "159595dd-215d-41a2-9f9b-62172e6d38c2",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1712,
+        784
+      ],
+      "id": "3e893ac5-1e9f-4167-acef-d381d6275554",
+      "name": "When chat message received",
+      "webhookId": "ac796740-cf29-4be9-a516-5f31546acbdb"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1296,
+        2168
+      ],
+      "id": "167284a7-7cba-4454-88ed-4a57824ab6e0",
+      "name": "Postgres Chat Memory"
+    },
+    {
+      "parameters": {
+        "name": "documents",
+        "description": "=Você é um assistente especializado em analisar detalhadamente relatórios de atividades.\nOs relatórios já foram carregados e estão disponíveis na tabela vetorial documents do Supabase. \n\n### Suas tarefas são:\n1. Usar o RAG para buscar informações nos documentos carregados.\n2. Extrair informações detalhadas sobre os serviços de manutenção realizados, com base nos relatórios disponíveis. \n\n### Siga estas instruções:\n1.\tIdentifique nos relatorios de atendimentos as seguintes informações:\n1.1\tDados de Solicitação:\n1.1.1\tIdentificação da Ordem de Serviço ou OS;\n1.1.2\tPrioridade;\n1.1.3\tData solicitação;\n1.1.4\tUnidade;\n1.1.5\tSetor;\n1.1.6\tServiços a serem executados.\n\n1.2\tDados do Atendimento:\n1.2.1\tEmpresa responsável;\n1.2.2\tContrato;\n1.2.3\tData (inicio e fim);\n1.2.4\tEquipe;\n1.2.5\tSituação OS;\n1.2.6\tMotivo;\n1.2.7\tCausa;\n1.2.8\tObservações.\n\n1.3\tCusto geral (material, serviços e transporte);\n\n1.4\tDados das Atividades realizadas por Ativo:\n1.4.1\tDescrição do Ativo;\n1.4.2\tCodigo do Ativo;\n1.4.3\tDados de localização (Antes e depois do atendimento):\n1.4.3.1\tUnidade;\n1.4.3.2\tSetor;\n1.4.3.3\tPosição;\n1.4.3.4\tSituação;\n1.4.3.5\tData situação.\n1.4.3.6\tComentários;\nObservações: \nCasos os dados de localização antes e depois sejam diferentes, significa que houve uma movimentação de ativo.\n1.4.4\tIntervenções realizadas;\n1.4.5\tCusto por atividade (valores de materiais, serviços e transporte);\nObservações: \nA soma dos custos das atividades deverá ser o custo total do relatorio de atividades;\n1.5\tDados de processamento das informações (reportada, Revisada, Rejeitada e Arquivada):\n1.5.1\tData;\n1.5.2\tResponsável.\n\n### OBSERVAÇÔES\nA depender do questionamento do usuário poderá ser necessário agrupar informações de mais de um relatorio de atividades como por exemplo:\n\t\"Quais os serviços realizados no equipamento de código 1234 ?\"\n\"Quantos atentimentos houveram numa determinada Unidade ?\"\n\"Quais os custos de manutenção de OS eletricas preventivas da unidade XYZ ?\"\n\nCaso não encontre informações: \n- Informe que nao foram encontrados dados atualizados.\n",
+        "topK": 12
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        -1168,
+        2168
+      ],
+      "id": "b6bbf3a9-b87e-45db-9cc6-109460de5ca7",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        -1272,
+        2376
+      ],
+      "id": "d015a75f-17c4-43f6-99a6-ef0235c2c3cf",
+      "name": "Supabase Vector Store1"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1JL6rgjzk4idjQg_NMh02NmvYlQO-GkxA",
+          "mode": "list",
+          "cachedResultName": "knowledge_base",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1JL6rgjzk4idjQg_NMh02NmvYlQO-GkxA"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1424,
+        48
+      ],
+      "id": "822fe118-f42d-4bb5-b76a-14423878705e",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "vXX0kYJlJktPlbTK",
+          "name": "Google Drive DmaeDpccdu"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1JL6rgjzk4idjQg_NMh02NmvYlQO-GkxA",
+          "mode": "list",
+          "cachedResultName": "knowledge_base",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1JL6rgjzk4idjQg_NMh02NmvYlQO-GkxA"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1424,
+        240
+      ],
+      "id": "217c67b7-a041-44ab-9189-9324d7c8b5d7",
+      "name": "Google Drive Trigger1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -48
+      ],
+      "id": "fae394e5-e6b1-420d-87d8-24ec0b7c977f",
+      "name": "Extract from File1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Edit Fields').item.json.file_type }}",
+                    "rightValue": "application/pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "47c68362-267e-404f-bba6-e7c5f816cd31",
+                    "leftValue": "={{ $('Edit Fields').item.json.file_type }}",
+                    "rightValue": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "593fb2c9-4763-4fec-8e9e-718f3399bea7",
+                    "leftValue": "={{ $('Edit Fields').item.json.file_type }}",
+                    "rightValue": "application/vnd.google-apps.document",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 2,
+          "allMatchingOutputs": false
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -528,
+        128
+      ],
+      "id": "7605359e-f9e9-4725-affc-9d3472546d32",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        144
+      ],
+      "id": "10353cfb-8326-4743-b70f-2af2e617f943",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        144
+      ],
+      "id": "c99880f0-92cd-4906-9698-4f1bfea3fdc2",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -1424,
+        576
+      ],
+      "id": "ac7c37da-e74c-4772-9f6c-1b1604a8f7ef",
+      "name": "Embeddings OpenAI"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -1424,
+        2168
+      ],
+      "id": "fd0511eb-b3a0-46da-8612-192dbc2ed5a6",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -984,
+        2376
+      ],
+      "id": "85981184-c04f-468f-abd2-3fe3644f2d62",
+      "name": "OpenAI Chat Model1"
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -1192,
+        2584
+      ],
+      "id": "d70fbc06-2a99-4186-81c8-d8b93643b415",
+      "name": "Embeddings OpenAI1"
+    },
+    {
+      "parameters": {
+        "name": "servicesReports",
+        "description": "Busca de informações baseados nos relatorios de atendimentos.",
+        "topK": 12
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        -944,
+        1008
+      ],
+      "id": "d474b49d-afae-4f4b-a245-8848adb7b58b",
+      "name": "Vector Store Tool"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -1144,
+        784
+      ],
+      "id": "e60642b8-ddcf-49e3-95fe-0f0314909e14",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "options": {
+          "responseFormat": "text",
+          "topP": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -1200,
+        1008
+      ],
+      "id": "02d4592a-6f3c-48e6-a47d-c356a86d4a05",
+      "name": "OpenAI Chat Model2"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1072,
+        1008
+      ],
+      "id": "97079928-b6c3-4f52-88f9-fce4d6c4f158",
+      "name": "Postgres Chat Memory1"
+    },
+    {
+      "parameters": {
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        -1048,
+        1216
+      ],
+      "id": "f4aa46eb-c1b2-4921-af87-44be8a846d8c",
+      "name": "Supabase Vector Store2"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {
+          "responseFormat": "text"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        1216
+      ],
+      "id": "422e47a4-af8e-410c-83c9-b746e6037ed4",
+      "name": "OpenAI Chat Model3"
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {
+          "dimensions": 3072
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -968,
+        1424
+      ],
+      "id": "d3cc4039-9fe7-41cd-b813-9f13138885f7",
+      "name": "Embeddings OpenAI2"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        144,
+        368
+      ],
+      "id": "2954c5ed-fd47-4566-8d91-9f0171b89bcc",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "dbYHbMOI7Nqe9oyt",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chatManual",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2896,
+        -112
+      ],
+      "id": "24a9c27f-fe4b-4bb3-8670-a9cc2e4c71d0",
+      "name": "Webhook",
+      "webhookId": "a2d39fd7-af23-44b4-8a8b-4b20c8c9f63d"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cd1e4d97-aa8f-4d1c-87de-4ff81721cf75",
+              "name": "msg",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2688,
+        -112
+      ],
+      "id": "24f545a0-5b25-4a26-bc43-503f235e603a",
+      "name": "Edit Fields1"
+    }
+  ],
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store2": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store2",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "17cb150c-72d5-44ad-ac03-8a7ad84c0283",
+  "versionId": "b6979d66-5dab-4c9a-b9c6-6cc73ea39096",
   "triggerCount": 0,
   "shared": [
     {
