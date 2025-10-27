@@ -1,0 +1,66 @@
+{
+  "createdAt": "2025-10-26T11:45:20.871Z",
+  "updatedAt": "2025-10-26T12:07:33.522Z",
+  "id": "oC6K6d6aZ3ff8BeR",
+  "name": "python",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "14b6e566-9856-455d-a92f-f564d884b430",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from requests import get, post\nfrom datetime import datetime\nimport json\n\n# Configurações iniciais\nurl = 'https://www.siges-app-dmae-demo.flutterflow.app'\nheaders = {\n    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'\n}\n\ntry:\n    # Faz a requisição GET para o site\n    response = get(url, headers=headers, timeout=30)\n    \n    # Verifica se a requisição foi bem sucedida\n    response.raise_for_status()\n    \n    # Preparar resultado para o n8n\n    result = {\n        'success': True,\n        'status_code': response.status_code,\n        'headers': dict(response.headers),\n        'content_length': len(response.content),\n        'timestamp': datetime.now().isoformat(),\n        'url_accessed': url\n    }\n    \n    # Se for uma resposta HTML, pode adicionar preview do conteúdo\n    if 'text/html' in response.headers.get('content-type', ''):\n        result['content_preview'] = response.text[:500] + '...' if len(response.text) > 500 else response.text\n\nexcept Exception as e:\n    result = {\n        'success': False,\n        'error': str(e),\n        'timestamp': datetime.now().isoformat(),\n        'url_attempted': url\n    }\n\n# Retorna o resultado para o n8n\nreturn [result]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4dd797c5-9361-4dc7-a18d-6c6686272639",
+      "name": "Code in Python (Beta)"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "663fd86c-0ba1-4005-9ef8-17c76fec01d1",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-26T11:45:20.871Z",
+      "updatedAt": "2025-10-26T11:45:20.871Z",
+      "role": "workflow:owner",
+      "workflowId": "oC6K6d6aZ3ff8BeR",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
