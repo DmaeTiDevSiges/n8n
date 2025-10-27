@@ -1,0 +1,255 @@
+{
+  "createdAt": "2025-10-26T12:21:28.012Z",
+  "updatedAt": "2025-10-26T13:47:36.531Z",
+  "id": "U52IEFc1zq8RwPih",
+  "name": "Siges_Ai_OrderProgramming",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        248
+      ],
+      "id": "1d3cea37-795f-476d-8046-de7e5b0b6c56",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f5159554-045a-4221-a83e-54d37dd39a06",
+              "name": "unit_id",
+              "value": 1180,
+              "type": "number"
+            },
+            {
+              "id": "a9a79ee6-debc-43f5-b02c-29714545a4c0",
+              "name": "asset_tag_id",
+              "value": 33,
+              "type": "number"
+            },
+            {
+              "id": "9728401b-8998-46fb-a99c-e6acc18e62b1",
+              "name": "user_id",
+              "value": 124,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        248
+      ],
+      "id": "540f17c5-baff-49cf-812b-af15018fbff2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "v_orders_visits_assets",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "before_unit_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.unit_id }}"
+            },
+            {
+              "keyName": "before_tag_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.asset_tag_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -80
+      ],
+      "id": "b12b1290-bd33-4df5-aef1-748a424f41b5",
+      "name": "Get many rows",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Voce é um assistente virtual com a finalidade de dar informacoes sobre os serviços realizados nos ativos da unidade {{ $json.unit_id }} e o setor {{ $json.asset_tag_id }}. \n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        504,
+        248
+      ],
+      "id": "7c3e16d5-defd-4bc0-8853-56fc4d9ccb30",
+      "name": "AI Agent",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        448,
+        472
+      ],
+      "id": "0dfa3c27-4a03-48a2-814e-875e9be2ec60",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "tzO5MqoXWeGDpCJt",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=user_id"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        576,
+        472
+      ],
+      "id": "badfe735-e4a0-4454-939e-c718301d0da6",
+      "name": "Simple Memory",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "v_orders_visits_assets",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "before_unit_id",
+              "condition": "eq",
+              "keyValue": "={{ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+            },
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        704,
+        472
+      ],
+      "id": "c6109f9a-2eb4-4cbb-9a6b-8cf892dd816c",
+      "name": "Tool",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        []
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "ceeba123-762e-4e1e-a340-4187eba63253",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-26T12:21:28.012Z",
+      "updatedAt": "2025-10-26T12:21:28.012Z",
+      "role": "workflow:owner",
+      "workflowId": "U52IEFc1zq8RwPih",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
