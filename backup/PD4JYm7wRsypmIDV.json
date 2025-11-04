@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-03T15:43:35.900Z",
   "createdAt": "2025-08-24T12:31:50.829Z",
-  "updatedAt": "2025-10-24T20:37:35.040Z",
   "id": "PD4JYm7wRsypmIDV",
   "name": "SigesWhatsappUserNotification",
   "active": true,
@@ -193,8 +193,8 @@
   "triggerCount": 1,
   "shared": [
     {
-      "createdAt": "2025-08-24T12:31:50.829Z",
       "updatedAt": "2025-08-24T12:31:50.829Z",
+      "createdAt": "2025-08-24T12:31:50.829Z",
       "role": "workflow:owner",
       "workflowId": "PD4JYm7wRsypmIDV",
       "projectId": "9g2PRDfYwAMYBotF"
