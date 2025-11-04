@@ -1,0 +1,336 @@
+{
+  "updatedAt": "2025-11-03T20:46:13.863Z",
+  "createdAt": "2025-11-03T14:55:45.745Z",
+  "id": "jYaEATJIa0GwMEaL",
+  "name": "ImgproxyResizeImg",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Código para n8n - gera signed URL do imgproxy\nconst crypto = require('crypto');\n\n// 1) Ler parâmetros do nó \"Set Imgproxy URL\"\nconst imgproxyNode = $('Set Imgproxy URL').item.json || {};\nconst imgproxyUrl = imgproxyNode.imgproxyUrl;      // ex: \"https://automation-imgproxy....\"\nconst keyHex = imgproxyNode.imgproxyKey;          // -> corrigido para 'imgproxyKey'\nconst saltHex = imgproxyNode.imgproxySalt;        // -> 'imgproxySalt'\n\n// 2) Ler URL da imagem do nó \"Set Img URL\"\nconst imgNode = $('Set Img URL').item.json || {};\nconst imgUrl = imgNode.imgUrl;                    // -> corrigido para 'imgUrl'\n\n// Validações rápidas para debug (remove se quiser)\nif (!imgproxyUrl) throw new Error('imgproxyUrl is missing');\nif (!keyHex) throw new Error('imgproxyKey is missing');\nif (!saltHex) throw new Error('imgproxySalt is missing');\nif (!imgUrl) throw new Error('imgUrl is missing');\n\nconsole.log('imgproxyUrl:', imgproxyUrl);\nconsole.log('imgUrl:', imgUrl);\n\n// 3) Converte key e salt de HEX para Buffer (necessário para HMAC)\nconst key = Buffer.from(keyHex, 'hex');\nconst salt = Buffer.from(saltHex, 'hex');\n\n// 4) Define o path do processamento\n// Usamos encodeURIComponent para garantir que a URL de origem não quebre o path.\n// Ex: /resize:fill:300:300/plain/<URL-encoded>\nconst path = `/resize:fill:100:100/plain/${encodeURIComponent(imgUrl)}`;\n\n// 5) Cria a assinatura segura (HMAC-SHA256)\n// imgproxy espera HMAC-SHA256 com key como chave e (salt + path) como mensagem\nconst hmac = crypto.createHmac('sha256', key)\n  .update(salt)\n  .update(path)\n  .digest('base64url'); // Node suporta 'base64url'\n\n// 6) Monta a URL final assinada\n// Normaliza barras entre host e assinatura\nconst base = imgproxyUrl.endsWith('/') ? imgproxyUrl.slice(0, -1) : imgproxyUrl;\nconst signedUrl = `${base}/${hmac}${path}`;\n\n// Retorna como saída do node\nreturn [{\n  json: {\n    signedUrl,\n    debug: {\n      path,\n      hmac,\n      base\n    }\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -304
+      ],
+      "id": "8aead825-46f1-4c63-b0d4-011b2b1929cd",
+      "name": "Code in JavaScript",
+      "executeOnce": false,
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "imgproxyUrl",
+              "value": "https://automation-imgproxy.2unk5k.easypanel.host/"
+            },
+            {
+              "name": "imgproxyKey",
+              "value": "0406c48e328fbb7d6e"
+            },
+            {
+              "name": "imgproxySalt",
+              "value": "21011ae0c17d5f7150"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0e955cbc-217c-452d-a590-47b4aa575f69",
+      "name": "Set Imgproxy URL",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "imgUrl",
+              "value": "={{ $('Webhook').item.json.body.storage_url_public }}/{{ $('Webhook').item.json.body.storage_bucket }}/{{ $('Webhook').item.json.body.img_path }}/{{ $('Webhook').item.json.body.img_name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b6575346-2619-41eb-ac3b-9b30ce8b9444",
+      "name": "Set Img URL",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        96,
+        -304
+      ],
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Webhook').item.json.body.storage_url_upload }}/{{ $('Webhook').item.json.body.storage_bucket }}/{{ $('Webhook').item.json.body.img_path }}/thumb_{{ $('Webhook').item.json.body.img_name }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        768,
+        -304
+      ],
+      "id": "5c9cda3f-694d-421c-9c4a-e8e8300ed25b",
+      "name": "HTTP SB Storage Upload",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.signedUrl }}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "56255390-7d60-4513-ae53-5f3200f580ab",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        544,
+        -304
+      ],
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "resize",
+        "width": 250,
+        "height": 250,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -112
+      ],
+      "id": "ae2e6fa8-3343-43cb-ab6d-47c2c787d9dd",
+      "name": "Edit Image"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.body.storage_url_public }}/{{ $json.body.storage_bucket }}/{{ $json.body.img_path }}/{{ $json.body.img_name }}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "484e0d90-a11b-46c3-9b80-e905c05e09d9",
+      "name": "Download Image2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Webhook').item.json.body.storage_url_upload }}/{{ $('Webhook').item.json.body.storage_bucket }}/{{ $('Webhook').item.json.body.img_path }}/thumb_{{ $('Webhook').item.json.body.img_name }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        -112
+      ],
+      "id": "47a904f2-bcc2-411a-9eba-599e2c2a4808",
+      "name": "HTTP SB Storage Upload2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "convertToThumbnail",
+        "options": {}
+      },
+      "id": "40162b81-fe0e-4e32-b9f6-8ed696c0ce02",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -208
+      ],
+      "webhookId": "3ac73b27-b23a-422c-8c56-f6561c34e330"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Código para n8n - gera signed URL do imgproxy\nconst crypto = require('crypto');\n\n// 1) Ler parâmetros do nó \"Set Imgproxy URL\"\nconst imgproxyNode = $('Set Imgproxy URL').item.json || {};\nconst imgproxyUrl = imgproxyNode.imgproxyUrl;      // ex: \"https://automation-imgproxy....\"\nconst keyHex = imgproxyNode.imgproxyKey;          // -> corrigido para 'imgproxyKey'\nconst saltHex = imgproxyNode.imgproxySalt;        // -> 'imgproxySalt'\n\n// 2) Ler URL da imagem do nó \"Set Img URL\"\nconst imgNode = $('Set Img URL').item.json || {};\nconst imgUrl = imgNode.imgUrl;                    // -> corrigido para 'imgUrl'\n\n// Validações rápidas para debug (remove se quiser)\nif (!imgproxyUrl) throw new Error('imgproxyUrl is missing');\nif (!keyHex) throw new Error('imgproxyKey is missing');\nif (!saltHex) throw new Error('imgproxySalt is missing');\nif (!imgUrl) throw new Error('imgUrl is missing');\n\nconsole.log('imgproxyUrl:', imgproxyUrl);\nconsole.log('imgUrl:', imgUrl);\n\n// 3) Converte key e salt de HEX para Buffer (necessário para HMAC)\nconst key = Buffer.from(keyHex, 'hex');\nconst salt = Buffer.from(saltHex, 'hex');\n\n// 4) Define o path do processamento\n// Usamos encodeURIComponent para garantir que a URL de origem não quebre o path.\n// Ex: /resize:fill:300:300/plain/<URL-encoded>\nconst path = `/resize:fill:100:100/plain/${encodeURIComponent(imgUrl)}`;\n\n// 5) Cria a assinatura segura (HMAC-SHA256)\n// imgproxy espera HMAC-SHA256 com key como chave e (salt + path) como mensagem\nconst hmac = crypto.createHmac('sha256', key)\n  .update(salt)\n  .update(path)\n  .digest('base64url'); // Node suporta 'base64url'\n\n// 6) Monta a URL final assinada\n// Normaliza barras entre host e assinatura\nconst base = imgproxyUrl.endsWith('/') ? imgproxyUrl.slice(0, -1) : imgproxyUrl;\nconst signedUrl = `${base}/${hmac}${path}`;\n\n// Retorna como saída do node\nreturn [{\n  json: {\n    signedUrl,\n    debug: {\n      path,\n      hmac,\n      base\n    }\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -336,
+        -432
+      ],
+      "id": "b8758e3d-2476-4994-ba65-89c2721efd85",
+      "name": "Code in JavaScript1",
+      "executeOnce": false,
+      "retryOnFail": true
+    }
+  ],
+  "connections": {
+    "Set Imgproxy URL": {
+      "main": [
+        [
+          {
+            "node": "Set Img URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Img URL": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "HTTP SB Storage Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image": {
+      "main": [
+        [
+          {
+            "node": "HTTP SB Storage Upload2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image2": {
+      "main": [
+        [
+          {
+            "node": "Edit Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Imgproxy URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "services-n8n-editor.2unk5k.easypanel.host",
+            "user-agent": "Dart/3.8 (dart:io)",
+            "content-length": "284",
+            "accept-encoding": "gzip",
+            "content-type": "application/json; charset=utf-8",
+            "x-forwarded-for": "187.110.193.81",
+            "x-forwarded-host": "services-n8n-editor.2unk5k.easypanel.host",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "578d354eea6a",
+            "x-real-ip": "187.110.193.81"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "img_path": "companies/1/assets/408561",
+            "img_name": "1762199471282599.jpg",
+            "storage_url_public": "https://vps.supabase.siges-app.com.br/storage/v1/object/public",
+            "storage_url_upload": "https://vps.supabase.siges-app.com.br/storage/v1/object",
+            "storage_bucket": "siges"
+          },
+          "webhookUrl": "https://services-n8n-webhook.2unk5k.easypanel.host/webhook/convertToThumbnail",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "62dda7d5-4220-49cc-8fef-79fbe32dde51",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-11-03T14:55:45.745Z",
+      "createdAt": "2025-11-03T14:55:45.745Z",
+      "role": "workflow:owner",
+      "workflowId": "jYaEATJIa0GwMEaL",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
