@@ -1,0 +1,336 @@
+{
+  "updatedAt": "2025-11-04T01:29:32.456Z",
+  "createdAt": "2025-11-03T20:45:12.466Z",
+  "id": "CGFyJzo7UXKGaqQQ",
+  "name": "ImgproxyResizeImg",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// --- util: hex -> bytes\nfunction hexToUint8Array(hex) {\n  if (!hex) return new Uint8Array(0);\n  if (hex.length % 2) throw new Error('Hex string must have even length');\n  const out = new Uint8Array(hex.length / 2);\n  for (let i = 0; i < hex.length; i += 2) out[i / 2] = parseInt(hex.slice(i, i + 2), 16);\n  return out;\n}\n\n// --- util: string -> utf8 bytes (fallback safe)\nfunction stringToUint8Array(str) {\n  // safe fallback que funciona no sandbox (evita TextEncoder)\n  const utf8 = unescape(encodeURIComponent(str));\n  const arr = new Uint8Array(utf8.length);\n  for (let i = 0; i < utf8.length; i++) arr[i] = utf8.charCodeAt(i);\n  return arr;\n}\n\nfunction base64ToBase64Url(b64) {\n  return b64.replace(/\\+/g, '-').replace(/\\//g, '_').replace(/=+$/, '');\n}\n\n// --- SHA-256 (puro JS) ---\n// Implementation adapted to be compact and work with Uint8Array input.\n// Returns Uint8Array(32).\nfunction sha256(buffer) {\n  // constants\n  const K = [\n    0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,\n    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,\n    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,\n    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,\n    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,\n    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,\n    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,\n    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2\n  ];\n\n  function ROTR(n, x) { return (x >>> n) | (x << (32 - n)); }\n  function Σ0(x) { return (ROTR(2, x) ^ ROTR(13, x) ^ ROTR(22, x)) >>> 0; }\n  function Σ1(x) { return (ROTR(6, x) ^ ROTR(11, x) ^ ROTR(25, x)) >>> 0; }\n  function σ0(x) { return (ROTR(7, x) ^ ROTR(18, x) ^ (x >>> 3)) >>> 0; }\n  function σ1(x) { return (ROTR(17, x) ^ ROTR(19, x) ^ (x >>> 10)) >>> 0; }\n\n  const msg = buffer;\n  const ml = msg.length * 8;\n\n  // padding\n  const withOne = new Uint8Array(msg.length + 1);\n  withOne.set(msg, 0);\n  withOne[msg.length] = 0x80;\n\n  // compute length of padded message (multiple of 512 bits = 64 bytes) minus 8 bytes of length\n  let paddedLen = withOne.length;\n  while ((paddedLen + 8) % 64 !== 0) paddedLen++;\n  const padded = new Uint8Array(paddedLen + 8);\n  padded.set(withOne);\n  // append 64-bit big-endian length\n  for (let i = 0; i < 8; i++) {\n    padded[padded.length - 1 - i] = (ml >>> (8 * i)) & 0xff;\n  }\n\n  // initial hash values\n  let H0 = 0x6a09e667|0;\n  let H1 = 0xbb67ae85|0;\n  let H2 = 0x3c6ef372|0;\n  let H3 = 0xa54ff53a|0;\n  let H4 = 0x510e527f|0;\n  let H5 = 0x9b05688c|0;\n  let H6 = 0x1f83d9ab|0;\n  let H7 = 0x5be0cd19|0;\n\n  const W = new Uint32Array(64);\n\n  for (let i = 0; i < padded.length; i += 64) {\n    // prepare message schedule\n    for (let t = 0; t < 16; t++) {\n      const j = i + t*4;\n      W[t] = ((padded[j] << 24) | (padded[j+1] << 16) | (padded[j+2] << 8) | (padded[j+3])) >>> 0;\n    }\n    for (let t = 16; t < 64; t++) {\n      W[t] = (σ1(W[t-2]) + W[t-7] + σ0(W[t-15]) + W[t-16]) >>> 0;\n    }\n\n    // init working vars\n    let a = H0, b = H1, c = H2, d = H3, e = H4, f = H5, g = H6, h = H7;\n\n    for (let t = 0; t < 64; t++) {\n      const T1 = (h + Σ1(e) + (((e & f) ^ ((~e) & g)) >>> 0) + K[t] + W[t]) >>> 0;\n      const T2 = (Σ0(a) + (((a & b) ^ (a & c) ^ (b & c)) >>> 0)) >>> 0;\n      h = g;\n      g = f;\n      f = e;\n      e = (d + T1) >>> 0;\n      d = c;\n      c = b;\n      b = a;\n      a = (T1 + T2) >>> 0;\n    }\n\n    H0 = (H0 + a) >>> 0;\n    H1 = (H1 + b) >>> 0;\n    H2 = (H2 + c) >>> 0;\n    H3 = (H3 + d) >>> 0;\n    H4 = (H4 + e) >>> 0;\n    H5 = (H5 + f) >>> 0;\n    H6 = (H6 + g) >>> 0;\n    H7 = (H7 + h) >>> 0;\n  }\n\n  // produce hash\n  const hash = new Uint8Array(32);\n  const hvals = [H0,H1,H2,H3,H4,H5,H6,H7];\n  for (let i=0; i<8; i++) {\n    hash[i*4]   = (hvals[i] >>> 24) & 0xff;\n    hash[i*4+1] = (hvals[i] >>> 16) & 0xff;\n    hash[i*4+2] = (hvals[i] >>> 8) & 0xff;\n    hash[i*4+3] = hvals[i] & 0xff;\n  }\n  return hash;\n}\n\n// --- HMAC-SHA256 (puro) ---\nfunction hmacSha256(keyBytes, messageBytes) {\n  const blockSize = 64; // block size in bytes for SHA-256\n  let key = keyBytes;\n  if (key.length > blockSize) {\n    key = sha256(key);\n  }\n  if (key.length < blockSize) {\n    const tmp = new Uint8Array(blockSize);\n    tmp.set(key, 0);\n    key = tmp;\n  }\n\n  const oKeyPad = new Uint8Array(blockSize);\n  const iKeyPad = new Uint8Array(blockSize);\n  for (let i = 0; i < blockSize; i++) {\n    oKeyPad[i] = key[i] ^ 0x5c;\n    iKeyPad[i] = key[i] ^ 0x36;\n  }\n\n  // inner = SHA256(iKeyPad || message)\n  const innerBuf = new Uint8Array(iKeyPad.length + messageBytes.length);\n  innerBuf.set(iKeyPad, 0);\n  innerBuf.set(messageBytes, iKeyPad.length);\n  const innerHash = sha256(innerBuf);\n\n  // outer = SHA256(oKeyPad || innerHash)\n  const outerBuf = new Uint8Array(oKeyPad.length + innerHash.length);\n  outerBuf.set(oKeyPad, 0);\n  outerBuf.set(innerHash, oKeyPad.length);\n  const hmac = sha256(outerBuf);\n  return hmac;\n}\n\n// --- Main: ler inputs (ajuste nomes de nodes se necessário) ---\nconst imgproxyNode = $node['Set Imgproxy URL']?.json || {};\nconst imgNode = $node['Set Img URL']?.json || {};\n\nconst imgproxyUrl = imgproxyNode.imgproxyUrl;\nconst keyHex = imgproxyNode.imgproxyKey;\nconst saltHex = imgproxyNode.imgproxySalt;\nconst imgUrl = imgNode.imgUrl;\n\nif (!imgproxyUrl) throw new Error('imgproxyUrl is missing');\nif (!keyHex) throw new Error('imgproxyKey is missing');\nif (!saltHex) throw new Error('imgproxySalt is missing');\nif (!imgUrl) throw new Error('imgUrl is missing');\n\n// --- monta path ---\nconst path = `/resize:fill:400/plain/${encodeURIComponent(imgUrl)}`;\n\n// --- converte e concat salt + path ---\nconst keyBytes = hexToUint8Array(keyHex);\nconst saltBytes = hexToUint8Array(saltHex);\nconst pathBytes = stringToUint8Array(path);\nconst message = new Uint8Array(saltBytes.length + pathBytes.length);\nmessage.set(saltBytes, 0);\nmessage.set(pathBytes, saltBytes.length);\n\n// --- calcula hmac e formata base64url ---\nconst hmacBytes = hmacSha256(keyBytes, message);\nconst b64 = Buffer.from(hmacBytes).toString('base64'); // Buffer funciona no sandbox\nconst hmacBase64Url = base64ToBase64Url(b64);\n\n// --- signed url ---\nconst base = imgproxyUrl.endsWith('/') ? imgproxyUrl.slice(0, -1) : imgproxyUrl;\nconst signedUrl = `${base}/${hmacBase64Url}${path}`;\n\n// --- retorna ---\nreturn [\n  {\n    json: {\n      signedUrl,\n      debug: {\n        path,\n        hmac: hmacBase64Url,\n        base\n      }\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -304
+      ],
+      "id": "8aead825-46f1-4c63-b0d4-011b2b1929cd",
+      "name": "Code in JavaScript",
+      "executeOnce": false,
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "imgproxyUrl",
+              "value": "https://automation-imgproxy.2unk5k.easypanel.host/"
+            },
+            {
+              "name": "imgproxyKey",
+              "value": "0406c48e328fbb7d6e"
+            },
+            {
+              "name": "imgproxySalt",
+              "value": "21011ae0c17d5f7150"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0e955cbc-217c-452d-a590-47b4aa575f69",
+      "name": "Set Imgproxy URL",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "imgUrl",
+              "value": "={{ $('Webhook').item.json.body.storage_url_public }}/{{ $('Webhook').item.json.body.storage_bucket }}/{{ $('Webhook').item.json.body.img_path }}/{{ $('Webhook').item.json.body.img_name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b6575346-2619-41eb-ac3b-9b30ce8b9444",
+      "name": "Set Img URL",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        96,
+        -304
+      ],
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Webhook').item.json.body.storage_url_upload }}/{{ $('Webhook').item.json.body.storage_bucket }}/{{ $('Webhook').item.json.body.img_path }}/thumb_{{ $('Webhook').item.json.body.img_name }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        768,
+        -304
+      ],
+      "id": "5c9cda3f-694d-421c-9c4a-e8e8300ed25b",
+      "name": "HTTP SB Storage Upload",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.signedUrl }}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "56255390-7d60-4513-ae53-5f3200f580ab",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        544,
+        -304
+      ],
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "resize",
+        "width": 250,
+        "height": 250,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -112
+      ],
+      "id": "ae2e6fa8-3343-43cb-ab6d-47c2c787d9dd",
+      "name": "Edit Image"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.body.storage_url_public }}/{{ $json.body.storage_bucket }}/{{ $json.body.img_path }}/{{ $json.body.img_name }}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "484e0d90-a11b-46c3-9b80-e905c05e09d9",
+      "name": "Download Image2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Webhook').item.json.body.storage_url_upload }}/{{ $('Webhook').item.json.body.storage_bucket }}/{{ $('Webhook').item.json.body.img_path }}/thumb_{{ $('Webhook').item.json.body.img_name }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        -112
+      ],
+      "id": "47a904f2-bcc2-411a-9eba-599e2c2a4808",
+      "name": "HTTP SB Storage Upload2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "convertToThumbnail",
+        "options": {}
+      },
+      "id": "40162b81-fe0e-4e32-b9f6-8ed696c0ce02",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -208
+      ],
+      "webhookId": "3ac73b27-b23a-422c-8c56-f6561c34e330"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Código para n8n - gera signed URL do imgproxy\nconst crypto = require('crypto');\n\n// 1) Ler parâmetros do nó \"Set Imgproxy URL\"\nconst imgproxyNode = $('Set Imgproxy URL').item.json || {};\nconst imgproxyUrl = imgproxyNode.imgproxyUrl;      // ex: \"https://automation-imgproxy....\"\nconst keyHex = imgproxyNode.imgproxyKey;          // -> corrigido para 'imgproxyKey'\nconst saltHex = imgproxyNode.imgproxySalt;        // -> 'imgproxySalt'\n\n// 2) Ler URL da imagem do nó \"Set Img URL\"\nconst imgNode = $('Set Img URL').item.json || {};\nconst imgUrl = imgNode.imgUrl;                    // -> corrigido para 'imgUrl'\n\n// Validações rápidas para debug (remove se quiser)\nif (!imgproxyUrl) throw new Error('imgproxyUrl is missing');\nif (!keyHex) throw new Error('imgproxyKey is missing');\nif (!saltHex) throw new Error('imgproxySalt is missing');\nif (!imgUrl) throw new Error('imgUrl is missing');\n\nconsole.log('imgproxyUrl:', imgproxyUrl);\nconsole.log('imgUrl:', imgUrl);\n\n// 3) Converte key e salt de HEX para Buffer (necessário para HMAC)\nconst key = Buffer.from(keyHex, 'hex');\nconst salt = Buffer.from(saltHex, 'hex');\n\n// 4) Define o path do processamento\n// Usamos encodeURIComponent para garantir que a URL de origem não quebre o path.\n// Ex: /resize:fill:300:300/plain/<URL-encoded>\nconst path = `/resize:fill:100:100/plain/${encodeURIComponent(imgUrl)}`;\n\n// 5) Cria a assinatura segura (HMAC-SHA256)\n// imgproxy espera HMAC-SHA256 com key como chave e (salt + path) como mensagem\nconst hmac = crypto.createHmac('sha256', key)\n  .update(salt)\n  .update(path)\n  .digest('base64url'); // Node suporta 'base64url'\n\n// 6) Monta a URL final assinada\n// Normaliza barras entre host e assinatura\nconst base = imgproxyUrl.endsWith('/') ? imgproxyUrl.slice(0, -1) : imgproxyUrl;\nconst signedUrl = `${base}/${hmac}${path}`;\n\n// Retorna como saída do node\nreturn [{\n  json: {\n    signedUrl,\n    debug: {\n      path,\n      hmac,\n      base\n    }\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -336,
+        -432
+      ],
+      "id": "b8758e3d-2476-4994-ba65-89c2721efd85",
+      "name": "Code in JavaScript1",
+      "executeOnce": false,
+      "retryOnFail": true
+    }
+  ],
+  "connections": {
+    "Set Imgproxy URL": {
+      "main": [
+        [
+          {
+            "node": "Set Img URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Img URL": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "HTTP SB Storage Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image": {
+      "main": [
+        [
+          {
+            "node": "HTTP SB Storage Upload2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image2": {
+      "main": [
+        [
+          {
+            "node": "Edit Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set Imgproxy URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "services-n8n-editor.2unk5k.easypanel.host",
+            "user-agent": "Dart/3.8 (dart:io)",
+            "content-length": "284",
+            "accept-encoding": "gzip",
+            "content-type": "application/json; charset=utf-8",
+            "x-forwarded-for": "181.216.144.11",
+            "x-forwarded-host": "services-n8n-editor.2unk5k.easypanel.host",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "578d354eea6a",
+            "x-real-ip": "181.216.144.11"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "img_path": "companies/1/assets/408561",
+            "img_name": "1762218216299469.jpg",
+            "storage_url_public": "https://vps.supabase.siges-app.com.br/storage/v1/object/public",
+            "storage_url_upload": "https://vps.supabase.siges-app.com.br/storage/v1/object",
+            "storage_bucket": "siges"
+          },
+          "webhookUrl": "https://services-n8n-webhook.2unk5k.easypanel.host/webhook/convertToThumbnail",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "5b14ac7e-7e02-433a-a815-d9426a92b628",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-11-03T20:45:12.466Z",
+      "createdAt": "2025-11-03T20:45:12.466Z",
+      "role": "workflow:owner",
+      "workflowId": "CGFyJzo7UXKGaqQQ",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
