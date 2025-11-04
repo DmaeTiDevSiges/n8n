@@ -1,10 +1,10 @@
 {
+  "updatedAt": "2025-11-03T19:34:47.947Z",
   "createdAt": "2025-09-06T01:23:31.970Z",
-  "updatedAt": "2025-09-06T02:08:00.863Z",
   "id": "vP2HRCy7CokZrhOY",
   "name": "convertToThumbnail",
   "active": false,
-  "isArchived": false,
+  "isArchived": true,
   "nodes": [
     {
       "parameters": {
@@ -182,12 +182,12 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "9372fa08-7042-41a0-9495-b6383764cf43",
+  "versionId": "21629abe-d20d-47ff-b1f7-d2b69d44da4c",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-09-06T01:23:31.970Z",
       "updatedAt": "2025-09-06T01:23:31.970Z",
+      "createdAt": "2025-09-06T01:23:31.970Z",
       "role": "workflow:owner",
       "workflowId": "vP2HRCy7CokZrhOY",
       "projectId": "9g2PRDfYwAMYBotF"
