@@ -1,9 +1,9 @@
 {
+  "updatedAt": "2025-11-05T17:19:17.076Z",
   "createdAt": "2025-10-04T16:02:20.406Z",
-  "updatedAt": "2025-10-30T17:04:10.435Z",
   "id": "gFxu0zmVZoaMtLeu",
   "name": "SigesWhatsAppAssetsAvailableDraft",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
@@ -257,8 +257,8 @@
   "triggerCount": 1,
   "shared": [
     {
-      "createdAt": "2025-10-04T16:02:20.406Z",
       "updatedAt": "2025-10-04T16:02:20.406Z",
+      "createdAt": "2025-10-04T16:02:20.406Z",
       "role": "workflow:owner",
       "workflowId": "gFxu0zmVZoaMtLeu",
       "projectId": "9g2PRDfYwAMYBotF"
