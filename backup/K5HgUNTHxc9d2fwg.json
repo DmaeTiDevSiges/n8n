@@ -1,19 +1,57 @@
 {
-  "updatedAt": "2025-11-05T00:52:50.028Z",
+  "updatedAt": "2025-11-05T17:18:53.951Z",
   "createdAt": "2025-11-05T00:52:50.028Z",
   "id": "K5HgUNTHxc9d2fwg",
   "name": "phyton",
   "active": false,
   "isArchived": false,
-  "nodes": [],
-  "connections": {},
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a4c6266d-9750-49c9-a574-ef57a8140f7d",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import requests\n\n# URL do site\nurl = \"https://www.siges-app.com.br\"\n\ntry:\n    # Faz uma requisição GET ao site\n    response = requests.get(url, timeout=10)\n\n    # Verifica se a resposta foi bem-sucedida (código HTTP 200)\n    if response.status_code == 200:\n        print(\"Acesso bem-sucedido ao site!\")\n        print(\"Título da página:\", response.text.split(\"<title>\")[1].split(\"</title>\")[0])\n    else:\n        print(f\"Falha ao acessar o site. Código de status: {response.status_code}\")\n\nexcept requests.exceptions.RequestException as e:\n    print(\"Erro ao acessar o site:\", e)\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "c14864ac-2234-44aa-b392-873787afb24e",
+      "name": "Code in Python (Beta)"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "72e1b3ce-69a1-44d8-8138-87d9ffbed450",
+  "versionId": "8a091abe-de93-4b32-a32b-906c73a25ca8",
   "triggerCount": 0,
   "shared": [
     {
