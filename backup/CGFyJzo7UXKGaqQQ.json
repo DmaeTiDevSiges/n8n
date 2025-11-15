@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-04T01:29:32.456Z",
+  "updatedAt": "2025-11-14T19:13:06.258Z",
   "createdAt": "2025-11-03T20:45:12.466Z",
   "id": "CGFyJzo7UXKGaqQQ",
   "name": "ImgproxyResizeImg",
@@ -31,11 +31,11 @@
             },
             {
               "name": "imgproxyKey",
-              "value": "0406c48e328fbb7d6e"
+              "value": "9f2b3dd2d1a8f3c1c8d99f728e644d53f2dbf95aad11638c04e1cc713ba4e3d0"
             },
             {
               "name": "imgproxySalt",
-              "value": "21011ae0c17d5f7150"
+              "value": "7df118c62eb74e52090640bce8bd728c22f2f890a6a642fd89f9c6ac4f54e35b"
             }
           ]
         },
@@ -321,7 +321,7 @@
       }
     ]
   },
-  "versionId": "5b14ac7e-7e02-433a-a815-d9426a92b628",
+  "versionId": "7f59b3f5-535f-477a-b234-4a738ae94b59",
   "triggerCount": 1,
   "shared": [
     {
