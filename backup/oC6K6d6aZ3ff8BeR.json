@@ -1,10 +1,10 @@
 {
+  "updatedAt": "2025-11-27T11:07:57.223Z",
   "createdAt": "2025-10-26T11:45:20.871Z",
-  "updatedAt": "2025-10-26T12:07:33.522Z",
   "id": "oC6K6d6aZ3ff8BeR",
   "name": "python",
   "active": false,
-  "isArchived": false,
+  "isArchived": true,
   "nodes": [
     {
       "parameters": {},
@@ -51,12 +51,12 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "663fd86c-0ba1-4005-9ef8-17c76fec01d1",
+  "versionId": "6ebb827d-5113-4522-9d9c-6e4c65f3982c",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-10-26T11:45:20.871Z",
       "updatedAt": "2025-10-26T11:45:20.871Z",
+      "createdAt": "2025-10-26T11:45:20.871Z",
       "role": "workflow:owner",
       "workflowId": "oC6K6d6aZ3ff8BeR",
       "projectId": "9g2PRDfYwAMYBotF"
