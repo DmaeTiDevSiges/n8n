@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2025-11-05T17:18:53.951Z",
+  "updatedAt": "2025-11-27T11:06:55.208Z",
   "createdAt": "2025-11-05T00:52:50.028Z",
   "id": "K5HgUNTHxc9d2fwg",
   "name": "phyton",
   "active": false,
-  "isArchived": false,
+  "isArchived": true,
   "nodes": [
     {
       "parameters": {},
@@ -51,7 +51,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "8a091abe-de93-4b32-a32b-906c73a25ca8",
+  "versionId": "29a189e9-ec28-4249-9609-a2e64d2315c3",
   "triggerCount": 0,
   "shared": [
     {
