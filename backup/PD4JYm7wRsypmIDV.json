@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-26T21:05:52.717Z",
+  "updatedAt": "2025-11-27T13:56:45.677Z",
   "createdAt": "2025-08-24T12:31:50.829Z",
   "id": "PD4JYm7wRsypmIDV",
   "name": "SigesWhatsappUserNotification",
@@ -133,63 +133,8 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "host": "services-n8n-webhook.2unk5k.easypanel.host",
-            "user-agent": "pg_net/0.14.0",
-            "content-length": "585",
-            "accept": "*/*",
-            "content-type": "application/json",
-            "x-forwarded-for": "207.180.227.22",
-            "x-forwarded-host": "services-n8n-webhook.2unk5k.easypanel.host",
-            "x-forwarded-port": "443",
-            "x-forwarded-proto": "https",
-            "x-forwarded-server": "071d2d1643f3",
-            "x-real-ip": "207.180.227.22",
-            "accept-encoding": "gzip"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "type": "INSERT",
-            "table": "users_notifications",
-            "record": {
-              "id": 33,
-              "body": "dasdasdasdasdasd",
-              "o_id": null,
-              "type": null,
-              "v_id": null,
-              "title": null,
-              "img_url": null,
-              "is_read": false,
-              "read_at": null,
-              "unit_id": null,
-              "token_fcm": null,
-              "company_id": null,
-              "created_at": "2025-08-24T13:39:18.915122",
-              "user_id_to": null,
-              "activity_id": null,
-              "page_target": null,
-              "user_id_from": null,
-              "version_mode": "live",
-              "img_file_name": null,
-              "img_file_path": null,
-              "user_to_whatsapp": "5551994080770@s.whatsapp.net",
-              "user_from_name_short": null
-            },
-            "schema": "public",
-            "old_record": null
-          },
-          "webhookUrl": "https://services-n8n-webhook.2unk5k.easypanel.host/webhook/whatsappUserNotification",
-          "executionMode": "production"
-        }
-      }
-    ]
-  },
-  "versionId": "632ffd72-0e07-4eb4-b161-ff6fdbc0df42",
+  "pinData": {},
+  "versionId": "267d5ca5-ec05-4280-a931-deeee4f56b53",
   "triggerCount": 1,
   "shared": [
     {
