@@ -1,0 +1,295 @@
+{
+  "updatedAt": "2025-12-12T02:53:57.828Z",
+  "createdAt": "2025-12-11T12:38:52.980Z",
+  "id": "9vJ43795ObPubYL8",
+  "name": "SigesOVFinancialExportToCSV",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "OVFinancialExportToCsv",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        -112
+      ],
+      "id": "05897658-e199-4588-a970-830c3af9a3aa",
+      "name": "Webhook",
+      "webhookId": "9d7d1940-0b20-4cc9-a3e2-1079773b684e"
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "=data",
+        "options": {
+          "fileName": "=Siges_Financeiro_Atendimentos_{{ DateTime.now().toFormat('yyyy-MM-dd_HH-mm-ss') }}.csv"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        -112
+      ],
+      "id": "ac4e51e3-e0c9-4dff-96fc-0352ddd511d8",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"fileUrl\": \"{{ $('Webhook').item.json.body.storage_url }}/{{ $json.Key }}\",\n\"filename\": \"{{ $('Convert to File').item.binary.data.fileName }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1344,
+        -112
+      ],
+      "id": "4c35c04c-95c8-4d57-8241-c925cb4abebb",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Webhook').item.json.body.storage_url }}/{{ $('Webhook').item.json.body.storage_bucket }}/temp/reports/{{ $binary.data.fileName }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        -112
+      ],
+      "id": "2a236342-81b7-4a8e-80c6-663f42d7acf6",
+      "name": "HTTP SB Storage Upload",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "681ffc34-5a51-426d-b485-a39535ddffc8",
+              "name": "Contrato",
+              "value": "={{ $json.o_contract_description }}",
+              "type": "string"
+            },
+            {
+              "id": "45e7676b-f15d-4791-877d-f6bc746a745b",
+              "name": "OS",
+              "value": "={{ $json.o_mask }}",
+              "type": "string"
+            },
+            {
+              "id": "bd672309-6279-4f85-9218-31344acae4f8",
+              "name": "Unidade",
+              "value": "={{ $json.o_unit_description }}",
+              "type": "string"
+            },
+            {
+              "id": "479ff703-fe0e-489b-8c7c-1f25b1cb7126",
+              "name": "OS Tipo",
+              "value": "={{ $json.o_type_code }}",
+              "type": "string"
+            },
+            {
+              "id": "d6539e4d-7049-4e73-8832-8a554d37f103",
+              "name": "OS Tipo Sub",
+              "value": "={{ $json.o_type_sub_code }}",
+              "type": "string"
+            },
+            {
+              "id": "e54282f1-2e87-48a9-a3ef-420b9b058754",
+              "name": "Situação",
+              "value": "={{ $json.o_status_description }}",
+              "type": "string"
+            },
+            {
+              "id": "6eecee65-276d-45c2-b0f0-5e5377bbe23c",
+              "name": "Processamento",
+              "value": "={{ $json.ov_processing_description }}",
+              "type": "string"
+            },
+            {
+              "id": "fef404a1-3c87-426c-96a8-d20784555829",
+              "name": "Materiais",
+              "value": "={{ $json.ov_materials_value }}",
+              "type": "number"
+            },
+            {
+              "id": "3791205b-b7c1-4a22-afab-d94d0b8809a4",
+              "name": "Transportes",
+              "value": "={{ $json.ov_vehicles_value }}",
+              "type": "number"
+            },
+            {
+              "id": "1dde1fbf-59a1-4d50-ae80-55d526246f98",
+              "name": "Serviços",
+              "value": "={{ $json.ov_services_value }}",
+              "type": "number"
+            },
+            {
+              "id": "cfff0bb2-b957-488f-a3cd-945e96916796",
+              "name": "Total",
+              "value": "={{ $json.ov_total_value }}",
+              "type": "number"
+            },
+            {
+              "id": "b60485c8-4fd5-40df-9293-171d5e48527e",
+              "name": "Inicio",
+              "value": "={{ $json.ov_started_at }}",
+              "type": "string"
+            },
+            {
+              "id": "b1e13759-59f9-4c0c-8415-47a749c6244c",
+              "name": "Fim",
+              "value": "={{ $json.ov_ended_at }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        -112
+      ],
+      "id": "e9e42a58-281a-4bc7-98e8-6881cc826bed",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "// normaliza body.data para sempre ser um ARRAY em item.json.data\nreturn items.map(item => {\n  const raw = item.json?.body?.data ?? item.json?.data;\n\n  if (raw === undefined || raw === null) {\n    item.json.data = [];\n    return item;\n  }\n\n  // se já é array, usa\n  if (Array.isArray(raw)) {\n    item.json.data = raw;\n    return item;\n  }\n\n  // se for string tenta parsear\n  if (typeof raw === 'string') {\n    const s = raw.trim();\n    if (s === '') {\n      item.json.data = [];\n      return item;\n    }\n    try {\n      const parsed = JSON.parse(s);\n      item.json.data = Array.isArray(parsed) ? parsed : [parsed];\n      return item;\n    } catch (err) {\n      throw new Error('Falha ao JSON.parse(body.data): ' + err.message);\n    }\n  }\n\n  // se for objeto único transforma em array\n  item.json.data = [raw];\n  return item;\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        -112
+      ],
+      "id": "2491e823-001d-4f5e-adc4-fc585e292bdc",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -112
+      ],
+      "id": "4e4ff20f-5b34-4625-8cbb-26aafb916b99",
+      "name": "Split Out"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP SB Storage Upload": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "HTTP SB Storage Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "413379e2-d886-4e51-ba2f-88c1e98bc4c2",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-11T12:38:52.980Z",
+      "createdAt": "2025-12-11T12:38:52.980Z",
+      "role": "workflow:owner",
+      "workflowId": "9vJ43795ObPubYL8",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
