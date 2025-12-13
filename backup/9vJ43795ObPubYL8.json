@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2025-12-12T02:53:57.828Z",
+  "updatedAt": "2025-12-12T17:01:05.534Z",
   "createdAt": "2025-12-11T12:38:52.980Z",
   "id": "9vJ43795ObPubYL8",
   "name": "SigesOVFinancialExportToCSV",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -27,6 +27,7 @@
       "parameters": {
         "binaryPropertyName": "=data",
         "options": {
+          "delimiter": ";",
           "fileName": "=Siges_Financeiro_Atendimentos_{{ DateTime.now().toFormat('yyyy-MM-dd_HH-mm-ss') }}.csv"
         }
       },
@@ -130,37 +131,43 @@
             {
               "id": "fef404a1-3c87-426c-96a8-d20784555829",
               "name": "Materiais",
-              "value": "={{ $json.ov_materials_value }}",
-              "type": "number"
+              "value": "={{ (function(v){\n  if (v === null || v === undefined || v === '') return '0,00';\n  \n  // Remove espaços, quebras de linha e caracteres extras\n  const cleaned = String(v).trim().replace(/\\n/g, '');\n  \n  const n = Number(cleaned.replace(',', '.'));\n  if (isNaN(n)) return '0,00';\n  \n  // formata com separador de milhares e vírgula decimal\n  const parts = n.toFixed(2).split('.');\n  parts[0] = parts[0].replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.');\n  return parts.join(',');\n})($json.ov_materials_value) }}",
+              "type": "string"
             },
             {
               "id": "3791205b-b7c1-4a22-afab-d94d0b8809a4",
               "name": "Transportes",
-              "value": "={{ $json.ov_vehicles_value }}",
-              "type": "number"
+              "value": "={{ (function(v){\n  if (v === null || v === undefined || v === '') return '0,00';\n  \n  // Remove espaços, quebras de linha e caracteres extras\n  const cleaned = String(v).trim().replace(/\\n/g, '');\n  \n  const n = Number(cleaned.replace(',', '.'));\n  if (isNaN(n)) return '0,00';\n  \n  // formata com separador de milhares e vírgula decimal\n  const parts = n.toFixed(2).split('.');\n  parts[0] = parts[0].replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.');\n  return parts.join(',');\n})($json.ov_vehicles_value) }}",
+              "type": "string"
             },
             {
               "id": "1dde1fbf-59a1-4d50-ae80-55d526246f98",
-              "name": "Serviços",
-              "value": "={{ $json.ov_services_value }}",
-              "type": "number"
+              "name": "=Serviços",
+              "value": "={{ (function(v){\n  if (v === null || v === undefined || v === '') return '0,00';\n  \n  // Remove espaços, quebras de linha e caracteres extras\n  const cleaned = String(v).trim().replace(/\\n/g, '');\n  \n  const n = Number(cleaned.replace(',', '.'));\n  if (isNaN(n)) return '0,00';\n  \n  // formata com separador de milhares e vírgula decimal\n  const parts = n.toFixed(2).split('.');\n  parts[0] = parts[0].replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.');\n  return parts.join(',');\n})($json.ov_services_value) }}",
+              "type": "string"
             },
             {
               "id": "cfff0bb2-b957-488f-a3cd-945e96916796",
               "name": "Total",
-              "value": "={{ $json.ov_total_value }}",
-              "type": "number"
+              "value": "={{ (function(v){\n  if (v === null || v === undefined || v === '') return '0,00';\n  \n  // Remove espaços, quebras de linha e caracteres extras\n  const cleaned = String(v).trim().replace(/\\n/g, '');\n  \n  const n = Number(cleaned.replace(',', '.'));\n  if (isNaN(n)) return '0,00';\n  \n  // formata com separador de milhares e vírgula decimal\n  const parts = n.toFixed(2).split('.');\n  parts[0] = parts[0].replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.');\n  return parts.join(',');\n})($json.ov_total_value) }}",
+              "type": "string"
             },
             {
               "id": "b60485c8-4fd5-40df-9293-171d5e48527e",
               "name": "Inicio",
-              "value": "={{ $json.ov_started_at }}",
+              "value": "={{(function(v) {\n  if(!v)return'';\n  const date=new Date(v);\n  if(isNaN(date.getTime()))return v;\n  return date.toLocaleDateString('pt-BR')+' '+date.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});})($json.ov_started_at)}}\n\n",
               "type": "string"
             },
             {
               "id": "b1e13759-59f9-4c0c-8415-47a749c6244c",
               "name": "Fim",
-              "value": "={{ $json.ov_ended_at }}",
+              "value": "={{(function(v) {\n  if(!v)return'';\n  const date=new Date(v);\n  if(isNaN(date.getTime()))return v;\n  return date.toLocaleDateString('pt-BR')+' '+date.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});})($json.ov_ended_at)}}",
+              "type": "string"
+            },
+            {
+              "id": "fdc416f6-610c-4888-97fd-6e9fa1238d39",
+              "name": "",
+              "value": "",
               "type": "string"
             }
           ]
@@ -280,7 +287,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "413379e2-d886-4e51-ba2f-88c1e98bc4c2",
+  "versionId": "804aca70-77da-4b23-a0ff-74991c081786",
   "triggerCount": 1,
   "shared": [
     {
