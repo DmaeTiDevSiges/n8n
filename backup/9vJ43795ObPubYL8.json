@@ -1,15 +1,15 @@
 {
-  "updatedAt": "2025-12-12T17:01:05.534Z",
+  "updatedAt": "2025-12-13T18:09:44.015Z",
   "createdAt": "2025-12-11T12:38:52.980Z",
   "id": "9vJ43795ObPubYL8",
-  "name": "SigesOVFinancialExportToCSV",
+  "name": "SigesOVFinancialExportToXls",
   "active": true,
   "isArchived": false,
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "OVFinancialExportToCsv",
+        "path": "OVFinancialExportToXls",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -17,28 +17,11 @@
       "typeVersion": 2.1,
       "position": [
         0,
-        -112
+        -272
       ],
       "id": "05897658-e199-4588-a970-830c3af9a3aa",
       "name": "Webhook",
       "webhookId": "9d7d1940-0b20-4cc9-a3e2-1079773b684e"
-    },
-    {
-      "parameters": {
-        "binaryPropertyName": "=data",
-        "options": {
-          "delimiter": ";",
-          "fileName": "=Siges_Financeiro_Atendimentos_{{ DateTime.now().toFormat('yyyy-MM-dd_HH-mm-ss') }}.csv"
-        }
-      },
-      "type": "n8n-nodes-base.convertToFile",
-      "typeVersion": 1.1,
-      "position": [
-        896,
-        -112
-      ],
-      "id": "ac4e51e3-e0c9-4dff-96fc-0352ddd511d8",
-      "name": "Convert to File"
     },
     {
       "parameters": {
@@ -49,8 +32,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        1344,
-        -112
+        1568,
+        -272
       ],
       "id": "4c35c04c-95c8-4d57-8241-c925cb4abebb",
       "name": "Respond to Webhook"
@@ -69,8 +52,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1120,
-        -112
+        1344,
+        -272
       ],
       "id": "2a236342-81b7-4a8e-80c6-663f42d7acf6",
       "name": "HTTP SB Storage Upload",
@@ -94,7 +77,7 @@
             },
             {
               "id": "45e7676b-f15d-4791-877d-f6bc746a745b",
-              "name": "OS",
+              "name": "=OS",
               "value": "={{ $json.o_mask }}",
               "type": "string"
             },
@@ -131,41 +114,41 @@
             {
               "id": "fef404a1-3c87-426c-96a8-d20784555829",
               "name": "Materiais",
-              "value": "={{ (function(v){\n  if (v === null || v === undefined || v === '') return '0,00';\n  \n  // Remove espaços, quebras de linha e caracteres extras\n  const cleaned = String(v).trim().replace(/\\n/g, '');\n  \n  const n = Number(cleaned.replace(',', '.'));\n  if (isNaN(n)) return '0,00';\n  \n  // formata com separador de milhares e vírgula decimal\n  const parts = n.toFixed(2).split('.');\n  parts[0] = parts[0].replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.');\n  return parts.join(',');\n})($json.ov_materials_value) }}",
-              "type": "string"
+              "value": "={{ Number($json.ov_materials_value || 0) }}",
+              "type": "number"
             },
             {
               "id": "3791205b-b7c1-4a22-afab-d94d0b8809a4",
-              "name": "Transportes",
-              "value": "={{ (function(v){\n  if (v === null || v === undefined || v === '') return '0,00';\n  \n  // Remove espaços, quebras de linha e caracteres extras\n  const cleaned = String(v).trim().replace(/\\n/g, '');\n  \n  const n = Number(cleaned.replace(',', '.'));\n  if (isNaN(n)) return '0,00';\n  \n  // formata com separador de milhares e vírgula decimal\n  const parts = n.toFixed(2).split('.');\n  parts[0] = parts[0].replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.');\n  return parts.join(',');\n})($json.ov_vehicles_value) }}",
-              "type": "string"
+              "name": "=Transportes",
+              "value": "={{ Number($json.ov_vehicles_value || 0) }}",
+              "type": "number"
             },
             {
               "id": "1dde1fbf-59a1-4d50-ae80-55d526246f98",
               "name": "=Serviços",
-              "value": "={{ (function(v){\n  if (v === null || v === undefined || v === '') return '0,00';\n  \n  // Remove espaços, quebras de linha e caracteres extras\n  const cleaned = String(v).trim().replace(/\\n/g, '');\n  \n  const n = Number(cleaned.replace(',', '.'));\n  if (isNaN(n)) return '0,00';\n  \n  // formata com separador de milhares e vírgula decimal\n  const parts = n.toFixed(2).split('.');\n  parts[0] = parts[0].replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.');\n  return parts.join(',');\n})($json.ov_services_value) }}",
-              "type": "string"
+              "value": "={{ Number($json.ov_services_value || 0) }}",
+              "type": "number"
             },
             {
-              "id": "cfff0bb2-b957-488f-a3cd-945e96916796",
+              "id": "fdc416f6-610c-4888-97fd-6e9fa1238d39",
               "name": "Total",
-              "value": "={{ (function(v){\n  if (v === null || v === undefined || v === '') return '0,00';\n  \n  // Remove espaços, quebras de linha e caracteres extras\n  const cleaned = String(v).trim().replace(/\\n/g, '');\n  \n  const n = Number(cleaned.replace(',', '.'));\n  if (isNaN(n)) return '0,00';\n  \n  // formata com separador de milhares e vírgula decimal\n  const parts = n.toFixed(2).split('.');\n  parts[0] = parts[0].replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.');\n  return parts.join(',');\n})($json.ov_total_value) }}",
-              "type": "string"
+              "value": "={{ Number($json.ov_total_value || 0) }}",
+              "type": "number"
             },
             {
               "id": "b60485c8-4fd5-40df-9293-171d5e48527e",
               "name": "Inicio",
-              "value": "={{(function(v) {\n  if(!v)return'';\n  const date=new Date(v);\n  if(isNaN(date.getTime()))return v;\n  return date.toLocaleDateString('pt-BR')+' '+date.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});})($json.ov_started_at)}}\n\n",
+              "value": "={{ $json.ov_started_at }}",
               "type": "string"
             },
             {
               "id": "b1e13759-59f9-4c0c-8415-47a749c6244c",
-              "name": "Fim",
-              "value": "={{(function(v) {\n  if(!v)return'';\n  const date=new Date(v);\n  if(isNaN(date.getTime()))return v;\n  return date.toLocaleDateString('pt-BR')+' '+date.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});})($json.ov_ended_at)}}",
+              "name": "=Fim",
+              "value": "={{ $json.ov_ended_at }}",
               "type": "string"
             },
             {
-              "id": "fdc416f6-610c-4888-97fd-6e9fa1238d39",
+              "id": "d029f532-5f0e-4182-88c3-6b628b445080",
               "name": "",
               "value": "",
               "type": "string"
@@ -177,8 +160,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        672,
-        -112
+        896,
+        -272
       ],
       "id": "e9e42a58-281a-4bc7-98e8-6881cc826bed",
       "name": "Edit Fields"
@@ -191,7 +174,7 @@
       "typeVersion": 2,
       "position": [
         224,
-        -112
+        -272
       ],
       "id": "2491e823-001d-4f5e-adc4-fc585e292bdc",
       "name": "Code in JavaScript"
@@ -205,10 +188,43 @@
       "typeVersion": 1,
       "position": [
         448,
-        -112
+        -272
       ],
       "id": "4e4ff20f-5b34-4625-8cbb-26aafb916b99",
       "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "=Siges_Financeiro_Atendimentos_{{ DateTime.now().toFormat('yyyy-MM-dd_HH-mm-ss') }}.xlsx",
+          "headerRow": true,
+          "sheetName": "Sheet"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        -272
+      ],
+      "id": "32ce8a6d-5d39-48ac-ac4f-7d807866f370",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "function toDateBR(v) {\n  if (!v) return null;\n\n  const d = new Date(v);\n  if (isNaN(d.getTime())) return null;\n\n  // UTC → Brasil (UTC-3)\n  return new Date(d.getTime() - 3 * 60 * 60 * 1000);\n}\n\n// cria datas reais (Date object)\nitem.json.Inicio = toDateBR(item.json.ov_started_at);\nitem.json.Fim    = toDateBR(item.json.ov_ended_at);\n\n// retorna o item modificado\nreturn item;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -272
+      ],
+      "id": "cc13d2e8-ae38-4461-84f7-b077caa91ce0",
+      "name": "Code in JavaScript1",
+      "executeOnce": false
     }
   ],
   "connections": {
@@ -228,17 +244,6 @@
         [
           {
             "node": "Respond to Webhook",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Convert to File": {
-      "main": [
-        [
-          {
-            "node": "HTTP SB Storage Upload",
             "type": "main",
             "index": 0
           }
@@ -271,6 +276,28 @@
       "main": [
         [
           {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "HTTP SB Storage Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
             "node": "Edit Fields",
             "type": "main",
             "index": 0
@@ -287,7 +314,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "804aca70-77da-4b23-a0ff-74991c081786",
+  "versionId": "4f0c401a-c24f-4767-9282-d551591ee83c",
   "triggerCount": 1,
   "shared": [
     {
