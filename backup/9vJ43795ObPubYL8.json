@@ -1,15 +1,15 @@
 {
-  "updatedAt": "2025-12-13T18:09:44.015Z",
+  "updatedAt": "2025-12-14T23:20:13.899Z",
   "createdAt": "2025-12-11T12:38:52.980Z",
   "id": "9vJ43795ObPubYL8",
-  "name": "SigesOVFinancialExportToXls",
+  "name": "SigesExportToXls",
   "active": true,
   "isArchived": false,
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "OVFinancialExportToXls",
+        "path": "exportToXls",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -17,7 +17,7 @@
       "typeVersion": 2.1,
       "position": [
         0,
-        -272
+        -224
       ],
       "id": "05897658-e199-4588-a970-830c3af9a3aa",
       "name": "Webhook",
@@ -33,7 +33,7 @@
       "typeVersion": 1.4,
       "position": [
         1568,
-        -272
+        -224
       ],
       "id": "4c35c04c-95c8-4d57-8241-c925cb4abebb",
       "name": "Respond to Webhook"
@@ -53,7 +53,7 @@
       "typeVersion": 4.2,
       "position": [
         1344,
-        -272
+        -224
       ],
       "id": "2a236342-81b7-4a8e-80c6-663f42d7acf6",
       "name": "HTTP SB Storage Upload",
@@ -70,6 +70,18 @@
         "assignments": {
           "assignments": [
             {
+              "id": "b60485c8-4fd5-40df-9293-171d5e48527e",
+              "name": "Inicio",
+              "value": "={{ \n  new Date($json.ov_started_at)\n    .toLocaleString('pt-BR', {\n      day: '2-digit',\n      month: '2-digit',\n      year: 'numeric',\n      hour: '2-digit',\n      minute: '2-digit',\n      hour12: false\n    })\n}}",
+              "type": "string"
+            },
+            {
+              "id": "b1e13759-59f9-4c0c-8415-47a749c6244c",
+              "name": "=Fim",
+              "value": "={{ \n  new Date($json.ov_ended_at)\n    .toLocaleString('pt-BR', {\n      day: '2-digit',\n      month: '2-digit',\n      year: 'numeric',\n      hour: '2-digit',\n      minute: '2-digit',\n      hour12: false\n    })\n}}\n",
+              "type": "string"
+            },
+            {
               "id": "681ffc34-5a51-426d-b485-a39535ddffc8",
               "name": "Contrato",
               "value": "={{ $json.o_contract_description }}",
@@ -82,12 +94,6 @@
               "type": "string"
             },
             {
-              "id": "bd672309-6279-4f85-9218-31344acae4f8",
-              "name": "Unidade",
-              "value": "={{ $json.o_unit_description }}",
-              "type": "string"
-            },
-            {
               "id": "479ff703-fe0e-489b-8c7c-1f25b1cb7126",
               "name": "OS Tipo",
               "value": "={{ $json.o_type_code }}",
@@ -97,6 +103,18 @@
               "id": "d6539e4d-7049-4e73-8832-8a554d37f103",
               "name": "OS Tipo Sub",
               "value": "={{ $json.o_type_sub_code }}",
+              "type": "string"
+            },
+            {
+              "id": "bd672309-6279-4f85-9218-31344acae4f8",
+              "name": "Unidade",
+              "value": "={{ $json.o_unit_description }}",
+              "type": "string"
+            },
+            {
+              "id": "a2e5e023-3ebf-4623-9f99-2ec06a14b46c",
+              "name": "Setor",
+              "value": "={{ $json.o_asset_tag_description }}",
               "type": "string"
             },
             {
@@ -134,24 +152,6 @@
               "name": "Total",
               "value": "={{ Number($json.ov_total_value || 0) }}",
               "type": "number"
-            },
-            {
-              "id": "b60485c8-4fd5-40df-9293-171d5e48527e",
-              "name": "Inicio",
-              "value": "={{ $json.ov_started_at }}",
-              "type": "string"
-            },
-            {
-              "id": "b1e13759-59f9-4c0c-8415-47a749c6244c",
-              "name": "=Fim",
-              "value": "={{ $json.ov_ended_at }}",
-              "type": "string"
-            },
-            {
-              "id": "d029f532-5f0e-4182-88c3-6b628b445080",
-              "name": "",
-              "value": "",
-              "type": "string"
             }
           ]
         },
@@ -161,7 +161,7 @@
       "typeVersion": 3.4,
       "position": [
         896,
-        -272
+        -416
       ],
       "id": "e9e42a58-281a-4bc7-98e8-6881cc826bed",
       "name": "Edit Fields"
@@ -174,7 +174,7 @@
       "typeVersion": 2,
       "position": [
         224,
-        -272
+        -224
       ],
       "id": "2491e823-001d-4f5e-adc4-fc585e292bdc",
       "name": "Code in JavaScript"
@@ -188,7 +188,7 @@
       "typeVersion": 1,
       "position": [
         448,
-        -272
+        -224
       ],
       "id": "4e4ff20f-5b34-4625-8cbb-26aafb916b99",
       "name": "Split Out"
@@ -197,7 +197,7 @@
       "parameters": {
         "operation": "xlsx",
         "options": {
-          "fileName": "=Siges_Financeiro_Atendimentos_{{ DateTime.now().toFormat('yyyy-MM-dd_HH-mm-ss') }}.xlsx",
+          "fileName": "={{ $('Webhook').item.json.body.file_name }}_{{ DateTime.now().toFormat('yyyy-MM-dd_HH-mm-ss') }}.xlsx",
           "headerRow": true,
           "sheetName": "Sheet"
         }
@@ -206,25 +206,243 @@
       "typeVersion": 1.1,
       "position": [
         1120,
-        -272
+        -224
       ],
       "id": "32ce8a6d-5d39-48ac-ac4f-7d807866f370",
       "name": "Convert to File"
     },
     {
       "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "function toDateBR(v) {\n  if (!v) return null;\n\n  const d = new Date(v);\n  if (isNaN(d.getTime())) return null;\n\n  // UTC → Brasil (UTC-3)\n  return new Date(d.getTime() - 3 * 60 * 60 * 1000);\n}\n\n// cria datas reais (Date object)\nitem.json.Inicio = toDateBR(item.json.ov_started_at);\nitem.json.Fim    = toDateBR(item.json.ov_ended_at);\n\n// retorna o item modificado\nreturn item;\n"
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.report_name }}",
+                    "rightValue": "financialOVs",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f58d7823-29b9-4a62-b721-5c2f6b6a38e0"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "financial_ov"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1b786062-5bbf-43d3-8538-8c0c4f3aa47e",
+                    "leftValue": "={{ $('Webhook').item.json.body.report_name }}",
+                    "rightValue": "unit_assets",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "unit_assets"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1a3aa1d3-35c2-49c2-b5e5-0d6c3bec41b9",
+                    "leftValue": "={{ $('Webhook').item.json.body.report_name }}",
+                    "rightValue": "unit_assets_tag_available",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "unit_assets_tag_available"
+            }
+          ]
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
       "position": [
         672,
-        -272
+        -240
       ],
-      "id": "cc13d2e8-ae38-4461-84f7-b077caa91ce0",
-      "name": "Code in JavaScript1",
-      "executeOnce": false
+      "id": "cae9e774-c731-4a11-8056-1faba110ffc4",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "681ffc34-5a51-426d-b485-a39535ddffc8",
+              "name": "Unidade",
+              "value": "={{ $json.unit_description }}",
+              "type": "string"
+            },
+            {
+              "id": "479ff703-fe0e-489b-8c7c-1f25b1cb7126",
+              "name": "Setor",
+              "value": "={{ $json.tag_description }}",
+              "type": "string"
+            },
+            {
+              "id": "d6539e4d-7049-4e73-8832-8a554d37f103",
+              "name": "Posição",
+              "value": "={{ $json.tag_sub_description }}",
+              "type": "string"
+            },
+            {
+              "id": "bd672309-6279-4f85-9218-31344acae4f8",
+              "name": "Tipo",
+              "value": "={{ $json.type_description }}",
+              "type": "string"
+            },
+            {
+              "id": "a2e5e023-3ebf-4623-9f99-2ec06a14b46c",
+              "name": "Código",
+              "value": "={{ $json.code }}",
+              "type": "string"
+            },
+            {
+              "id": "e54282f1-2e87-48a9-a3ef-420b9b058754",
+              "name": "Descrição",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "6eecee65-276d-45c2-b0f0-5e5377bbe23c",
+              "name": "Situação",
+              "value": "={{ $json.status_description }}",
+              "type": "string"
+            },
+            {
+              "id": "b60485c8-4fd5-40df-9293-171d5e48527e",
+              "name": "Data",
+              "value": "={{ \n  new Date($json.status_at)\n    .toLocaleString('pt-BR', {\n      day: '2-digit',\n      month: '2-digit',\n      year: 'numeric',\n      hour: '2-digit',\n      minute: '2-digit',\n      hour12: false\n    })\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        -224
+      ],
+      "id": "a79c5720-15c7-4569-b631-ddde00b413f9",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "681ffc34-5a51-426d-b485-a39535ddffc8",
+              "name": "Unidade",
+              "value": "={{ $json.unit_description }}",
+              "type": "string"
+            },
+            {
+              "id": "479ff703-fe0e-489b-8c7c-1f25b1cb7126",
+              "name": "Setor",
+              "value": "={{ $json.tag_description }}",
+              "type": "string"
+            },
+            {
+              "id": "d6539e4d-7049-4e73-8832-8a554d37f103",
+              "name": "Posição",
+              "value": "={{ $json.tag_sub_description }}",
+              "type": "string"
+            },
+            {
+              "id": "b60485c8-4fd5-40df-9293-171d5e48527e",
+              "name": "Data",
+              "value": "={{ \n  new Date($json.reported_at)\n    .toLocaleString('pt-BR', {\n      day: '2-digit',\n      month: '2-digit',\n      year: 'numeric',\n      hour: '2-digit',\n      minute: '2-digit',\n      hour12: false\n    })\n}}",
+              "type": "string"
+            },
+            {
+              "id": "e928bcd5-b21f-4e88-b3f0-15eee638c59a",
+              "name": "Disponivel",
+              "value": "={{ $json.is_available }}",
+              "type": "boolean"
+            },
+            {
+              "id": "f3403dcc-73ac-44a5-a5a8-fd29b19a684c",
+              "name": "=Comentarios",
+              "value": "={{ $json.comments }}",
+              "type": "string"
+            },
+            {
+              "id": "c144cd06-a7a6-4591-abdd-602c196ab89c",
+              "name": "=Motivos",
+              "value": "={{ $json.asset_unavailable_reason_description }}",
+              "type": "string"
+            },
+            {
+              "id": "5fed735c-fc5e-4785-8527-7cbb8a7dc7ea",
+              "name": "Responsavel",
+              "value": "={{ $json.reported_user_name_short }}",
+              "type": "string"
+            },
+            {
+              "id": "3eb71516-7a7c-40c1-96b6-70c7d32aca59",
+              "name": "Distancia (m)",
+              "value": "={{ $json.unit_reported_distance_m }}",
+              "type": "number"
+            },
+            {
+              "id": "1c4e578f-7999-4986-aef0-16dc90ff37fe",
+              "name": "Anexo",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        -32
+      ],
+      "id": "991519e9-9773-4e8c-bd8d-d63fff7b20be",
+      "name": "Edit Fields2"
     }
   ],
   "connections": {
@@ -276,7 +494,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript1",
+            "node": "Switch",
             "type": "main",
             "index": 0
           }
@@ -294,11 +512,47 @@
         ]
       ]
     },
-    "Code in JavaScript1": {
+    "Switch": {
       "main": [
         [
           {
             "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
             "type": "main",
             "index": 0
           }
@@ -314,7 +568,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "4f0c401a-c24f-4767-9282-d551591ee83c",
+  "versionId": "dd54c0f4-9455-48a6-b581-25fd04ba8fb8",
   "triggerCount": 1,
   "shared": [
     {
