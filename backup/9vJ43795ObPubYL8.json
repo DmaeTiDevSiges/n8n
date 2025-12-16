@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-14T23:20:13.899Z",
+  "updatedAt": "2025-12-15T14:02:06.970Z",
   "createdAt": "2025-12-11T12:38:52.980Z",
   "id": "9vJ43795ObPubYL8",
   "name": "SigesExportToXls",
@@ -71,19 +71,19 @@
           "assignments": [
             {
               "id": "b60485c8-4fd5-40df-9293-171d5e48527e",
-              "name": "Inicio",
-              "value": "={{ \n  new Date($json.ov_started_at)\n    .toLocaleString('pt-BR', {\n      day: '2-digit',\n      month: '2-digit',\n      year: 'numeric',\n      hour: '2-digit',\n      minute: '2-digit',\n      hour12: false\n    })\n}}",
+              "name": "=Inicio",
+              "value": "={{ $json.ov_started_at.substring(0, 19).replace('T', ' ') }}",
               "type": "string"
             },
             {
-              "id": "b1e13759-59f9-4c0c-8415-47a749c6244c",
-              "name": "=Fim",
-              "value": "={{ \n  new Date($json.ov_ended_at)\n    .toLocaleString('pt-BR', {\n      day: '2-digit',\n      month: '2-digit',\n      year: 'numeric',\n      hour: '2-digit',\n      minute: '2-digit',\n      hour12: false\n    })\n}}\n",
+              "id": "ee0ed94b-8f33-4cdd-b737-43a3ad417dd4",
+              "name": "Fim",
+              "value": "={{ $json.ov_ended_at.substring(0, 19).replace('T', ' ') }}",
               "type": "string"
             },
             {
               "id": "681ffc34-5a51-426d-b485-a39535ddffc8",
-              "name": "Contrato",
+              "name": "=Contrato",
               "value": "={{ $json.o_contract_description }}",
               "type": "string"
             },
@@ -132,26 +132,26 @@
             {
               "id": "fef404a1-3c87-426c-96a8-d20784555829",
               "name": "Materiais",
-              "value": "={{ Number($json.ov_materials_value || 0) }}",
-              "type": "number"
+              "value": "={{ Number($json.ov_materials_value).toFixed(2).replace('.', ',') }}",
+              "type": "string"
             },
             {
               "id": "3791205b-b7c1-4a22-afab-d94d0b8809a4",
               "name": "=Transportes",
-              "value": "={{ Number($json.ov_vehicles_value || 0) }}",
-              "type": "number"
+              "value": "={{ Number($json.ov_vehicles_value).toFixed(2).replace('.', ',') }}",
+              "type": "string"
             },
             {
               "id": "1dde1fbf-59a1-4d50-ae80-55d526246f98",
               "name": "=Serviços",
-              "value": "={{ Number($json.ov_services_value || 0) }}",
-              "type": "number"
+              "value": "={{ Number($json.ov_services_value).toFixed(2).replace('.', ',') }}",
+              "type": "string"
             },
             {
               "id": "fdc416f6-610c-4888-97fd-6e9fa1238d39",
-              "name": "Total",
-              "value": "={{ Number($json.ov_total_value || 0) }}",
-              "type": "number"
+              "name": "=Total",
+              "value": "={{ Number($json.ov_total_value).toFixed(2).replace('.', ',') }}",
+              "type": "string"
             }
           ]
         },
@@ -192,24 +192,6 @@
       ],
       "id": "4e4ff20f-5b34-4625-8cbb-26aafb916b99",
       "name": "Split Out"
-    },
-    {
-      "parameters": {
-        "operation": "xlsx",
-        "options": {
-          "fileName": "={{ $('Webhook').item.json.body.file_name }}_{{ DateTime.now().toFormat('yyyy-MM-dd_HH-mm-ss') }}.xlsx",
-          "headerRow": true,
-          "sheetName": "Sheet"
-        }
-      },
-      "type": "n8n-nodes-base.convertToFile",
-      "typeVersion": 1.1,
-      "position": [
-        1120,
-        -224
-      ],
-      "id": "32ce8a6d-5d39-48ac-ac4f-7d807866f370",
-      "name": "Convert to File"
     },
     {
       "parameters": {
@@ -351,7 +333,7 @@
             {
               "id": "b60485c8-4fd5-40df-9293-171d5e48527e",
               "name": "Data",
-              "value": "={{ \n  new Date($json.status_at)\n    .toLocaleString('pt-BR', {\n      day: '2-digit',\n      month: '2-digit',\n      year: 'numeric',\n      hour: '2-digit',\n      minute: '2-digit',\n      hour12: false\n    })\n}}",
+              "value": "={{ $json.status_at.substring(0, 19).replace('T', ' ') }}",
               "type": "string"
             }
           ]
@@ -392,7 +374,7 @@
             {
               "id": "b60485c8-4fd5-40df-9293-171d5e48527e",
               "name": "Data",
-              "value": "={{ \n  new Date($json.reported_at)\n    .toLocaleString('pt-BR', {\n      day: '2-digit',\n      month: '2-digit',\n      year: 'numeric',\n      hour: '2-digit',\n      minute: '2-digit',\n      hour12: false\n    })\n}}",
+              "value": "={{ $json.reported_at.substring(0, 19).replace('T', ' ') }}",
               "type": "string"
             },
             {
@@ -422,8 +404,8 @@
             {
               "id": "3eb71516-7a7c-40c1-96b6-70c7d32aca59",
               "name": "Distancia (m)",
-              "value": "={{ $json.unit_reported_distance_m }}",
-              "type": "number"
+              "value": "={{ Number($json.unit_reported_distance_m).toFixed(2).replace('.', ',') }}",
+              "type": "string"
             },
             {
               "id": "1c4e578f-7999-4986-aef0-16dc90ff37fe",
@@ -443,6 +425,22 @@
       ],
       "id": "991519e9-9773-4e8c-bd8d-d63fff7b20be",
       "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ";",
+          "fileName": "={{ $('Webhook').item.json.body.file_name }}_{{ DateTime.now().toFormat('yyyy-MM-dd_HH-mm-ss') }}.csv"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        -224
+      ],
+      "id": "c665a689-3672-4b0c-bb64-95454fbb84c2",
+      "name": "Convert to File"
     }
   ],
   "connections": {
@@ -501,17 +499,6 @@
         ]
       ]
     },
-    "Convert to File": {
-      "main": [
-        [
-          {
-            "node": "HTTP SB Storage Upload",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Switch": {
       "main": [
         [
@@ -558,6 +545,17 @@
           }
         ]
       ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "HTTP SB Storage Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -568,7 +566,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "dd54c0f4-9455-48a6-b581-25fd04ba8fb8",
+  "versionId": "dcbf147c-4619-4052-8526-ff6b5f0ecaf6",
   "triggerCount": 1,
   "shared": [
     {
