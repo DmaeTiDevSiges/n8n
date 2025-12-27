@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-12-13T06:33:03.326Z",
+  "updatedAt": "2025-12-26T12:31:40.059Z",
   "createdAt": "2025-08-24T12:31:50.829Z",
   "id": "PD4JYm7wRsypmIDV",
   "name": "SigesWhatsappUserNotification",
@@ -81,8 +81,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        32,
-        112
+        -16,
+        -16
       ],
       "id": "04a50ca5-d361-4be6-809c-9e2b2963186c",
       "name": "Edit Fields",
@@ -134,7 +134,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "267d5ca5-ec05-4280-a931-deeee4f56b53",
+  "versionId": "721f817b-daeb-46a6-9d56-60b9661ed556",
   "triggerCount": 1,
   "shared": [
     {
