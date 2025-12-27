@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-26T19:41:07.338Z",
+  "updatedAt": "2025-12-26T12:42:40.097Z",
   "createdAt": "2025-10-04T16:02:20.406Z",
   "id": "gFxu0zmVZoaMtLeu",
   "name": "SigesWhatsAppAssetsAvailableDraft",
@@ -12,7 +12,7 @@
       "typeVersion": 1,
       "position": [
         80,
-        80
+        40
       ],
       "id": "b89bd60a-03bf-452b-ac8f-30c2a7c6aee5",
       "name": "When clicking ‘Execute workflow’"
@@ -20,15 +20,20 @@
     {
       "parameters": {
         "operation": "getAll",
-        "tableId": "v_assets_available",
+        "tableId": "v_units_assets_tags",
         "returnAll": true,
         "matchType": "allFilters",
         "filters": {
           "conditions": [
             {
-              "keyName": "processing_id",
+              "keyName": "last_processing_id",
               "condition": "eq",
               "keyValue": "1"
+            },
+            {
+              "keyName": "last_created_user_id",
+              "condition": "gt",
+              "keyValue": "0"
             }
           ]
         }
@@ -37,7 +42,7 @@
       "typeVersion": 1,
       "position": [
         304,
-        0
+        -32
       ],
       "id": "44add1c7-0c36-45ed-87ad-ab4adb9c7200",
       "name": "Get many rows",
@@ -57,7 +62,7 @@
       "typeVersion": 3,
       "position": [
         528,
-        0
+        -32
       ],
       "id": "8b016cf5-a79d-4d32-ab7b-1d441a425c8c",
       "name": "Loop Over Items"
@@ -69,7 +74,7 @@
       "typeVersion": 1,
       "position": [
         752,
-        0
+        -32
       ],
       "id": "752ede58-5872-41db-a47e-e154e9d93bcb"
     },
@@ -85,7 +90,7 @@
           "conditions": [
             {
               "id": "b0c88a34-541e-43c4-8b20-d0c98dc40345",
-              "leftValue": "={{(() => {\n  const createdAt = new Date($json.created_at); // Data de criação\n  const now = new Date(); // Data atual\n  const diffMs = now - createdAt; // Diferença em milissegundos\n  const diffMinutes = Math.floor(diffMs / 60000); // Converter para minutos\n  return diffMinutes;\n})()}}\n\n\n",
+              "leftValue": "={{(() => {\n  const createdAt = new Date($json.last_created_at); // Data de criação\n  const now = new Date(); // Data atual\n  const diffMs = now - createdAt; // Diferença em milissegundos\n  const diffMinutes = Math.floor(diffMs / 60000); // Converter para minutos\n  return diffMinutes;\n})()}}\n\n\n",
               "rightValue": 10,
               "operator": {
                 "type": "number",
@@ -102,7 +107,7 @@
       "typeVersion": 2.2,
       "position": [
         976,
-        80
+        40
       ],
       "id": "60e6a437-7b81-4f9d-9da1-9a9e24a7f823",
       "name": "If"
@@ -114,7 +119,7 @@
           "fieldValues": [
             {
               "fieldId": "user_id_to",
-              "fieldValue": "={{ $('Loop Over Items').item.json.created_user_id }}"
+              "fieldValue": "={{ $json.id }}"
             },
             {
               "fieldId": "title",
@@ -122,7 +127,7 @@
             },
             {
               "fieldId": "body",
-              "fieldValue": "=REPORTAR a sua informação quanto a disponibilidade de Ativos: {{ \"\\n\" + $json.unit_description + \"\\n\" + $json.tag_description + \"\\n\" + $json.tag_sub_description + \"\\n\" }}"
+              "fieldValue": "=REPORTAR a sua informação quanto a disponibilidade de Ativos: {{ \"\\n\" + $('Get many rows').item.json.unit_description + \"\\n\" + $('Get many rows').item.json.tag_description + \"\\n\" + $('Get many rows').item.json.tag_sub_description + \"\\n\" }}"
             },
             {
               "fieldId": "user_to_whatsapp",
@@ -134,11 +139,12 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        752,
-        -192
+        976,
+        -224
       ],
       "id": "bf1b4974-a683-4737-929f-e05b3afb5b93",
       "name": "Create a row1",
+      "alwaysOutputData": false,
       "credentials": {
         "supabaseApi": {
           "id": "3e1v0m7ap64TE24A",
@@ -160,10 +166,38 @@
       "typeVersion": 1.2,
       "position": [
         80,
-        -128
+        -152
       ],
       "id": "0204cbbf-aa30-4114-b291-a34a2bd2dbe4",
       "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "v_users",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.last_created_user_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        752,
+        -224
+      ],
+      "id": "837b2029-ad9b-44bc-8b95-c433fe85f4e9",
+      "name": "Get a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
     }
   ],
   "connections": {
@@ -193,7 +227,7 @@
       "main": [
         [
           {
-            "node": "Create a row1",
+            "node": "Get a row",
             "type": "main",
             "index": 0
           }
@@ -239,6 +273,17 @@
           }
         ]
       ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "Create a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -253,7 +298,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "75df5388-71ec-4689-a38e-9c3d82479856",
+  "versionId": "6310288d-ad7a-4639-bc49-86bc32b4a811",
   "triggerCount": 1,
   "shared": [
     {
