@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2025-12-26T11:25:46.667Z",
+  "updatedAt": "2025-12-31T13:51:05.036Z",
   "createdAt": "2025-12-26T11:25:46.667Z",
   "id": "YUOkfjBoQkuZ4Awa",
   "name": "SigesWhatsAppAssetsAvailableDraft copy",
   "active": false,
-  "isArchived": false,
+  "isArchived": true,
   "nodes": [
     {
       "parameters": {},
@@ -253,7 +253,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "ad8a225e-e52c-43b9-9399-8766b1815254",
+  "versionId": "26420199-7f3c-4e23-9462-c7bf9a0ba5af",
   "triggerCount": 1,
   "shared": [
     {
