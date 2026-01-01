@@ -1,0 +1,298 @@
+{
+  "updatedAt": "2025-12-31T12:44:42.317Z",
+  "createdAt": "2025-12-31T12:42:20.492Z",
+  "id": "CM8zt4wwYWQz78nF",
+  "name": "SigesWhatsAppAssetsAvailableDraft NEW",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        80,
+        40
+      ],
+      "id": "8268c54e-511a-47f6-80d5-c5c8a21d9a1d",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "v_units_assets_tags",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "last_processing_id",
+              "condition": "eq",
+              "keyValue": "1"
+            },
+            {
+              "keyName": "last_created_user_id",
+              "condition": "gt",
+              "keyValue": "0"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        304,
+        -32
+      ],
+      "id": "ce691223-08a3-4698-86ef-a4fdbe4616c5",
+      "name": "Get many rows",
+      "alwaysOutputData": true,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        528,
+        -32
+      ],
+      "id": "7ad4b280-744c-4019-9d2b-6c5fd3f37cda",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        752,
+        -32
+      ],
+      "id": "63c79f70-c159-430d-aa74-e32ea849422f"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b0c88a34-541e-43c4-8b20-d0c98dc40345",
+              "leftValue": "={{(() => {\n  const createdAt = new Date($json.last_created_at); // Data de criação\n  const now = new Date(); // Data atual\n  const diffMs = now - createdAt; // Diferença em milissegundos\n  const diffMinutes = Math.floor(diffMs / 60000); // Converter para minutos\n  return diffMinutes;\n})()}}\n\n\n",
+              "rightValue": 10,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        40
+      ],
+      "id": "1550c3cc-1c3f-4436-a44c-e09400ff2009",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "tableId": "users_notifications",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_id_to",
+              "fieldValue": "={{ $json.id }}"
+            },
+            {
+              "fieldId": "title",
+              "fieldValue": "Disponibilidade Ativos em Rascunho"
+            },
+            {
+              "fieldId": "body",
+              "fieldValue": "=REPORTAR a sua informação quanto a disponibilidade de Ativos: {{ \"\\n\" + $('Get many rows').item.json.unit_description + \"\\n\" + $('Get many rows').item.json.tag_description + \"\\n\" + $('Get many rows').item.json.tag_sub_description + \"\\n\" }}"
+            },
+            {
+              "fieldId": "user_to_whatsapp",
+              "fieldValue": "={{ $json.mobile_whatsapp }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        976,
+        -224
+      ],
+      "id": "5391d9d0-fc3a-41a0-8d72-5fe7e927f270",
+      "name": "Create a row1",
+      "alwaysOutputData": false,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        -152
+      ],
+      "id": "e91d8fa3-2cae-4451-a4a0-d095beaa632c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "v_users",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.last_created_user_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        752,
+        -224
+      ],
+      "id": "5c31e191-91f3-4695-b26c-fffd52e23a81",
+      "name": "Get a row",
+      "credentials": {}
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "Create a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "89867b70-c4e1-4808-b280-5657995597fd",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-31T12:42:20.492Z",
+      "createdAt": "2025-12-31T12:42:20.492Z",
+      "role": "workflow:owner",
+      "workflowId": "CM8zt4wwYWQz78nF",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
