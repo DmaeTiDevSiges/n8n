@@ -1,0 +1,544 @@
+{
+  "updatedAt": "2025-12-31T14:43:54.016Z",
+  "createdAt": "2025-12-31T14:03:15.942Z",
+  "id": "d6QNZ0mwrd5783oj",
+  "name": "SigesWhatsAppAssetsAvailableDraft New",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -32
+      ],
+      "id": "e3f90e60-4943-4954-a1f9-0f9b54e87e0b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "v_units_assets_tags",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "last_processing_id",
+              "condition": "eq",
+              "keyValue": "1"
+            },
+            {
+              "keyName": "last_created_user_id",
+              "condition": "gt",
+              "keyValue": "0"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        304,
+        -176
+      ],
+      "id": "aee15449-d609-4c78-9a6a-60de682d5305",
+      "name": "Get many rows",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        528,
+        -176
+      ],
+      "id": "b4043c22-d9f7-43a0-9582-72000025341a",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        816,
+        192
+      ],
+      "id": "edb76987-bfe5-45b4-b302-af385c1d9ab9"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b0c88a34-541e-43c4-8b20-d0c98dc40345",
+              "leftValue": "={{(() => {\n  const createdAt = new Date($json.last_created_at); // Data de criação\n  const now = new Date(); // Data atual\n  const diffMs = now - createdAt; // Diferença em milissegundos\n  const diffMinutes = Math.floor(diffMs / 60000); // Converter para minutos\n  return diffMinutes;\n})()}}\n\n\n",
+              "rightValue": 10,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        -32
+      ],
+      "id": "66733395-ff22-4e19-b87e-5c64a0df2046",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "tableId": "users_notifications",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_id_to",
+              "fieldValue": "={{ $json.id }}"
+            },
+            {
+              "fieldId": "title",
+              "fieldValue": "Disponibilidade Ativos em Rascunho"
+            },
+            {
+              "fieldId": "body",
+              "fieldValue": "=REPORTAR a sua informação quanto a disponibilidade de Ativos: {{ \"\\n\" + $('Get many rows').item.json.unit_description + \"\\n\" + $('Get many rows').item.json.tag_description + \"\\n\" + $('Get many rows').item.json.tag_sub_description + \"\\n\" }}"
+            },
+            {
+              "fieldId": "user_to_whatsapp",
+              "fieldValue": "={{ $json.mobile_whatsapp }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        976,
+        -224
+      ],
+      "id": "bb7cf265-2468-467a-84a1-1d11bbbae12f",
+      "name": "Create a row1",
+      "alwaysOutputData": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        -224
+      ],
+      "id": "be1d6c8c-720b-4362-9d3d-6f7a8a1aaa9f",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "v_users",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.last_created_user_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        752,
+        -224
+      ],
+      "id": "fb41a449-37f3-42e1-97e8-87ebe2a7f2ae",
+      "name": "Get a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "assets_available",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.last_asset_available_id }}"
+            },
+            {
+              "keyName": "processing_id",
+              "keyValue": "2"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        -32
+      ],
+      "id": "b97c55f2-ac59-4faa-94f2-0994ef857773",
+      "name": "Get AssetAvailableProcessing2a row1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c378c34d-2c39-4ffd-8e34-7e94b9ded017",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1424,
+        -32
+      ],
+      "id": "1c2fc20d-c8d4-4eb2-a311-5a3554c83329",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "cfg_units_assets_tags",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "last_asset_available_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Get AssetAvailableProcessing2a row1').item.json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "last_processing_id",
+              "fieldValue": "2"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1648,
+        -80
+      ],
+      "id": "fe1e7fd0-0e8b-4ff6-b0ec-68c6c3114dfc",
+      "name": "Update CfgAssetsUnitsTagsProcessing2",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "v_users",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.last_created_user_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1648,
+        112
+      ],
+      "id": "e9a4f93f-3229-4d42-8d12-8bbb2e552aab",
+      "name": "Get a row1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "tableId": "users_notifications",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_id_to",
+              "fieldValue": "={{ $json.id }}"
+            },
+            {
+              "fieldId": "title",
+              "fieldValue": "Disponibilidade Ativos em Rascunho"
+            },
+            {
+              "fieldId": "body",
+              "fieldValue": "=REPORTAR a sua informação quanto a disponibilidade de Ativos: {{ \"\\n\" + $('Get many rows').item.json.unit_description + \"\\n\" + $('Get many rows').item.json.tag_description + \"\\n\" + $('Get many rows').item.json.tag_sub_description + \"\\n\" }}"
+            },
+            {
+              "fieldId": "user_to_whatsapp",
+              "fieldValue": "={{ $json.mobile_whatsapp }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        184
+      ],
+      "id": "c312329b-5320-42a5-94a4-c8c36ace2013",
+      "name": "Create a row",
+      "alwaysOutputData": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get AssetAvailableProcessing2a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "Create a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get AssetAvailableProcessing2a row1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Update CfgAssetsUnitsTagsProcessing2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row1": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a row": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update CfgAssetsUnitsTagsProcessing2": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "a375cda3-5ed9-453e-81ec-6ee8b81e39f8",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-31T14:03:15.942Z",
+      "createdAt": "2025-12-31T14:03:15.942Z",
+      "role": "workflow:owner",
+      "workflowId": "d6QNZ0mwrd5783oj",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
