@@ -1,0 +1,467 @@
+{
+  "updatedAt": "2025-12-31T15:36:16.340Z",
+  "createdAt": "2025-12-31T15:01:00.622Z",
+  "id": "ClXckxVMHNtVbTlh",
+  "name": "SigesWhatsAppAssetsAvailableDraft New",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        80,
+        96
+      ],
+      "id": "058a1459-6a5f-4820-9583-936515b45399",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "v_units_assets_tags",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "last_processing_id",
+              "condition": "eq",
+              "keyValue": "1"
+            },
+            {
+              "keyName": "last_created_user_id",
+              "condition": "gt",
+              "keyValue": "0"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        304,
+        -24
+      ],
+      "id": "2f9bf2e1-88e3-4b2a-a48d-335feb4a52ce",
+      "name": "Get many rows",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        528,
+        -24
+      ],
+      "id": "0674faf0-838e-44a1-99ea-5ccfe2ae0b6a",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        752,
+        -192
+      ],
+      "id": "7522399c-36c7-4896-997b-c44bc01d3466"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b0c88a34-541e-43c4-8b20-d0c98dc40345",
+              "leftValue": "={{(() => {\n  const createdAt = new Date($json.last_created_at); // Data de criação\n  const now = new Date(); // Data atual\n  const diffMs = now - createdAt; // Diferença em milissegundos\n  const diffMinutes = Math.floor(diffMs / 60000); // Converter para minutos\n  return diffMinutes;\n})()}}\n\n\n",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1376,
+        16
+      ],
+      "id": "d28be410-1c96-4363-9c45-143143456265",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "tableId": "users_notifications",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_id_to",
+              "fieldValue": "={{ $json.id }}"
+            },
+            {
+              "fieldId": "title",
+              "fieldValue": "Disponibilidade Ativos em Rascunho"
+            },
+            {
+              "fieldId": "body",
+              "fieldValue": "=REPORTAR a sua informação quanto a disponibilidade de Ativos: {{ \"\\n\" + $('Get many rows').item.json.unit_description + \"\\n\" + $('Get many rows').item.json.tag_description + \"\\n\" + $('Get many rows').item.json.tag_sub_description + \"\\n\" }}"
+            },
+            {
+              "fieldId": "user_to_whatsapp",
+              "fieldValue": "={{ $json.mobile_whatsapp }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        96
+      ],
+      "id": "a3c041e0-221a-46c3-bf16-9d9c4789c80e",
+      "name": "Create a row1",
+      "alwaysOutputData": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        -96
+      ],
+      "id": "660d545b-6f57-4f20-a3f0-e6d6a6e24682",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c00eb9dc-f3d8-429b-bbd3-10e3fb9c04cd",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        -192
+      ],
+      "id": "df8398a7-b897-4d43-bc36-8d5205296300",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "assets_available",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.last_asset_available_id }}"
+            },
+            {
+              "keyName": "processing_id",
+              "keyValue": "2"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        976,
+        -192
+      ],
+      "id": "40b9456b-90b9-422a-b347-e4e9646be1f0",
+      "name": "Get AssetAvailProc2",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "cfg_units_assets_tags",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "last_asset_available_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "last_processing_id",
+              "fieldValue": "2"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        -192
+      ],
+      "id": "34a23949-ddd5-48db-9179-c1ff0f4eed66",
+      "name": "Update a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "v_users",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.last_created_user_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1648,
+        0
+      ],
+      "id": "85e22813-eecf-4676-9b08-f8abfa58afbb",
+      "name": "Get UserReported",
+      "credentials": {
+        "supabaseApi": {
+          "id": "3e1v0m7ap64TE24A",
+          "name": "SIGES Supabase"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Get AssetAvailProc2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get UserReported",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Update a row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get AssetAvailProc2": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a row": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get UserReported": {
+      "main": [
+        [
+          {
+            "node": "Create a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a row1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "86262f7d-0e25-481c-b455-e1e406d3d652",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-31T15:01:00.622Z",
+      "createdAt": "2025-12-31T15:01:00.622Z",
+      "role": "workflow:owner",
+      "workflowId": "ClXckxVMHNtVbTlh",
+      "projectId": "9g2PRDfYwAMYBotF"
+    }
+  ],
+  "tags": []
+}
