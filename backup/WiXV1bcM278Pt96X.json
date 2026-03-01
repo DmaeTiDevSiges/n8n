@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2026-02-28T11:57:59.067Z",
   "createdAt": "2025-10-07T03:09:22.644Z",
-  "updatedAt": "2025-10-16T21:37:29.646Z",
   "id": "WiXV1bcM278Pt96X",
   "name": "Dpccdu_ExtractPDFPowerInvoice",
   "active": false,
@@ -1292,12 +1292,12 @@
       }
     ]
   },
-  "versionId": "dd50f669-dbf3-47f8-a16b-d75f6a68a17c",
+  "versionId": "859b99d3-ae1f-47b2-a2b4-cec6ff6921be",
   "triggerCount": 1,
   "shared": [
     {
-      "createdAt": "2025-10-07T03:09:22.644Z",
       "updatedAt": "2025-10-07T03:09:22.644Z",
+      "createdAt": "2025-10-07T03:09:22.644Z",
       "role": "workflow:owner",
       "workflowId": "WiXV1bcM278Pt96X",
       "projectId": "9g2PRDfYwAMYBotF"
