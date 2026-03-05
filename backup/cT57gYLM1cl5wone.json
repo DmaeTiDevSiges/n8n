@@ -1,9 +1,9 @@
 {
+  "updatedAt": "2026-03-03T12:41:33.077Z",
   "createdAt": "2025-10-12T22:14:46.503Z",
-  "updatedAt": "2025-10-12T22:50:03.079Z",
   "id": "cT57gYLM1cl5wone",
   "name": "ContaboVpsSnapshot",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
@@ -926,8 +926,8 @@
   "triggerCount": 1,
   "shared": [
     {
-      "createdAt": "2025-10-12T22:14:46.503Z",
       "updatedAt": "2025-10-12T22:14:46.503Z",
+      "createdAt": "2025-10-12T22:14:46.503Z",
       "role": "workflow:owner",
       "workflowId": "cT57gYLM1cl5wone",
       "projectId": "9g2PRDfYwAMYBotF"
